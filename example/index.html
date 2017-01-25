@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
+  <title>Speckle Receiver</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css" />
+</head>
+<body>
+  <div class="container">
+  <br>
+  <br>
+  <h1>Speckle Receiver</h1>
+  </div>
+  <div class="container" id="connectionform">  
+    <h5>Connect</h5>
+    <p> Let’s setup a speckle receiver and see how it emits stuff. </p>
+    <label>Rest Endpoint of the Speckle Server</label>
+    <input class="u-full-width" type="text" placeholder="rest endpoint (http://)" value="http://localhost:8080" id="rest">
+    <label>Websocekt Endpoint</label>
+    <input class="u-full-width" type="text" placeholder="websocket endpoint (ws://)" value="ws://localhost:8080" id="ws">
+    <label>Your User Token</label>
+    <input class="u-full-width" type="text" placeholder="token" value="asdf" id="token">
+    <label>StreamId you want to listen to</label>
+    <input class="u-full-width" type="text" placeholder="stream id" valuexxx="SyctsoJvx" value="rykdLqJve" id="streamid">
+    <input class="button-primary" type="submit" value="Connect" id='thebutton' onclick="connectToStream()">
+</div>
+<div class="container streamdetails" style="display: none">
+<div class="row">
+      <input class="button-primary" type="submit" value="New Connection" id='thebutton' onclick="newConnection()">
+      <p>Cool, we're connected. Change something in the stream and you will see the update here.<br>Ready: <strong><span id='ready'>FALSE</span></strong>, Name: <strong><span id='streamname'>Not connected yet.</span></strong> </p>
+</div>
+<div class="row">
+    <div class="six columns streamdetails">
+      <h5>Stream Layers</h5>
+      <p>Stream object list will be shown here.</p>
+      <pre ><code id='streamlayers' style='height: 400px; overflow: auto;'></code></pre>
+    </div>
+    <div class="six columns streamdetails">
+      <h5>Stream Objects</h5>
+      <p>Stream object list will be shown here.</p>
+      <pre ><code id='streamobjects' style='height: 400px; overflow: auto;'></code></pre>
+    </div>
+</div>
+<div class="row">
+  <div class="">
+    <hr>
+    <p>Get all the objects that this stream's live instance contains.</p>
+    <input class="button" type="submit" value="Get All Objects In Bulk" id='thebutton' onclick="getAllObjectsExample()">
+    <input class="button" type="submit" value="Get All Objects Sequentially" id='thebutton' onclick="getAllOBjectsSequentially()"> Obj count seq: <span id="objectCount">0</span>
+    <pre ><code id='allobjects' style='height: 300px; overflow: auto;'></code></pre>
+    
+    <p>Get all the objects in bulk (promise); will return a big array with all the objects once they are *all* fetched from the server.</p>
+    <pre><code>
+      myReceiver.getObjects( myObjects )
+      .then( objects => {
+        $('#allobjects').text( JSON.stringify( objects, null, 2 ) )
+      })
+    </code></pre>
+    <p>Get all the objects in sequence (promise); will return each object individually as it's fetched from the server.</p>
+    <pre ><code>
+      for (var i = 0; i < myObjects.length; i++) {
+        myReceiver.getObject( myObjects[i] )
+        .then( res => {
+          $("#allobjects").append( JSON.stringify( res.data.obj, null, 2 ) )
+          $('#objectCount').text( ++count )
+        })
+      }
+    </code></pre>
+  </div>
+  <div>
+  <p>Broadcast a volatile message to the room.</p>
+  <label>Message:</label>
+  <input class="u-full-width" type="text" placeholder="Message to broadcast" value="" id="volatileMessage">
+  <input class="button-primary" type="submit" value="Broadcast" id='broadcastbutton' onclick="sendVolatile()">
+  <label>Received volatile messages:</label>
+  <textarea class="u-full-width" type="text" lines=10 placeholder="" value="" id="receivedMessages"></textarea>
+  </div>
+</div>
+</div>
+
+  <!-- How to stuff -->
+
+<div class="container">
+  <hr>
+  <h5>How to:</h5>
+  <p><strong>Create a new receiver</strong></p>
+  <pre><code>
+    myReceiver = new SpeckleReceiver( { 
+      wsEndpoint: <strong>websocket endpoint. 'ws://...' or 'wss://...' for secure connections</strong>,
+      restEndpoint: <strong>rest api endpoint. 'http://...' or 'https://...'</strong>, 
+      token: <strong>your user token for the above server</strong>,
+      streamId: <strong>streamId you want to listen to.</strong>
+    } )
+  </code></pre>
+  <p><strong>Events: 'ready' && 'live-update'</strong></p>
+  <p>These two events will return the stream name, the stream's layers as well the current objects.</p>
+  <pre><code>
+    myReceiver.on(<strong>'ready'</strong>, function( name, layers, objects ) {
+      // Do something with the data
+    })
+
+    myReceiver.on(<strong>'live-update'</strong>, function( name, layers, objects ) {
+      // Do something
+    })
+  </code></pre>
+  <p><strong>Events: 'metadata-update'</strong></p>
+  <p>The metadata update comes back with just name and layers.</p>
+  <pre><code>
+    myReceiver.on('metadata-update', function( name, layers ) { 
+      // Do something
+    })
+  </code></pre>
+  <div class="row">
+  </div>
+</div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="../dist/SpeckleReceiver.min.js"></script>
+  <script type="text/javascript">
+    
+    // this is amazing jquery code right here back from like 1999
+
+    var myReceiver = null
+    var myObjects = null
+
+    function connectToStream() {
+      myReceiver = new SpeckleReceiver( { 
+        wsEndpoint: $( '#ws' ).val(),
+        restEndpoint: $( '#rest' ).val(),
+        token: $( '#token' ).val(),
+        streamId: $( '#streamid' ).val()
+      } )
+      
+      $('#thebutton').val( 'Connecting...' )
+
+      myReceiver.on('ready', function( name, layers, objects ) {
+        console.log( 'Connection ready.' )
+        $('#thebutton').val( 'Connect' )
+
+        $('#ready').text( 'TRUE' )
+        $('#streamname').text( name )
+        $('#streamlayers').text( JSON.stringify( layers, null, 2 ) )
+        $('#streamobjects').text( JSON.stringify( objects, null, 2 ) )
+        $('#connectionform').fadeOut(100)
+        $('.streamdetails').fadeIn(100)
+
+        myObjects = objects
+      })
+
+      myReceiver.on('live-update', function( name, layers, objects ) {
+        console.log( 'Got a live update.' )
+        $('#streamname').text( name )
+        $('#streamlayers').text( JSON.stringify( layers, null, 2 ) )
+        $('#streamobjects').text( JSON.stringify( objects, null, 2 ) )
+        $('#streamobjects').text( JSON.stringify( objects, null, 2 ) )
+
+        myObjects = objects
+      })
+
+      myReceiver.on('metadata-update', function( name, layers ) {
+        console.log( 'Got a live update.' )
+        $('#streamname').text( name )
+        $('#streamlayers').text( JSON.stringify( layers, null, 2 ) )
+      })
+
+      myReceiver.on('volatile-message', function (message) {
+        console.log( message )
+        $('#receivedMessages').append( Date.now() + ': ' + message.args + '\n')
+      })
+    }
+
+    function getAllObjectsExample() {
+      myReceiver.getObjects( myObjects )
+      .then( objects => {
+        $('#allobjects').text( JSON.stringify( objects, null, 2 ) )
+      })
+    }
+
+    function getAllOBjectsSequentially() {
+      console.log('getting objects sequentially')
+      $('#allobjects').text("")
+      var count = 0
+      for (var i = 0; i < myObjects.length; i++) {
+        myReceiver.getObject( myObjects[i] )
+        .then( res => {
+          $("#allobjects").append( JSON.stringify( res.data.obj, null, 2 ) )
+          $('#objectCount').text( ++count )
+        })
+      }
+    }
+
+    function sendVolatile() {
+      myReceiver.sendVolatileMessage( $('#volatileMessage').val() )
+    }
+
+    function newConnection() {
+      if( myReceiver ) myReceiver.dispose() 
+      $('#connectionform').fadeIn(100)
+      $('.streamdetails').fadeOut(100)
+    }
+  </script>
+  <style type="text/css">
+    pre {
+      font-size: 2rem;
+    }
+    code {
+      border: none;
+    }
+  </style>
+</body>
+</html>
