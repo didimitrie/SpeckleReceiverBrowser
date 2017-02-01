@@ -22,7 +22,7 @@
     <label>Your User Token</label>
     <input class="u-full-width" type="text" placeholder="token" value="asdf" id="token">
     <label>StreamId you want to listen to</label>
-    <input class="u-full-width" type="text" placeholder="stream id" valuexxx="SyctsoJvx" value="rykdLqJve" id="streamid">
+    <input class="u-full-width" type="text" placeholder="stream id" valuexxx="SyctsoJvx" value="S1pgoBCPg" id="streamid">
     <input class="button-primary" type="submit" value="Connect" id='thebutton' onclick="connectToStream()">
 </div>
 <div class="container streamdetails" style="display: none">
@@ -46,26 +46,24 @@
   <div class="">
     <hr>
     <p>Get all the objects that this stream's live instance contains.</p>
-    <input class="button" type="submit" value="Get All Objects In Bulk" id='thebutton' onclick="getAllObjectsExample()">
-    <input class="button" type="submit" value="Get All Objects Sequentially" id='thebutton' onclick="getAllOBjectsSequentially()"> Obj count seq: <span id="objectCount">0</span>
+    <input class="button" type="submit" value="Get All Objects In Bulk (PRESERVES ORDER)" id='thebutton' onclick="getAllObjectsExample()">
+    <input class="button" type="submit" value="Get All Objects Sequentially (DOES NOT PRESERVE ORDER)" id='thebutton' onclick="getAllOBjectsSequentially()"> Obj count seq: <span id="objectCount">0</span>
     <pre ><code id='allobjects' style='height: 300px; overflow: auto;'></code></pre>
     
-    <p>Get all the objects in bulk (promise); will return a big array with all the objects once they are *all* fetched from the server.</p>
+    <p>Get all the objects in bulk; will return a big array with all the objects once they are *all* fetched from the server.</p>
     <pre><code>
-      myReceiver.getObjects( myObjects )
-      .then( objects => {
-        $('#allobjects').text( JSON.stringify( objects, null, 2 ) )
-      })
+      myReceiver.getObjects( myObjects, objs => {
+        console.log( objs )
+      } )
     </code></pre>
-    <p>Get all the objects in sequence (promise); will return each object individually as it's fetched from the server.</p>
+    <p>Get all the objects; will return each object individually as it's fetched from the server.</p>
     <pre ><code>
-      for (var i = 0; i < myObjects.length; i++) {
-        myReceiver.getObject( myObjects[i] )
-        .then( res => {
-          $("#allobjects").append( JSON.stringify( res.data.obj, null, 2 ) )
+      myObjects.forEach( ( obj, i ) => {
+        myReceiver.getObject( obj, response => {
+          console.log( 'got object', response.hash, i )
+          $("#allobjects").append( JSON.stringify( response, null, 2 ) )
           $('#objectCount').text( ++count )
         })
-      }
     </code></pre>
   </div>
   <div>
@@ -116,13 +114,14 @@
 </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-  <script src="../dist/SpeckleReceiver.min.js"></script>
+  <script src="../dist/SpeckleReceiver.js"></script>
   <script type="text/javascript">
     
     // this is amazing jquery code right here back from like 1999
 
     var myReceiver = null
     var myObjects = null
+    var fullObjects = null
 
     function connectToStream() {
       myReceiver = new SpeckleReceiver( { 
@@ -171,27 +170,28 @@
     }
 
     function getAllObjectsExample() {
-      myReceiver.getObjects( myObjects )
-      .then( objects => {
-        $('#allobjects').text( JSON.stringify( objects, null, 2 ) )
-      })
+      myReceiver.getObjects( myObjects, objs => {
+        console.log( objs )
+      } )
     }
 
     function getAllOBjectsSequentially() {
+
       console.log('getting objects sequentially')
       $('#allobjects').text("")
       var count = 0
-      for (var i = 0; i < myObjects.length; i++) {
-        myReceiver.getObject( myObjects[i] )
-        .then( res => {
-          $("#allobjects").append( JSON.stringify( res.data.obj, null, 2 ) )
+      myObjects.forEach( ( obj, i ) => {
+        myReceiver.getObject( obj, response => {
+          console.log( 'got object', response.hash, i )
+          $("#allobjects").append( JSON.stringify( response, null, 2 ) )
           $('#objectCount').text( ++count )
         })
-      }
+      })
+     
     }
 
     function sendVolatile() {
-      myReceiver.sendVolatileMessage( $('#volatileMessage').val() )
+      myReceiver.broadcastVolatileMessage( $('#volatileMessage').val() )
     }
 
     function newConnection() {
@@ -202,7 +202,7 @@
   </script>
   <style type="text/css">
     pre {
-      font-size: 2rem;
+      font-size: 1.7rem;
     }
     code {
       border: none;

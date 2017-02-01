@@ -33,7 +33,7 @@ export default class SpeckleReceiver extends EventEmitter {
       if( !this.wsSessionId ) return
       if( !this.streamFound ) return
 
-      this.emit('ready', this.name, this.layers, this.objects )
+      this.emit('ready', this.name, this.layers, this.objects, this.objectProperties )
       clearInterval( this.isReadyChecker )
     }, 100 )
   }
@@ -49,9 +49,10 @@ export default class SpeckleReceiver extends EventEmitter {
     }
     
     this.ws.onmessage = msg => {
-      console.debug( 'Got a message. My wsSessionId is', this.wsSessionId )
-      if( msg.data === 'ping')
+      if( msg.data === 'ping') {
+        console.debug('Ping!')
         return this.ws.send( 'alive' )
+      }
 
       let parsedMsg = JSON.parse( msg.data )
       if( this.spkEvents.hasOwnProperty( parsedMsg.eventName ) ) this.spkEvents[parsedMsg.eventName] ( parsedMsg )
@@ -62,58 +63,89 @@ export default class SpeckleReceiver extends EventEmitter {
     }
   }
 
-  sendVolatileMessage( message ) {
-    this.ws.send( JSON.stringify( { eventName: "volatile-message", args: JSON.stringify( message ) } ) )    
+  /*
+  Broadcasts a message to the whole stream room
+   */
+  broadcastVolatileMessage( message ) {
+    if( !this.streamId )
+      throw new Error( 'No streamId, where should I broadcast?' )
+    this.ws.send( JSON.stringify( { eventName: "volatile-message", args: JSON.stringify( message ) } ) )
   }
 
   getStream() {
     axios.get( this.restEndpoint + '/api/stream', { headers : { 'speckle-token': this.token, 'speckle-stream-id': this.streamId, 'speckle-ws-id': this.wsSessionId } } )
     .then( response => {
-      console.log( response )
       if( response.data.success ) {
         this.layers = response.data.layers
         this.objects = response.data.objects
+        this.objectProperties = response.data.objectProperties
         this.name = response.data.name
+
+        this.objectProperties.forEach( prop => {
+          console.log( prop )
+          if( this.objects[prop.objectIndex] )
+            this.objects[prop.objectIndex].userProperties = prop.properties
+        })
+
         this.streamFound = true
+
       } else {
         this.emit( 'error', response.message )
       }
     })
   }
 
-  getObjects( objects ) {
-    console.log( 'getting all...')
-    let getAll = objects.map( this.getObject.bind(this) )
-    return new Promise( ( resolve, reject ) => {
-      Promise.all( getAll )
-      .then( res => {
-        return resolve( res.map( o => o.data.obj ) )
-      })
-      .catch( err => {
-        return reject( err )
+  getObjects( objs, callback ) {
+    let receivedObjects = []
+    for(let i = 0; i< objs.length; i++) 
+      receivedObjects.push('placeholder')
+
+    let extHead = 0
+    objs.forEach( ( obj, index ) => {
+      this.getObject( obj, response => {
+        receivedObjects.splice( index, 1, response )
+        if( ++extHead >= objs.length ) return callback( receivedObjects )
       })
     })
   }
 
-  getObject( obj ) {
-    if( !obj ) 
+  getObject( obj, callback ) {
+    if( !obj ) {
       throw new Error('no obj provided')
+      return
+    }
     if( obj.hash.indexOf('NoHash') >= 0 )
-      return obj
+      return callback( obj )
 
-    return axios.get( this.restEndpoint + '/api/object', { params: { hash: obj.hash } } )
+    axios.get( this.restEndpoint + '/api/object', { params: { hash: obj.hash } } )
+      .then( response => { 
+        let myObject = response.data.obj
+        myObject.userProperties = obj.userProperties
+        return callback( myObject )
+      } )
+      .catch( err => {
+        throw new Error( err )
+      })
   }
 
   setSessionId ( msg ) {
-    console.log( '!!! Got my wsSessionId', msg.sessionId )
+    // console.log( '!!! Got my wsSessionId', msg.sessionId )
     this.wsSessionId = msg.sessionId
   }
 
   liveUpdate ( msg ) {
-    this.emit( 'live-update', msg.args.name, msg.args.layers, msg.args.objects )
+    this.name = msg.args.name
+    this.layers = msg.args.layers
+    this.objects = msg.args.objects
+    this.objectProperties = msg.args.objectProperties
+
+    this.emit( 'live-update', msg.args.name, msg.args.layers, msg.args.objects, msg.args.objectProperties )
   }
   
   metadataUpdate ( msg ) {
+    this.name = msg.args.name
+    this.layers = msg.args.layers
+
     this.emit( 'metadata-update', msg.args.name, msg.args.layers )
   }
 
