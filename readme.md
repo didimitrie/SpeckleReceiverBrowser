@@ -1,17 +1,17 @@
-### Speckle Receiver [JS]
-
+##Speckle Receiver [JS]
+Getting started:
 ####Include the script: 
-```
+```html
 <script src="../dist/SpeckleReceiver.js"></script>
 ```
 
 ####Intialisation: 
 ```javascript
 myReceiver = new SpeckleReceiver( { 
-    wsEndpoint: $( '#ws' ).val(),
-    restEndpoint: $( '#rest' ).val(),
-    token: $( '#token' ).val(),
-    streamId: $( '#streamid' ).val()
+    wsEndpoint: $( '#ws' ).val(), // required
+    restEndpoint: $( '#rest' ).val(), // required
+    token: $( '#token' ).val(), // optional
+    streamId: $( '#streamid' ).val() // required
 } )
 ```
 
@@ -19,46 +19,131 @@ myReceiver = new SpeckleReceiver( {
 ##### Ready:
 Fired when we have established a connection with the server (websockets) and we received the stream's live historyInstace.
 ```javascript
-    myReceiver.on('ready', ( name, layers, objects ) => { 
-        //do magic
-    })
-}
+myReceiver.on('ready', ( name, layers, objects ) => { 
+    //do magic
+})
 ```
 
 ##### Live update:
 Fired when a live update was received from a sender.
 ```javascript
-    myReceiver.on('live-update', ( name, layers, objects ) => { 
+myReceiver.on('live-update', ( name, layers, objects ) => { 
         //do magic
-    })
-}
+})
 ```
 
 ##### Metadata update:
 Fired when a metadata update was received from a sender. It's now time to update them layers. 
 ```javascript
-    myReceiver.on('live-update', ( name, layers ) => { 
+myReceiver.on('live-update', ( name, layers ) => { 
         //do magic
-    })
+})
+```
+
+####Structure of things: `name`, `layers`, `objects`
+#####1. `name`
+Is the stream's live history instance name. Nothing special here.
+
+#####2. `layers`
+The layers of this history instance. Here's a sample layer:
+```javascript
+{
+    "name": "C", // Layer name
+    "guid": "bc92bf84-8403-425c-96fe-4bae2c9a4f08", // Layer unique guid from the sender, wherever he is
+    "topology": "0-1 ", // if coming from gh as trees, stuff might be here
+    "objectCount": 4, // how many objects does this layer hold
+    "startIndex": 12, // where, in the list of objects (see below) do we start counting the above count
+    "orderIndex": 0, // layer order index (ie, is he the first, second, third?)
+    "properties": null // to be defined at a later date :) 
 }
 ```
+
+#####3. `objects`
+An array of shallow objects that this stream contains, in the same *order* that they are in the mother sender. This is order is important, as it enables you them to layers (see layers above, ie `objectCount` & `startIndex`: these apply to this list).
+
+Some objects are exclusively shallow (they are not hashed for separate storage [...]), for examples numbers, points, lines, etc.: 
+```javascript
+{
+    "type": "Number",
+    "hash": "Number.NoHash",
+    "value": 0,
+    "properties": null,
+    "encodedValue": null
+}
+```
+
+Other objects will need their value retrieved from the server, ie a `brep`:
+```javascript
+{
+    "type": "Brep",
+    "hash": "Brep.6a1cd5c2f852e0177fffede61c59a1b2", // this is the hash
+    "userProperties": [ // anything can go in here
+      {
+        "Key": "level",
+        "Value": "XC-23-L"
+      },
+      {
+        "Key": "rebar-spacing-x",
+        "Value": 10
+      },
+      {
+        "Key": "thickness",
+        "Value": 300
+      }
+    ]
+}
+```
+
+Two things to notice: 
+- `userProperties`: whatever can be in here. It's up to the sender to define. They come as KVP pairs.
+- `hash`: this is the *unique* hash of this geometry, and it is its main id in the database. 
+If you will query the database for this full object `myReceiver.getObject( obj, callback)`, you will get back the following: 
+
+```javascript
+{
+    "type": "Brep",
+    "hash": "Brep.6a1cd5c2f852e0177fffede61c59a1b2", // this is the hash
+    "userProperties": [ ... ],
+    "value": {  // this is a mesh. use it for threejs, etc.
+        "vertices": [],
+        "faces": [],
+        "colors":[]
+     },
+    "encodedValue": "...", // a base64 encoded string of this object's native tyoe. (you can deserialise this in, say Rhino, straigt as a brep if it comes from rhino.)
+    "userProperties": [ ... ], // same array as above
+    "properties": {
+        "volume": 0.5235987755982988,
+        "area": 3.141592653589793,
+        "volumeCentroid": {
+          // ... (it's a point)
+        },
+        "areaCentroid": {
+          // ... (it's a point)
+        }
+    }
+}
+```
+Only Breps and Curves with a degree >= 3 get encoded. Everyhting else doesn't have an encoded value. For example, a Mesh will have just a value (an object with three arrays, vertices, faces and colors). Same as a Polyline, which will have just a value property (an array of points). Etc. 
+
+Notice that now, since you hold a "deep" copy of the object with its full info, you also have its geometric properties (if any): in the case of this Brep, we have its volume, area, volume centroid and area centroid. These set of properties are automatically generated by the converter (in this case, a GhRhConverter from a .NET client).
 
 ####Methods:
 We have two main public use methods embedded in the receiver: `getObject` and `getObjects`. One queries the server for a SINGLE object, the other queries the server for a LIST of objects and calls back with an array that preservers the original order.
 ```javascript
 myObjects.forEach( ( obj, i ) => {
     myReceiver.getObject( obj, response => { 
-        // response holds the full object.
+        // response holds the full object. It's up to you do stuff.
     })
 })
 ```
 vs.
 ```javascript
 myReceiver.getObjects( myObjects, objs => {
-    // objs is the array with all the objects. order is preserved from myObjects.
+    // objs is the array with all the objects. Order is preserved. Hear, hear.
 } )
 ```
 
+####License: MIT
 
 
 

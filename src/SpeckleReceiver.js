@@ -63,15 +63,6 @@ export default class SpeckleReceiver extends EventEmitter {
     }
   }
 
-  /*
-  Broadcasts a message to the whole stream room
-   */
-  broadcastVolatileMessage( message ) {
-    if( !this.streamId )
-      throw new Error( 'No streamId, where should I broadcast?' )
-    this.ws.send( JSON.stringify( { eventName: "volatile-message", args: JSON.stringify( message ) } ) )
-  }
-
   getStream() {
     axios.get( this.restEndpoint + '/api/stream', { headers : { 'speckle-token': this.token, 'speckle-stream-id': this.streamId, 'speckle-ws-id': this.wsSessionId } } )
     .then( response => {
@@ -95,6 +86,13 @@ export default class SpeckleReceiver extends EventEmitter {
     })
   }
 
+  setSessionId ( msg ) {
+    this.wsSessionId = msg.sessionId
+  }
+
+  /////////////////////////////////////////////////////////
+  /// PUBLIC-esque methods
+  /////////////////////////////////////////////////////////
   getObjects( objs, callback ) {
     let receivedObjects = []
     for(let i = 0; i< objs.length; i++) 
@@ -128,11 +126,15 @@ export default class SpeckleReceiver extends EventEmitter {
       })
   }
 
-  setSessionId ( msg ) {
-    // console.log( '!!! Got my wsSessionId', msg.sessionId )
-    this.wsSessionId = msg.sessionId
+  broadcastVolatileMessage( message ) {
+    if( !this.streamId )
+      throw new Error( 'No streamId, where should I broadcast?' )
+    this.ws.send( JSON.stringify( { eventName: "volatile-message", args: JSON.stringify( message ) } ) )
   }
 
+  /////////////////////////////////////////////////////////
+  /// EVENTS
+  /////////////////////////////////////////////////////////
   liveUpdate ( msg ) {
     this.name = msg.args.name
     this.layers = msg.args.layers
