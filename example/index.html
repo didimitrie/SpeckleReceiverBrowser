@@ -67,11 +67,16 @@
     </code></pre>
   </div>
   <div>
-  <p>Broadcast a volatile message to the room.</p>
+  <h3>Broadcast a volatile message to the room (the streamId).</h3>
   <label>Message:</label>
   <input class="u-full-width" type="text" placeholder="Message to broadcast" value="" id="volatileMessage">
-  <input class="button-primary" type="submit" value="Broadcast" id='broadcastbutton' onclick="sendVolatile()">
-  <label>Received volatile messages:</label>
+  <input class="button-primary" type="submit" value="Broadcast" id='broadcastbutton' onclick="broadcast()">
+  <h3>Send a volatile message to a single ws instance.</h3>
+  <label>Message:</label>
+  <input class="xxxu-full-width" type="text" placeholder="Message to send" value="" id="sms">
+  <input class="xxxu-full-width" type="text" placeholder="Recipient sessionId" value="" id="sms_rec">
+  <input class="button-primary" type="submit" value="Send Message" id='broadcastbutton' onclick="sendMessage()">
+  <label>Received volatile broadcasts:</label>
   <textarea class="u-full-width" type="text" lines=10 placeholder="" value="" id="receivedMessages"></textarea>
   </div>
 </div>
@@ -163,15 +168,24 @@
         $('#streamlayers').text( JSON.stringify( layers, null, 2 ) )
       })
 
+      myReceiver.on('volatile-broadcast', function (message) {
+        console.log( message )
+        $('#receivedMessages').append( 'BROADCAST: ' + Date.now() + ': ' + message.args + '\n')
+        // these are general messages received by everyone in the room.
+        // implement your own protocols here
+      })
+
       myReceiver.on('volatile-message', function (message) {
         console.log( message )
-        $('#receivedMessages').append( Date.now() + ': ' + message.args + '\n')
+        $('#receivedMessages').append( 'VOLATILE MESSAGE: ' + Date.now() + ': ' + message.args + '\n')
       })
     }
 
     function getAllObjectsExample() {
+      $('#allobjects').text("")
       myReceiver.getObjects( myObjects, objs => {
         console.log( objs )
+        $("#allobjects").append( JSON.stringify( objs, null, 2 ) )
       } )
     }
 
@@ -190,10 +204,14 @@
      
     }
 
-    function sendVolatile() {
-      myReceiver.broadcastVolatileMessage( $('#volatileMessage').val() )
+    function broadcast() {
+      myReceiver.broadcast( $('#volatileMessage').val() )
     }
 
+    function sendMessage() {
+      myReceiver.sendMessage( $('#sms').val(), $('#sms_rec').val() )
+    }
+    
     function newConnection() {
       if( myReceiver ) myReceiver.dispose() 
       $('#connectionform').fadeIn(100)

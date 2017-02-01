@@ -20,7 +20,9 @@ export default class SpeckleReceiver extends EventEmitter {
       'live-update': self.liveUpdate.bind( self ),
       'metadata-update': self.metadataUpdate.bind( self ),
       'history-update': self.historyUpdate.bind( self ),
-      'volatile-message': self.volatileMessage.bind( self )
+      'volatile-broadcast': self.volatileBroadcast.bind( self ),
+      'volatile-message': self.volatileMessage.bind( self ),
+      'server-message': self.serverMessage.bind( self )
     }
 
     this.getStream() 
@@ -126,10 +128,22 @@ export default class SpeckleReceiver extends EventEmitter {
       })
   }
 
-  broadcastVolatileMessage( message ) {
+  broadcast( message ) {
     if( !this.streamId )
       throw new Error( 'No streamId, where should I broadcast?' )
-    this.ws.send( JSON.stringify( { eventName: "volatile-message", args: JSON.stringify( message ) } ) )
+    this.ws.send( JSON.stringify( { 
+      eventName: "volatile-broadcast", 
+      args: JSON.stringify( message ) 
+    } ) )
+  }
+
+  sendMessage( message, recipient ) {
+    if( !this.streamId || !recipient )
+      throw new Error( 'No streamId or recipient. Meeep!')
+    this.ws.send( JSON.stringify( {
+      eventName: 'volatile-message',
+      args: { message: JSON.stringify( message ), recipient: recipient }
+    } ))
   }
 
   /////////////////////////////////////////////////////////
@@ -155,9 +169,17 @@ export default class SpeckleReceiver extends EventEmitter {
     this.emit( 'history-update', msg.args )
   }
 
+  volatileBroadcast ( msg ) {
+    this.emit( 'volatile-broadcast', msg )
+  }
+
   volatileMessage ( msg ) {
     console.log( '!!! Got a volatile message')
     this.emit( 'volatile-message', msg )
+  }
+
+  serverMessage( msg ) {
+    this.emit( 'server-message', msg )
   }
 
   dispose() {
