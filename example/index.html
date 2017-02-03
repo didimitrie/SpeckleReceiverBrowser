@@ -22,7 +22,7 @@
     <label>Your User Token</label>
     <input class="u-full-width" type="text" placeholder="token" value="asdf" id="token">
     <label>StreamId you want to listen to</label>
-    <input class="u-full-width" type="text" placeholder="stream id" valuexxx="SyctsoJvx" value="S1pgoBCPg" id="streamid">
+    <input class="u-full-width" type="text" placeholder="stream id" valuexxx="SyctsoJvx" value="Syd1ErzOl" id="streamid">
     <input class="button-primary" type="submit" value="Connect" id='thebutton' onclick="connectToStream()">
 </div>
 <div class="container streamdetails" style="display: none">
@@ -31,21 +31,23 @@
       <p>Cool, we're connected. Change something in the stream and you will see the update here.<br>Ready: <strong><span id='ready'>FALSE</span></strong>, Name: <strong><span id='streamname'>Not connected yet.</span></strong> </p>
 </div>
 <div class="row">
-    <div class="six columns streamdetails">
+    <div class="four columns streamdetails">
       <h5>Stream Layers</h5>
-      <p>Stream object list will be shown here.</p>
       <pre ><code id='streamlayers' style='height: 400px; overflow: auto;'></code></pre>
     </div>
-    <div class="six columns streamdetails">
+    <div class="four columns streamdetails">
       <h5>Stream Objects</h5>
-      <p>Stream object list will be shown here.</p>
       <pre ><code id='streamobjects' style='height: 400px; overflow: auto;'></code></pre>
+    </div>
+    <div class="four columns streamdetails">
+      <h5>Stream History</h5>
+      <pre ><code id='history-stuff' style='height: 400px; overflow: auto;'></code></pre>
     </div>
 </div>
 <div class="row">
   <div class="">
     <hr>
-    <p>Get all the objects that this stream's live instance contains.</p>
+    <h3>Get all the objects that this stream's live instance contains.</h3>
     <input class="button" type="submit" value="Get All Objects In Bulk (PRESERVES ORDER)" id='thebutton' onclick="getAllObjectsExample()">
     <input class="button" type="submit" value="Get All Objects Sequentially (DOES NOT PRESERVE ORDER)" id='thebutton' onclick="getAllOBjectsSequentially()"> Obj count seq: <span id="objectCount">0</span>
     <pre ><code id='allobjects' style='height: 300px; overflow: auto;'></code></pre>
@@ -138,7 +140,7 @@
       
       $('#thebutton').val( 'Connecting...' )
 
-      myReceiver.on('ready', function( name, layers, objects ) {
+      myReceiver.on('ready', function( name, layers, objects, history ) {
         console.log( 'Connection ready.' )
         $('#thebutton').val( 'Connect' )
 
@@ -146,6 +148,7 @@
         $('#streamname').text( name )
         $('#streamlayers').text( JSON.stringify( layers, null, 2 ) )
         $('#streamobjects').text( JSON.stringify( objects, null, 2 ) )
+        $('#history-stuff').text( JSON.stringify( history, null, 2 ) )
         $('#connectionform').fadeOut(100)
         $('.streamdetails').fadeIn(100)
 
@@ -158,7 +161,7 @@
         $('#streamlayers').text( JSON.stringify( layers, null, 2 ) )
         $('#streamobjects').text( JSON.stringify( objects, null, 2 ) )
         $('#streamobjects').text( JSON.stringify( objects, null, 2 ) )
-
+        
         myObjects = objects
       })
 
@@ -166,6 +169,12 @@
         console.log( 'Got a live update.' )
         $('#streamname').text( name )
         $('#streamlayers').text( JSON.stringify( layers, null, 2 ) )
+      })
+      
+      myReceiver.on('history-update', function( history ) {
+        console.log( 'Got a history update.' )
+        console.log( history )
+        $('#history-stuff').text( JSON.stringify( history, null, 2 ) )
       })
 
       myReceiver.on('volatile-broadcast', function (message) {

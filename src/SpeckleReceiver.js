@@ -11,6 +11,12 @@ export default class SpeckleReceiver extends EventEmitter {
     this.token = args.token
     this.streamId = args.streamId
 
+    this.layers = { } // placeholders, they're filled in the get stream.
+    this.objects = { } // placeholders, they're filled in the get stream.
+    this.objectProperties = { } // placeholders, they're filled in the get stream.
+    this.name = { } // placeholders, they're filled in the get stream.
+    this.history = { } // placeholders, they're filled in the get stream.
+
     this.ws = null
     this.wsSessionId = null
     this.streamFound = false
@@ -29,13 +35,13 @@ export default class SpeckleReceiver extends EventEmitter {
 
     this.connectionCheker = setInterval( () => {
       if( !this.ws || this.ws.readyState == 3) this.connect()
-    }, 1000 )
+    }, 1500 )
 
     this.isReadyChecker = setInterval ( () => {
       if( !this.wsSessionId ) return
       if( !this.streamFound ) return
 
-      this.emit('ready', this.name, this.layers, this.objects, this.objectProperties )
+      this.emit('ready', this.name, this.layers, this.objects, this.history )
       clearInterval( this.isReadyChecker )
     }, 100 )
   }
@@ -69,13 +75,16 @@ export default class SpeckleReceiver extends EventEmitter {
     axios.get( this.restEndpoint + '/api/stream', { headers : { 'speckle-token': this.token, 'speckle-stream-id': this.streamId, 'speckle-ws-id': this.wsSessionId } } )
     .then( response => {
       if( response.data.success ) {
+        console.log( response.data )
+        
         this.layers = response.data.layers
         this.objects = response.data.objects
         this.objectProperties = response.data.objectProperties
         this.name = response.data.name
+        this.history = response.data.history
 
+        // attach object props to objects
         this.objectProperties.forEach( prop => {
-          console.log( prop )
           if( this.objects[prop.objectIndex] )
             this.objects[prop.objectIndex].userProperties = prop.properties
         })
@@ -166,6 +175,7 @@ export default class SpeckleReceiver extends EventEmitter {
   }
 
   historyUpdate ( msg ) {
+    this.history = msg.args
     this.emit( 'history-update', msg.args )
   }
 
