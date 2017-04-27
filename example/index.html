@@ -10,10 +10,11 @@
   <div class="container">
   <br>
   <br>
-  <h3>Speckle Receiver</h3>
+  <h3><img src="https://speckle.works/img/logos/2xlogo-blue.png" style="width: 35px"> Speckle Receiver</h3>
+  <p>Open the console to view more info.</p>
   </div>
   <div class="container" id="connectionform">  
-    <h5>Step 1: Connect</h5>
+    <h5>Connect!</h5>
     <p> Let’s setup a speckle receiver and see how it emits stuff. </p>
     <label>Server URL</label>
     <input class="u-full-width" type="text" placeholder="rest endpoint (http://)" value="https://server.speckle.works" id="serverUrl">
@@ -26,7 +27,10 @@
 <div class="container streamdetails" style="display: none">
 <div class="row">
       <input class="button-primary" type="submit" value="New Connection" id='thebutton' onclick="newConnection()">
-      <p>Cool, we're connected. Change something in the stream and you will see the update here.<br>Ready: <strong><span id='ready'>FALSE</span></strong>, Name: <strong><span id='streamname'>Not connected yet.</span></strong> </p>
+      <hr>
+      <h3>Stream Data</h3>
+      <h6>Stream Name: <strong><span id='streamname'>Not connected yet.</span></strong> </h6>
+      <h6>WS Id: <strong><span id='wssessionid'>Not connected yet.</span></strong> </h6>
 </div>
 <div class="row">
     <div class="four columns streamdetails">
@@ -45,33 +49,21 @@
 <div class="row">
   <div class="">
     <hr>
-    <h3>Get all the objects that this stream's live instance contains.</h3>
-    <input class="button" type="submit" value="Get All Objects In Bulk (PRESERVES ORDER)" id='thebutton' onclick="getAllObjectsExample()">
-    <input class="button" type="submit" value="Get All Objects Sequentially (DOES NOT PRESERVE ORDER)" id='thebutton' onclick="getAllOBjectsSequentially()"> Obj count seq: <span id="objectCount">0</span>
+    <h3>Objects & Geometry</h3>
+    <input class="button-primary" type="submit" value="Get All Objects" id='thebutton' onclick="getAllObjectsExample()">
     <pre ><code id='allobjects' style='height: 300px; overflow: auto;'></code></pre>
     
-    <p>Get all the objects in bulk; will return a big array with all the objects once they are *all* fetched from the server.</p>
-    <pre><code>
-      myReceiver.getObjects( myObjects, objs => {
-        console.log( objs )
-      } )
-    </code></pre>
-    <p>Get all the objects; will return each object individually as it's fetched from the server.</p>
-    <pre ><code>
-      myObjects.forEach( ( obj, i ) => {
-        myReceiver.getObject( obj, response => {
-          console.log( 'got object', response.hash, i )
-          $("#allobjects").append( JSON.stringify( response, null, 2 ) )
-          $('#objectCount').text( ++count )
-        })
-    </code></pre>
+    <p>By default, the Speckle Receiver Client does not pull the latest objects from the server on each update. You can get all the objects in bulk; will return a big array with all the objects once they are *all* fetched from the server.</p>
+ 
   </div>
   <div>
-  <h3>Broadcast a volatile message to the room (the streamId).</h3>
+  <hr>
+  <h3>Custom messages & broadcasts</h3>
+  <h5>Broadcast a volatile message to the room (the streamId).</h5>
   <label>Message:</label>
   <input class="u-full-width" type="text" placeholder="Message to broadcast" value="" id="volatileMessage">
   <input class="button-primary" type="submit" value="Broadcast" id='broadcastbutton' onclick="broadcast()">
-  <h3>Send a volatile message to a single ws instance.</h3>
+  <h5>Send a volatile message to a single ws instance.</h5>
   <label>Message:</label>
   <input class="xxxu-full-width" type="text" placeholder="Message to send" value="" id="sms">
   <input class="xxxu-full-width" type="text" placeholder="Recipient sessionId" value="" id="sms_rec">
@@ -82,53 +74,20 @@
 </div>
 </div>
 
-  <!-- How to stuff -->
-
-<!-- <div class="container">
-  <hr>
-  <h5>How to:</h5>
-  <p><strong>Create a new receiver</strong></p>
-  <pre><code>
-    myReceiver = new SpeckleReceiver( { 
-      wsEndpoint: <strong>websocket endpoint. 'ws://...' or 'wss://...' for secure connections</strong>,
-      restEndpoint: <strong>rest api endpoint. 'http://...' or 'https://...'</strong>, 
-      token: <strong>your user token for the above server</strong>,
-      streamId: <strong>streamId you want to listen to.</strong>
-    } )
-  </code></pre>
-  <p><strong>Events: 'ready' && 'live-update'</strong></p>
-  <p>These two events will return the stream name, the stream's layers as well the current objects.</p>
-  <pre><code>
-    myReceiver.on(<strong>'ready'</strong>, function( name, layers, objects ) {
-      // Do something with the data
-    })
-
-    myReceiver.on(<strong>'live-update'</strong>, function( name, layers, objects ) {
-      // Do something
-    })
-  </code></pre>
-  <p><strong>Events: 'metadata-update'</strong></p>
-  <p>The metadata update comes back with just name and layers.</p>
-  <pre><code>
-    myReceiver.on('metadata-update', function( name, layers ) { 
-      // Do something
-    })
-  </code></pre>
-  <div class="row">
-  </div>
-</div> -->
-
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-  <script src="../dist/SpeckleReceiver.js"></script>
-  <script type="text/javascript">
-    
-    // this is amazing jquery code right here back from like 1999
 
+  <!-- include the Speckle Receiver js lib -->
+  <script src="../dist/SpeckleReceiver.min.js"></script>
+  
+  <!-- let's init some stuff --> 
+  <script type="text/javascript">
     var myReceiver = null
     var myObjects = null
     var fullObjects = null
 
     function connectToStream() {
+      
+      // create a new receiver
       myReceiver = new SpeckleReceiver( { 
         serverUrl: $( '#serverUrl' ).val(),
         token: $( '#token' ).val(),
@@ -137,30 +96,30 @@
       
       $('#thebutton').val( 'Connecting...' )
 
+      // handle the ready event:  
       myReceiver.on('ready', function( name, layers, objects, history ) {
         console.log( 'Connection ready.' )
         $('#thebutton').val( 'Connect' )
 
         $('#ready').text( 'TRUE' )
         $('#streamname').text( name )
+        $('#wssessionid').text( myReceiver.wsSessionId )
         $('#streamlayers').text( JSON.stringify( layers, null, 2 ) )
         $('#streamobjects').text( JSON.stringify( objects, null, 2 ) )
         $('#history-stuff').text( JSON.stringify( history, null, 2 ) )
         $('#connectionform').fadeOut(100)
         $('.streamdetails').fadeIn(100)
 
-                console.log( name )
-        console.log( layers )
-        console.log( objects )
-        console.log( history )
-
         myObjects = objects
       })
 
+      // handle errors
       myReceiver.on( 'error', function( msg ) { 
         console.log( msg )
       } )
 
+      // init event handlers: once you create a new receiver, these need to be set up again!
+      // handles live updates (name, layers and new objects)
       myReceiver.on('live-update', function( name, layers, objects ) {
         console.log( 'Got a live update.' )
         $('#streamname').text( name )
@@ -171,62 +130,59 @@
         myObjects = objects
       })
 
+      myReceiver.on('object-load-progress', count => {
+        console.log( 'Loaded', count+1, 'objects out of', myObjects.length )
+      })
+
+      // handle metadata updates (name and layers)
       myReceiver.on('metadata-update', function( name, layers ) {
-        console.log( 'Got a live update.' )
+        console.log( 'Got a metadata update.' )
         $('#streamname').text( name )
         $('#streamlayers').text( JSON.stringify( layers, null, 2 ) )
       })
       
+      // history update (...)
       myReceiver.on('history-update', function( history ) {
         console.log( 'Got a history update.' )
         console.log( history )
         $('#history-stuff').text( JSON.stringify( history, null, 2 ) )
       })
 
+      // broadcasts from server: these are general messages received by everyone in the room.
       myReceiver.on('volatile-broadcast', function (message) {
-        console.log( message )
         $('#receivedMessages').append( 'BROADCAST: ' + Date.now() + ': ' + message.args + '\n')
-        // these are general messages received by everyone in the room.
         // implement your own protocols here
       })
 
+      // direct messages from other clients
       myReceiver.on('volatile-message', function (message) {
-        console.log( message )
         $('#receivedMessages').append( 'VOLATILE MESSAGE: ' + Date.now() + ': ' + message.args + '\n')
+        // implement your own protocols here
       })
     }
 
+    // gets all objects
     function getAllObjectsExample() {
       $('#allobjects').text("")
-      myReceiver.getObjects( myObjects, objs => {
-        console.log( objs )
+      myReceiver.getObjects( objs => {
         $("#allobjects").append( JSON.stringify( objs, null, 2 ) )
-      } )
-    }
-
-    function getAllOBjectsSequentially() {
-
-      console.log('getting objects sequentially')
-      $('#allobjects').text("")
-      var count = 0
-      myObjects.forEach( ( obj, i ) => {
-        myReceiver.getObject( obj, response => {
-          console.log( 'got object', response.hash, i )
-          $("#allobjects").append( JSON.stringify( response, null, 2 ) )
-          $('#objectCount').text( ++count )
-        })
       })
-     
+      // myReceiver.getObjects( myObjects, objs => {
+      //   $("#allobjects").append( JSON.stringify( objs, null, 2 ) )
+      // } )
     }
 
+    // broadcast to the room
     function broadcast() {
       myReceiver.broadcast( $('#volatileMessage').val() )
     }
 
+    // send a message to a client
     function sendMessage() {
       myReceiver.sendMessage( $('#sms').val(), $('#sms_rec').val() )
     }
     
+    // resets the form
     function newConnection() {
       if( myReceiver ) myReceiver.dispose() 
       $('#connectionform').fadeIn(100)

@@ -25,6 +25,7 @@ export default class SpeckleReceiver extends EventEmitter {
     this.wsSessionId = null
     this.streamFound = false
 
+    // list of server events mapped to functions
     this.spkEvents = {
       'ws-session-id' : self.setSessionId.bind( self ),
       'live-update': self.liveUpdate.bind( self ),
@@ -42,6 +43,9 @@ export default class SpeckleReceiver extends EventEmitter {
       this.wsEndpoint = handshakeData.ws
       this.serverName = handshakeData.serverName
 
+      // get the stream main info
+      this.getStream()
+
       // handles ws disconnects
       this.wsConnectionCheker = setInterval( () => {
         if( ( !this.ws || this.ws.readyState == 3 ) && ( this.wsReconnectionAttempts < 20 ) ) {
@@ -49,8 +53,6 @@ export default class SpeckleReceiver extends EventEmitter {
           this.wsReconnectionAttempts++
         }
       }, 2000 )
-
-      this.getStream()
 
       // emits the ready event if ws is connected and stream was found
       this.isReadyChecker = setInterval ( () => {
@@ -74,26 +76,21 @@ export default class SpeckleReceiver extends EventEmitter {
   }
 
   wsConnect() {
-    console.log( 'Attempting to connect to ws server.' )
-
     this.ws = new WebSocket( this.wsEndpoint + '/?access_token=' + this.token )
 
     this.ws.onopen = () => {
-      console.log( 'Socket opened.' )
       this.wsReconnectionAttempts = 0
       this.ws.send( JSON.stringify( { eventName: "join-stream", args: { streamid: this.streamId, role: "receiver" } } ) )
     }
     
     this.ws.onmessage = msg => {
-      if( msg.data === 'ping') {
-        console.log('Socket was pinged!')
+      if( msg.data === 'ping')
         return this.ws.send( 'alive' )
-      }
 
       let parsedMsg = JSON.parse( msg.data )
       if( this.spkEvents.hasOwnProperty( parsedMsg.eventName ) ) 
         this.spkEvents[parsedMsg.eventName] ( parsedMsg )
-      else return console.log('Undefined event', parsedMsg.eventName )
+      else return this.emit( 'error', 'Undefined event received.' ) // console.log('Undefined event', parsedMsg.eventName )
     }
 
     this.ws.onclose = ( reason ) => {
@@ -130,14 +127,19 @@ export default class SpeckleReceiver extends EventEmitter {
   }
 
   setSessionId ( msg ) {
+
     this.wsSessionId = msg.sessionId
   }
 
   /////////////////////////////////////////////////////////
   /// PUBLIC-esque methods
   /////////////////////////////////////////////////////////
-  getObjects( objs, callback ) {
+  
+  //gets all stream objects.
+  getObjects( callback ) {
     let receivedObjects = []
+    let objs = this.objects
+    
     for(let i = 0; i< objs.length; i++) 
       receivedObjects.push('placeholder')
 
@@ -145,6 +147,7 @@ export default class SpeckleReceiver extends EventEmitter {
     objs.forEach( ( obj, index ) => {
       this.getObject( obj, response => {
         receivedObjects.splice( index, 1, response )
+        this.emit( 'object-load-progress', extHead )
         if( ++extHead >= objs.length ) return callback( receivedObjects )
       })
     })
@@ -160,9 +163,9 @@ export default class SpeckleReceiver extends EventEmitter {
 
     axios.get( this.restEndpoint + '/geometry/' + obj.hash  )
       .then( response => { 
-        console.log( response )
         let myObject = response.data.data
-        myObject.userProperties = obj.properties
+        // reattach props
+        myObject.properties = obj.properties
         return callback( myObject )
       } )
       .catch( err => {

@@ -1,3 +1,1 @@
-import SpeckleReceiver from './SpeckleReceiver'
-// hack?
-window.SpeckleReceiver = SpeckleReceiver
+import SpeckleReceiver from './SpeckleReceiver'; window.SpeckleReceiver = SpeckleReceiver
