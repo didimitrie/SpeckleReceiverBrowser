@@ -6,18 +6,22 @@ export default class SpeckleReceiver extends EventEmitter {
     super() 
 
     let self = this
-    this.wsEndpoint = args.wsEndpoint
-    this.restEndpoint = args.restEndpoint
+
+    this.serverUrl = args.serverUrl
     this.token = args.token
     this.streamId = args.streamId
+    this.serverName = null
+    this.wsEndpoint = null
+    this.restEndpoint = null
 
-    this.layers = { } // placeholders, they're filled in the get stream.
-    this.objects = { } // placeholders, they're filled in the get stream.
-    this.objectProperties = { } // placeholders, they're filled in the get stream.
-    this.name = { } // placeholders, they're filled in the get stream.
-    this.history = { } // placeholders, they're filled in the get stream.
+    this.layers = []  // placeholders, they're filled in the get stream.
+    this.objects = []  // placeholders, they're filled in the get stream.
+    this.objectProperties = []  // placeholders, they're filled in the get stream.
+    this.name = null // placeholders, they're filled in the get stream.
+    this.history = [] // placeholders, they're filled in the get stream.
 
     this.ws = null
+    this.wsReconnectionAttempts = 0
     this.wsSessionId = null
     this.streamFound = false
 
@@ -28,72 +32,100 @@ export default class SpeckleReceiver extends EventEmitter {
       'history-update': self.historyUpdate.bind( self ),
       'volatile-broadcast': self.volatileBroadcast.bind( self ),
       'volatile-message': self.volatileMessage.bind( self ),
-      'server-message': self.serverMessage.bind( self )
+      'server-message': self.serverMessage.bind( self ),
+      'error': self.propagateError.bind( self )
     }
 
-    this.getStream() 
+    this.handshake( ( err, handshakeData ) => {
+      if( err ) return this.emit( 'error', err )
+      this.restEndpoint = handshakeData.restApi
+      this.wsEndpoint = handshakeData.ws
+      this.serverName = handshakeData.serverName
 
-    this.connectionCheker = setInterval( () => {
-      if( !this.ws || this.ws.readyState == 3) this.connect()
-    }, 1500 )
+      // handles ws disconnects
+      this.wsConnectionCheker = setInterval( () => {
+        if( ( !this.ws || this.ws.readyState == 3 ) && ( this.wsReconnectionAttempts < 20 ) ) {
+          this.wsConnect()
+          this.wsReconnectionAttempts++
+        }
+      }, 2000 )
 
-    this.isReadyChecker = setInterval ( () => {
-      if( !this.wsSessionId ) return
-      if( !this.streamFound ) return
+      this.getStream()
 
-      this.emit('ready', this.name, this.layers, this.objects, this.history )
-      clearInterval( this.isReadyChecker )
-    }, 100 )
+      // emits the ready event if ws is connected and stream was found
+      this.isReadyChecker = setInterval ( () => {
+        if( !this.wsSessionId ) return
+        if( !this.streamFound ) return
+
+        this.emit('ready', this.name, this.layers, this.objects, this.history )
+        clearInterval( this.isReadyChecker )
+      }, 100 )
+    })
   }
 
-  connect() {
-    console.log( 'Attempting to connect.' )
+  handshake( callback ) {
+    axios.get( this.serverUrl, { headers : { 'speckle-token': this.token } } )
+    .then( response => {
+      callback( null, response.data )
+    } )
+    .catch( error => {
+      callback( error, null )
+    })
+  }
+
+  wsConnect() {
+    console.log( 'Attempting to connect to ws server.' )
 
     this.ws = new WebSocket( this.wsEndpoint + '/?access_token=' + this.token )
-    
+
     this.ws.onopen = () => {
       console.log( 'Socket opened.' )
+      this.wsReconnectionAttempts = 0
       this.ws.send( JSON.stringify( { eventName: "join-stream", args: { streamid: this.streamId, role: "receiver" } } ) )
     }
     
     this.ws.onmessage = msg => {
       if( msg.data === 'ping') {
-        console.debug('Ping!')
+        console.log('Socket was pinged!')
         return this.ws.send( 'alive' )
       }
 
       let parsedMsg = JSON.parse( msg.data )
-      if( this.spkEvents.hasOwnProperty( parsedMsg.eventName ) ) this.spkEvents[parsedMsg.eventName] ( parsedMsg )
+      if( this.spkEvents.hasOwnProperty( parsedMsg.eventName ) ) 
+        this.spkEvents[parsedMsg.eventName] ( parsedMsg )
       else return console.log('Undefined event', parsedMsg.eventName )
     }
 
-    this.ws.onclose = () => {
+    this.ws.onclose = ( reason ) => {
+      console.log( reason )
+      console.log( 'Socket closed.' )
     }
   }
 
   getStream() {
-    axios.get( this.restEndpoint + '/api/stream', { headers : { 'speckle-token': this.token, 'speckle-stream-id': this.streamId, 'speckle-ws-id': this.wsSessionId } } )
+    console.log('Attempting to retrieve stream.')
+    let self = this
+    axios.get( this.restEndpoint + '/streams/' + this.streamId + '/data/', { headers : { 'speckle-token': this.token,  'speckle-ws-id': this.wsSessionId } } )
     .then( response => {
-      if( response.data.success ) {
-        console.log( response.data )
-        
-        this.layers = response.data.layers
-        this.objects = response.data.objects
-        this.objectProperties = response.data.objectProperties
-        this.name = response.data.name
-        this.history = response.data.history
+      if( !response.data.success ) return this.emit( 'error', response.message )
 
-        // attach object props to objects
-        this.objectProperties.forEach( prop => {
-          if( this.objects[prop.objectIndex] )
-            this.objects[prop.objectIndex].userProperties = prop.properties
-        })
-
-        this.streamFound = true
-
-      } else {
-        this.emit( 'error', response.message )
-      }
+      self.layers = response.data.data.layers
+      self.objects = response.data.data.objects
+      self.objectProperties = response.data.data.objectProperties
+      self.name = response.data.data.name
+      self.objectProperties.forEach( prop => {
+        self.objects[ prop.objectIndex ].properties = prop.properties
+      })
+      return axios.get( this.restEndpoint + '/streams/' + this.streamId, { headers : { 'speckle-token': this.token,  'speckle-ws-id': this.wsSessionId } } )
+    })
+    .then( response => {
+      if( !response.data.success ) return this.emit( 'error', response.message )
+      
+      self.history = response.data.data.history
+      self.streamFound = true
+    })
+    .catch( error => {
+      this.emit( 'error', error )
     })
   }
 
@@ -126,10 +158,11 @@ export default class SpeckleReceiver extends EventEmitter {
     if( obj.hash.indexOf('NoHash') >= 0 )
       return callback( obj )
 
-    axios.get( this.restEndpoint + '/api/object', { params: { hash: obj.hash } } )
+    axios.get( this.restEndpoint + '/geometry/' + obj.hash  )
       .then( response => { 
-        let myObject = response.data.obj
-        myObject.userProperties = obj.userProperties
+        console.log( response )
+        let myObject = response.data.data
+        myObject.userProperties = obj.properties
         return callback( myObject )
       } )
       .catch( err => {
@@ -192,10 +225,14 @@ export default class SpeckleReceiver extends EventEmitter {
     this.emit( 'server-message', msg )
   }
 
+  propagateError( msg ) {
+    this.emit( 'error', msg )
+  }
+
   dispose() {
     this.ws.close()
     this.ws = null
     clearInterval( this.isReadyChecker )
-    clearInterval( this.connectionCheker )
+    clearInterval( this.wsConnectionCheker )
   }
 }

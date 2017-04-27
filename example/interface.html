@@ -10,17 +10,19 @@
   <div class="container">
   <br>
   <br>
-  <h3>Speckle Receiver</h3>
+  <h1>Speckle Receiver</h1>
   </div>
   <div class="container" id="connectionform">  
-    <h5>Step 1: Connect</h5>
+    <h5>Connect</h5>
     <p> Let’s setup a speckle receiver and see how it emits stuff. </p>
-    <label>Server URL</label>
-    <input class="u-full-width" type="text" placeholder="rest endpoint (http://)" value="https://server.speckle.works" id="serverUrl">
+    <label>Rest Endpoint of the Speckle Server</label>
+    <input class="u-full-width" type="text" placeholder="rest endpoint (http://)" value="http://localhost:8080" id="rest">
+    <label>Websocekt Endpoint</label>
+    <input class="u-full-width" type="text" placeholder="websocket endpoint (ws://)" value="ws://localhost:8080" id="ws">
     <label>Your User Token</label>
-    <input class="u-full-width" type="text" placeholder="token" value="faa6ba741e854d6e8fe6ae66218ac736" id="token">
+    <input class="u-full-width" type="text" placeholder="token" value="09babdf5b04a40d58327e9dcdd582417" id="token">
     <label>StreamId you want to listen to</label>
-    <input class="u-full-width" type="text" placeholder="stream id" valuexxx="SyctsoJvx" value="rJTja-0Al" id="streamid">
+    <input class="u-full-width" type="text" placeholder="stream id" valuexxx="SyctsoJvx" value="Syd1ErzOl" id="streamid">
     <input class="button-primary" type="submit" value="Connect" id='thebutton' onclick="connectToStream()">
 </div>
 <div class="container streamdetails" style="display: none">
@@ -84,7 +86,7 @@
 
   <!-- How to stuff -->
 
-<!-- <div class="container">
+<div class="container">
   <hr>
   <h5>How to:</h5>
   <p><strong>Create a new receiver</strong></p>
@@ -116,7 +118,7 @@
   </code></pre>
   <div class="row">
   </div>
-</div> -->
+</div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
   <script src="../dist/SpeckleReceiver.js"></script>
@@ -130,8 +132,9 @@
 
     function connectToStream() {
       myReceiver = new SpeckleReceiver( { 
-        serverUrl: $( '#serverUrl' ).val(),
-        token: $( '#token' ).val(),
+        wsEndpoint: $( '#ws' ).val(),
+        restEndpoint: $( '#rest' ).val(),
+        token: $( '#token' ).val(), // need to replace with mine
         streamId: $( '#streamid' ).val()
       } )
       
@@ -149,17 +152,8 @@
         $('#connectionform').fadeOut(100)
         $('.streamdetails').fadeIn(100)
 
-                console.log( name )
-        console.log( layers )
-        console.log( objects )
-        console.log( history )
-
         myObjects = objects
       })
-
-      myReceiver.on( 'error', function( msg ) { 
-        console.log( msg )
-      } )
 
       myReceiver.on('live-update', function( name, layers, objects ) {
         console.log( 'Got a live update.' )
@@ -235,11 +229,10 @@
   </script>
   <style type="text/css">
     pre {
-      font-size: 1.5rem;
+      font-size: 1.7rem;
     }
     code {
-      /*border: none;*/
-      background-color: white;
+      border: none;
     }
   </style>
 </body>
