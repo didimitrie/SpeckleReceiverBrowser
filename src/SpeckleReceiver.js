@@ -59,6 +59,7 @@ export default class SpeckleReceiver extends EventEmitter {
         if( !this.wsSessionId ) return
         if( !this.streamFound ) return
 
+        console.log('SpeckeReceiver: Receiver ready ...')
         this.emit('ready', this.name, this.layers, this.objects, this.history )
         clearInterval( this.isReadyChecker )
       }, 100 )
@@ -154,11 +155,12 @@ export default class SpeckleReceiver extends EventEmitter {
   }
 
   getObject( obj, callback ) {
+    console.log( obj )
     if( !obj ) {
       throw new Error('no obj provided')
       return
     }
-    if( obj.hash.indexOf('NoHash') >= 0 )
+    if( ! obj.hash )
       return callback( obj )
 
     axios.get( this.restEndpoint + '/geometry/' + obj.hash  )

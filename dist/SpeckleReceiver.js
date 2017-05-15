@@ -1,10 +1,79 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({2:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/after/index.js", module);
+(function(){
+module.exports = after
+
+function after(count, callback, err_cb) {
+    var bail = false
+    err_cb = err_cb || noop
+    proxy.count = count
+
+    return (count === 0) ? callback() : proxy
+
+    function proxy(err, result) {
+        if (proxy.count <= 0) {
+            throw new Error('after called too many times')
+        }
+        --proxy.count
+
+        // after first error, rest are passed to err_cb
+        if (err) {
+            bail = true
+            callback(err)
+            // future error callbacks will go to error handler
+            callback = err_cb
+        } else if (proxy.count === 0 && !bail) {
+            callback(null, result)
+        }
+    }
+}
+
+function noop() {}
+
+}).apply(this, arguments);
+
+},{}],3:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/arraybuffer.slice/index.js", module);
+(function(){
+/**
+ * An abstraction for slicing an arraybuffer even when
+ * ArrayBuffer.prototype.slice is not supported
+ *
+ * @api public
+ */
+
+module.exports = function(arraybuffer, start, end) {
+  var bytes = arraybuffer.byteLength;
+  start = start || 0;
+  end = end || bytes;
+
+  if (arraybuffer.slice) { return arraybuffer.slice(start, end); }
+
+  if (start < 0) { start += bytes; }
+  if (end < 0) { end += bytes; }
+  if (end > bytes) { end = bytes; }
+
+  if (start >= bytes || start >= end || bytes === 0) {
+    return new ArrayBuffer(0);
+  }
+
+  var abv = new Uint8Array(arraybuffer);
+  var result = new Uint8Array(end - start);
+  for (var i = start, ii = 0; i < end; i++, ii++) {
+    result[ii] = abv[i];
+  }
+  return result.buffer;
+};
+
+}).apply(this, arguments);
+
+},{}],4:[function(require,module,exports){
 _hmr["websocket:null"].initModule("node_modules/axios/index.js", module);
 (function(){
 module.exports = require('./lib/axios');
 }).apply(this, arguments);
 
-},{"./lib/axios":4}],3:[function(require,module,exports){
+},{"./lib/axios":6}],5:[function(require,module,exports){
 _hmr["websocket:null"].initModule("node_modules/axios/lib/adapters/xhr.js", module);
 (function(){
 (function (process){
@@ -189,7 +258,7 @@ module.exports = function xhrAdapter(config) {
 }).call(this,require('_process'))
 }).apply(this, arguments);
 
-},{"../core/createError":10,"./../core/settle":13,"./../helpers/btoa":17,"./../helpers/buildURL":18,"./../helpers/cookies":20,"./../helpers/isURLSameOrigin":22,"./../helpers/parseHeaders":24,"./../utils":26,"_process":225}],4:[function(require,module,exports){
+},{"../core/createError":12,"./../core/settle":15,"./../helpers/btoa":19,"./../helpers/buildURL":20,"./../helpers/cookies":22,"./../helpers/isURLSameOrigin":24,"./../helpers/parseHeaders":26,"./../utils":28,"_process":210}],6:[function(require,module,exports){
 _hmr["websocket:null"].initModule("node_modules/axios/lib/axios.js", module);
 (function(){
 'use strict';
@@ -247,7 +316,7 @@ module.exports.default = axios;
 
 }).apply(this, arguments);
 
-},{"./cancel/Cancel":5,"./cancel/CancelToken":6,"./cancel/isCancel":7,"./core/Axios":8,"./defaults":15,"./helpers/bind":16,"./helpers/spread":25,"./utils":26}],5:[function(require,module,exports){
+},{"./cancel/Cancel":7,"./cancel/CancelToken":8,"./cancel/isCancel":9,"./core/Axios":10,"./defaults":17,"./helpers/bind":18,"./helpers/spread":27,"./utils":28}],7:[function(require,module,exports){
 _hmr["websocket:null"].initModule("node_modules/axios/lib/cancel/Cancel.js", module);
 (function(){
 'use strict';
@@ -272,7 +341,7 @@ module.exports = Cancel;
 
 }).apply(this, arguments);
 
-},{}],6:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 _hmr["websocket:null"].initModule("node_modules/axios/lib/cancel/CancelToken.js", module);
 (function(){
 'use strict';
@@ -335,7 +404,7 @@ module.exports = CancelToken;
 
 }).apply(this, arguments);
 
-},{"./Cancel":5}],7:[function(require,module,exports){
+},{"./Cancel":7}],9:[function(require,module,exports){
 _hmr["websocket:null"].initModule("node_modules/axios/lib/cancel/isCancel.js", module);
 (function(){
 'use strict';
@@ -346,7 +415,7 @@ module.exports = function isCancel(value) {
 
 }).apply(this, arguments);
 
-},{}],8:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 _hmr["websocket:null"].initModule("node_modules/axios/lib/core/Axios.js", module);
 (function(){
 'use strict';
@@ -437,7 +506,7 @@ module.exports = Axios;
 
 }).apply(this, arguments);
 
-},{"./../defaults":15,"./../helpers/combineURLs":19,"./../helpers/isAbsoluteURL":21,"./../utils":26,"./InterceptorManager":9,"./dispatchRequest":11}],9:[function(require,module,exports){
+},{"./../defaults":17,"./../helpers/combineURLs":21,"./../helpers/isAbsoluteURL":23,"./../utils":28,"./InterceptorManager":11,"./dispatchRequest":13}],11:[function(require,module,exports){
 _hmr["websocket:null"].initModule("node_modules/axios/lib/core/InterceptorManager.js", module);
 (function(){
 'use strict';
@@ -495,7 +564,7 @@ module.exports = InterceptorManager;
 
 }).apply(this, arguments);
 
-},{"./../utils":26}],10:[function(require,module,exports){
+},{"./../utils":28}],12:[function(require,module,exports){
 _hmr["websocket:null"].initModule("node_modules/axios/lib/core/createError.js", module);
 (function(){
 'use strict';
@@ -518,7 +587,7 @@ module.exports = function createError(message, config, code, response) {
 
 }).apply(this, arguments);
 
-},{"./enhanceError":12}],11:[function(require,module,exports){
+},{"./enhanceError":14}],13:[function(require,module,exports){
 _hmr["websocket:null"].initModule("node_modules/axios/lib/core/dispatchRequest.js", module);
 (function(){
 'use strict';
@@ -603,7 +672,7 @@ module.exports = function dispatchRequest(config) {
 
 }).apply(this, arguments);
 
-},{"../cancel/isCancel":7,"../defaults":15,"./../utils":26,"./transformData":14}],12:[function(require,module,exports){
+},{"../cancel/isCancel":9,"../defaults":17,"./../utils":28,"./transformData":16}],14:[function(require,module,exports){
 _hmr["websocket:null"].initModule("node_modules/axios/lib/core/enhanceError.js", module);
 (function(){
 'use strict';
@@ -628,7 +697,7 @@ module.exports = function enhanceError(error, config, code, response) {
 
 }).apply(this, arguments);
 
-},{}],13:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 _hmr["websocket:null"].initModule("node_modules/axios/lib/core/settle.js", module);
 (function(){
 'use strict';
@@ -659,7 +728,7 @@ module.exports = function settle(resolve, reject, response) {
 
 }).apply(this, arguments);
 
-},{"./createError":10}],14:[function(require,module,exports){
+},{"./createError":12}],16:[function(require,module,exports){
 _hmr["websocket:null"].initModule("node_modules/axios/lib/core/transformData.js", module);
 (function(){
 'use strict';
@@ -685,7 +754,7 @@ module.exports = function transformData(data, headers, fns) {
 
 }).apply(this, arguments);
 
-},{"./../utils":26}],15:[function(require,module,exports){
+},{"./../utils":28}],17:[function(require,module,exports){
 _hmr["websocket:null"].initModule("node_modules/axios/lib/defaults.js", module);
 (function(){
 (function (process){
@@ -786,7 +855,7 @@ module.exports = defaults;
 }).call(this,require('_process'))
 }).apply(this, arguments);
 
-},{"./adapters/http":3,"./adapters/xhr":3,"./helpers/normalizeHeaderName":23,"./utils":26,"_process":225}],16:[function(require,module,exports){
+},{"./adapters/http":5,"./adapters/xhr":5,"./helpers/normalizeHeaderName":25,"./utils":28,"_process":210}],18:[function(require,module,exports){
 _hmr["websocket:null"].initModule("node_modules/axios/lib/helpers/bind.js", module);
 (function(){
 'use strict';
@@ -803,7 +872,7 @@ module.exports = function bind(fn, thisArg) {
 
 }).apply(this, arguments);
 
-},{}],17:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 _hmr["websocket:null"].initModule("node_modules/axios/lib/helpers/btoa.js", module);
 (function(){
 'use strict';
@@ -845,7 +914,7 @@ module.exports = btoa;
 
 }).apply(this, arguments);
 
-},{}],18:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 _hmr["websocket:null"].initModule("node_modules/axios/lib/helpers/buildURL.js", module);
 (function(){
 'use strict';
@@ -919,7 +988,7 @@ module.exports = function buildURL(url, params, paramsSerializer) {
 
 }).apply(this, arguments);
 
-},{"./../utils":26}],19:[function(require,module,exports){
+},{"./../utils":28}],21:[function(require,module,exports){
 _hmr["websocket:null"].initModule("node_modules/axios/lib/helpers/combineURLs.js", module);
 (function(){
 'use strict';
@@ -937,7 +1006,7 @@ module.exports = function combineURLs(baseURL, relativeURL) {
 
 }).apply(this, arguments);
 
-},{}],20:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 _hmr["websocket:null"].initModule("node_modules/axios/lib/helpers/cookies.js", module);
 (function(){
 'use strict';
@@ -996,7 +1065,7 @@ module.exports = (
 
 }).apply(this, arguments);
 
-},{"./../utils":26}],21:[function(require,module,exports){
+},{"./../utils":28}],23:[function(require,module,exports){
 _hmr["websocket:null"].initModule("node_modules/axios/lib/helpers/isAbsoluteURL.js", module);
 (function(){
 'use strict';
@@ -1016,7 +1085,7 @@ module.exports = function isAbsoluteURL(url) {
 
 }).apply(this, arguments);
 
-},{}],22:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 _hmr["websocket:null"].initModule("node_modules/axios/lib/helpers/isURLSameOrigin.js", module);
 (function(){
 'use strict';
@@ -1090,7 +1159,7 @@ module.exports = (
 
 }).apply(this, arguments);
 
-},{"./../utils":26}],23:[function(require,module,exports){
+},{"./../utils":28}],25:[function(require,module,exports){
 _hmr["websocket:null"].initModule("node_modules/axios/lib/helpers/normalizeHeaderName.js", module);
 (function(){
 'use strict';
@@ -1108,7 +1177,7 @@ module.exports = function normalizeHeaderName(headers, normalizedName) {
 
 }).apply(this, arguments);
 
-},{"../utils":26}],24:[function(require,module,exports){
+},{"../utils":28}],26:[function(require,module,exports){
 _hmr["websocket:null"].initModule("node_modules/axios/lib/helpers/parseHeaders.js", module);
 (function(){
 'use strict';
@@ -1151,7 +1220,7 @@ module.exports = function parseHeaders(headers) {
 
 }).apply(this, arguments);
 
-},{"./../utils":26}],25:[function(require,module,exports){
+},{"./../utils":28}],27:[function(require,module,exports){
 _hmr["websocket:null"].initModule("node_modules/axios/lib/helpers/spread.js", module);
 (function(){
 'use strict';
@@ -1184,7 +1253,7 @@ module.exports = function spread(callback) {
 
 }).apply(this, arguments);
 
-},{}],26:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 _hmr["websocket:null"].initModule("node_modules/axios/lib/utils.js", module);
 (function(){
 'use strict';
@@ -1489,7 +1558,281 @@ module.exports = {
 
 }).apply(this, arguments);
 
-},{"./helpers/bind":16}],27:[function(require,module,exports){
+},{"./helpers/bind":18}],29:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/backo2/index.js", module);
+(function(){
+
+/**
+ * Expose `Backoff`.
+ */
+
+module.exports = Backoff;
+
+/**
+ * Initialize backoff timer with `opts`.
+ *
+ * - `min` initial timeout in milliseconds [100]
+ * - `max` max timeout [10000]
+ * - `jitter` [0]
+ * - `factor` [2]
+ *
+ * @param {Object} opts
+ * @api public
+ */
+
+function Backoff(opts) {
+  opts = opts || {};
+  this.ms = opts.min || 100;
+  this.max = opts.max || 10000;
+  this.factor = opts.factor || 2;
+  this.jitter = opts.jitter > 0 && opts.jitter <= 1 ? opts.jitter : 0;
+  this.attempts = 0;
+}
+
+/**
+ * Return the backoff duration.
+ *
+ * @return {Number}
+ * @api public
+ */
+
+Backoff.prototype.duration = function(){
+  var ms = this.ms * Math.pow(this.factor, this.attempts++);
+  if (this.jitter) {
+    var rand =  Math.random();
+    var deviation = Math.floor(rand * this.jitter * ms);
+    ms = (Math.floor(rand * 10) & 1) == 0  ? ms - deviation : ms + deviation;
+  }
+  return Math.min(ms, this.max) | 0;
+};
+
+/**
+ * Reset the number of attempts.
+ *
+ * @api public
+ */
+
+Backoff.prototype.reset = function(){
+  this.attempts = 0;
+};
+
+/**
+ * Set the minimum duration
+ *
+ * @api public
+ */
+
+Backoff.prototype.setMin = function(min){
+  this.ms = min;
+};
+
+/**
+ * Set the maximum duration
+ *
+ * @api public
+ */
+
+Backoff.prototype.setMax = function(max){
+  this.max = max;
+};
+
+/**
+ * Set the jitter
+ *
+ * @api public
+ */
+
+Backoff.prototype.setJitter = function(jitter){
+  this.jitter = jitter;
+};
+
+
+}).apply(this, arguments);
+
+},{}],30:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/base64-arraybuffer/lib/base64-arraybuffer.js", module);
+(function(){
+/*
+ * base64-arraybuffer
+ * https://github.com/niklasvh/base64-arraybuffer
+ *
+ * Copyright (c) 2012 Niklas von Hertzen
+ * Licensed under the MIT license.
+ */
+(function(){
+  "use strict";
+
+  var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+
+  // Use a lookup table to find the index.
+  var lookup = new Uint8Array(256);
+  for (var i = 0; i < chars.length; i++) {
+    lookup[chars.charCodeAt(i)] = i;
+  }
+
+  exports.encode = function(arraybuffer) {
+    var bytes = new Uint8Array(arraybuffer),
+    i, len = bytes.length, base64 = "";
+
+    for (i = 0; i < len; i+=3) {
+      base64 += chars[bytes[i] >> 2];
+      base64 += chars[((bytes[i] & 3) << 4) | (bytes[i + 1] >> 4)];
+      base64 += chars[((bytes[i + 1] & 15) << 2) | (bytes[i + 2] >> 6)];
+      base64 += chars[bytes[i + 2] & 63];
+    }
+
+    if ((len % 3) === 2) {
+      base64 = base64.substring(0, base64.length - 1) + "=";
+    } else if (len % 3 === 1) {
+      base64 = base64.substring(0, base64.length - 2) + "==";
+    }
+
+    return base64;
+  };
+
+  exports.decode =  function(base64) {
+    var bufferLength = base64.length * 0.75,
+    len = base64.length, i, p = 0,
+    encoded1, encoded2, encoded3, encoded4;
+
+    if (base64[base64.length - 1] === "=") {
+      bufferLength--;
+      if (base64[base64.length - 2] === "=") {
+        bufferLength--;
+      }
+    }
+
+    var arraybuffer = new ArrayBuffer(bufferLength),
+    bytes = new Uint8Array(arraybuffer);
+
+    for (i = 0; i < len; i+=4) {
+      encoded1 = lookup[base64.charCodeAt(i)];
+      encoded2 = lookup[base64.charCodeAt(i+1)];
+      encoded3 = lookup[base64.charCodeAt(i+2)];
+      encoded4 = lookup[base64.charCodeAt(i+3)];
+
+      bytes[p++] = (encoded1 << 2) | (encoded2 >> 4);
+      bytes[p++] = ((encoded2 & 15) << 4) | (encoded3 >> 2);
+      bytes[p++] = ((encoded3 & 3) << 6) | (encoded4 & 63);
+    }
+
+    return arraybuffer;
+  };
+})();
+
+}).apply(this, arguments);
+
+},{}],31:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/blob/index.js", module);
+(function(){
+(function (global){
+/**
+ * Create a blob builder even when vendor prefixes exist
+ */
+
+var BlobBuilder = global.BlobBuilder
+  || global.WebKitBlobBuilder
+  || global.MSBlobBuilder
+  || global.MozBlobBuilder;
+
+/**
+ * Check if Blob constructor is supported
+ */
+
+var blobSupported = (function() {
+  try {
+    var a = new Blob(['hi']);
+    return a.size === 2;
+  } catch(e) {
+    return false;
+  }
+})();
+
+/**
+ * Check if Blob constructor supports ArrayBufferViews
+ * Fails in Safari 6, so we need to map to ArrayBuffers there.
+ */
+
+var blobSupportsArrayBufferView = blobSupported && (function() {
+  try {
+    var b = new Blob([new Uint8Array([1,2])]);
+    return b.size === 2;
+  } catch(e) {
+    return false;
+  }
+})();
+
+/**
+ * Check if BlobBuilder is supported
+ */
+
+var blobBuilderSupported = BlobBuilder
+  && BlobBuilder.prototype.append
+  && BlobBuilder.prototype.getBlob;
+
+/**
+ * Helper function that maps ArrayBufferViews to ArrayBuffers
+ * Used by BlobBuilder constructor and old browsers that didn't
+ * support it in the Blob constructor.
+ */
+
+function mapArrayBufferViews(ary) {
+  for (var i = 0; i < ary.length; i++) {
+    var chunk = ary[i];
+    if (chunk.buffer instanceof ArrayBuffer) {
+      var buf = chunk.buffer;
+
+      // if this is a subarray, make a copy so we only
+      // include the subarray region from the underlying buffer
+      if (chunk.byteLength !== buf.byteLength) {
+        var copy = new Uint8Array(chunk.byteLength);
+        copy.set(new Uint8Array(buf, chunk.byteOffset, chunk.byteLength));
+        buf = copy.buffer;
+      }
+
+      ary[i] = buf;
+    }
+  }
+}
+
+function BlobBuilderConstructor(ary, options) {
+  options = options || {};
+
+  var bb = new BlobBuilder();
+  mapArrayBufferViews(ary);
+
+  for (var i = 0; i < ary.length; i++) {
+    bb.append(ary[i]);
+  }
+
+  return (options.type) ? bb.getBlob(options.type) : bb.getBlob();
+};
+
+function BlobConstructor(ary, options) {
+  mapArrayBufferViews(ary);
+  return new Blob(ary, options || {});
+};
+
+module.exports = (function() {
+  if (blobSupported) {
+    return blobSupportsArrayBufferView ? global.Blob : BlobConstructor;
+  } else if (blobBuilderSupported) {
+    return BlobBuilderConstructor;
+  } else {
+    return undefined;
+  }
+})();
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+}).apply(this, arguments);
+
+},{}],32:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/browser-resolve/empty.js", module);
+(function(){
+
+}).apply(this, arguments);
+
+},{}],33:[function(require,module,exports){
 _hmr["websocket:null"].initModule("node_modules/browserify-hmr/inc/index.js", module);
 (function(){
 (function (global){
@@ -2155,7 +2498,7 @@ module.exports = main;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 }).apply(this, arguments);
 
-},{"../lib/has":28,"../lib/str-set":29,"lodash/assign":147,"lodash/filter":150,"lodash/forEach":151,"lodash/forOwn":152,"lodash/map":167,"lodash/mapValues":168,"lodash/some":171,"lodash/zipObject":175}],28:[function(require,module,exports){
+},{"../lib/has":34,"../lib/str-set":35,"lodash/assign":178,"lodash/filter":181,"lodash/forEach":182,"lodash/forOwn":183,"lodash/map":198,"lodash/mapValues":199,"lodash/some":202,"lodash/zipObject":206}],34:[function(require,module,exports){
 _hmr["websocket:null"].initModule("node_modules/browserify-hmr/lib/has.js", module);
 (function(){
 'use strict';
@@ -2167,7 +2510,7 @@ module.exports = has;
 
 }).apply(this, arguments);
 
-},{}],29:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 _hmr["websocket:null"].initModule("node_modules/browserify-hmr/lib/str-set.js", module);
 (function(){
 'use strict';
@@ -2248,6117 +2591,8 @@ module.exports = StrSet;
 
 }).apply(this, arguments);
 
-},{"./has":28}],30:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_DataView.js", module);
-(function(){
-var getNative = require('./_getNative'),
-    root = require('./_root');
-
-/* Built-in method references that are verified to be native. */
-var DataView = getNative(root, 'DataView');
-
-module.exports = DataView;
-
-}).apply(this, arguments);
-
-},{"./_getNative":96,"./_root":133}],31:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_Hash.js", module);
-(function(){
-var hashClear = require('./_hashClear'),
-    hashDelete = require('./_hashDelete'),
-    hashGet = require('./_hashGet'),
-    hashHas = require('./_hashHas'),
-    hashSet = require('./_hashSet');
-
-/**
- * Creates a hash object.
- *
- * @private
- * @constructor
- * @param {Array} [entries] The key-value pairs to cache.
- */
-function Hash(entries) {
-  var index = -1,
-      length = entries == null ? 0 : entries.length;
-
-  this.clear();
-  while (++index < length) {
-    var entry = entries[index];
-    this.set(entry[0], entry[1]);
-  }
-}
-
-// Add methods to `Hash`.
-Hash.prototype.clear = hashClear;
-Hash.prototype['delete'] = hashDelete;
-Hash.prototype.get = hashGet;
-Hash.prototype.has = hashHas;
-Hash.prototype.set = hashSet;
-
-module.exports = Hash;
-
-}).apply(this, arguments);
-
-},{"./_hashClear":102,"./_hashDelete":103,"./_hashGet":104,"./_hashHas":105,"./_hashSet":106}],32:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_ListCache.js", module);
-(function(){
-var listCacheClear = require('./_listCacheClear'),
-    listCacheDelete = require('./_listCacheDelete'),
-    listCacheGet = require('./_listCacheGet'),
-    listCacheHas = require('./_listCacheHas'),
-    listCacheSet = require('./_listCacheSet');
-
-/**
- * Creates an list cache object.
- *
- * @private
- * @constructor
- * @param {Array} [entries] The key-value pairs to cache.
- */
-function ListCache(entries) {
-  var index = -1,
-      length = entries == null ? 0 : entries.length;
-
-  this.clear();
-  while (++index < length) {
-    var entry = entries[index];
-    this.set(entry[0], entry[1]);
-  }
-}
-
-// Add methods to `ListCache`.
-ListCache.prototype.clear = listCacheClear;
-ListCache.prototype['delete'] = listCacheDelete;
-ListCache.prototype.get = listCacheGet;
-ListCache.prototype.has = listCacheHas;
-ListCache.prototype.set = listCacheSet;
-
-module.exports = ListCache;
-
-}).apply(this, arguments);
-
-},{"./_listCacheClear":114,"./_listCacheDelete":115,"./_listCacheGet":116,"./_listCacheHas":117,"./_listCacheSet":118}],33:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_Map.js", module);
-(function(){
-var getNative = require('./_getNative'),
-    root = require('./_root');
-
-/* Built-in method references that are verified to be native. */
-var Map = getNative(root, 'Map');
-
-module.exports = Map;
-
-}).apply(this, arguments);
-
-},{"./_getNative":96,"./_root":133}],34:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_MapCache.js", module);
-(function(){
-var mapCacheClear = require('./_mapCacheClear'),
-    mapCacheDelete = require('./_mapCacheDelete'),
-    mapCacheGet = require('./_mapCacheGet'),
-    mapCacheHas = require('./_mapCacheHas'),
-    mapCacheSet = require('./_mapCacheSet');
-
-/**
- * Creates a map cache object to store key-value pairs.
- *
- * @private
- * @constructor
- * @param {Array} [entries] The key-value pairs to cache.
- */
-function MapCache(entries) {
-  var index = -1,
-      length = entries == null ? 0 : entries.length;
-
-  this.clear();
-  while (++index < length) {
-    var entry = entries[index];
-    this.set(entry[0], entry[1]);
-  }
-}
-
-// Add methods to `MapCache`.
-MapCache.prototype.clear = mapCacheClear;
-MapCache.prototype['delete'] = mapCacheDelete;
-MapCache.prototype.get = mapCacheGet;
-MapCache.prototype.has = mapCacheHas;
-MapCache.prototype.set = mapCacheSet;
-
-module.exports = MapCache;
-
-}).apply(this, arguments);
-
-},{"./_mapCacheClear":119,"./_mapCacheDelete":120,"./_mapCacheGet":121,"./_mapCacheHas":122,"./_mapCacheSet":123}],35:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_Promise.js", module);
-(function(){
-var getNative = require('./_getNative'),
-    root = require('./_root');
-
-/* Built-in method references that are verified to be native. */
-var Promise = getNative(root, 'Promise');
-
-module.exports = Promise;
-
-}).apply(this, arguments);
-
-},{"./_getNative":96,"./_root":133}],36:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_Set.js", module);
-(function(){
-var getNative = require('./_getNative'),
-    root = require('./_root');
-
-/* Built-in method references that are verified to be native. */
-var Set = getNative(root, 'Set');
-
-module.exports = Set;
-
-}).apply(this, arguments);
-
-},{"./_getNative":96,"./_root":133}],37:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_SetCache.js", module);
-(function(){
-var MapCache = require('./_MapCache'),
-    setCacheAdd = require('./_setCacheAdd'),
-    setCacheHas = require('./_setCacheHas');
-
-/**
- *
- * Creates an array cache object to store unique values.
- *
- * @private
- * @constructor
- * @param {Array} [values] The values to cache.
- */
-function SetCache(values) {
-  var index = -1,
-      length = values == null ? 0 : values.length;
-
-  this.__data__ = new MapCache;
-  while (++index < length) {
-    this.add(values[index]);
-  }
-}
-
-// Add methods to `SetCache`.
-SetCache.prototype.add = SetCache.prototype.push = setCacheAdd;
-SetCache.prototype.has = setCacheHas;
-
-module.exports = SetCache;
-
-}).apply(this, arguments);
-
-},{"./_MapCache":34,"./_setCacheAdd":134,"./_setCacheHas":135}],38:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_Stack.js", module);
-(function(){
-var ListCache = require('./_ListCache'),
-    stackClear = require('./_stackClear'),
-    stackDelete = require('./_stackDelete'),
-    stackGet = require('./_stackGet'),
-    stackHas = require('./_stackHas'),
-    stackSet = require('./_stackSet');
-
-/**
- * Creates a stack cache object to store key-value pairs.
- *
- * @private
- * @constructor
- * @param {Array} [entries] The key-value pairs to cache.
- */
-function Stack(entries) {
-  var data = this.__data__ = new ListCache(entries);
-  this.size = data.size;
-}
-
-// Add methods to `Stack`.
-Stack.prototype.clear = stackClear;
-Stack.prototype['delete'] = stackDelete;
-Stack.prototype.get = stackGet;
-Stack.prototype.has = stackHas;
-Stack.prototype.set = stackSet;
-
-module.exports = Stack;
-
-}).apply(this, arguments);
-
-},{"./_ListCache":32,"./_stackClear":139,"./_stackDelete":140,"./_stackGet":141,"./_stackHas":142,"./_stackSet":143}],39:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_Symbol.js", module);
-(function(){
-var root = require('./_root');
-
-/** Built-in value references. */
-var Symbol = root.Symbol;
-
-module.exports = Symbol;
-
-}).apply(this, arguments);
-
-},{"./_root":133}],40:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_Uint8Array.js", module);
-(function(){
-var root = require('./_root');
-
-/** Built-in value references. */
-var Uint8Array = root.Uint8Array;
-
-module.exports = Uint8Array;
-
-}).apply(this, arguments);
-
-},{"./_root":133}],41:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_WeakMap.js", module);
-(function(){
-var getNative = require('./_getNative'),
-    root = require('./_root');
-
-/* Built-in method references that are verified to be native. */
-var WeakMap = getNative(root, 'WeakMap');
-
-module.exports = WeakMap;
-
-}).apply(this, arguments);
-
-},{"./_getNative":96,"./_root":133}],42:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_apply.js", module);
-(function(){
-/**
- * A faster alternative to `Function#apply`, this function invokes `func`
- * with the `this` binding of `thisArg` and the arguments of `args`.
- *
- * @private
- * @param {Function} func The function to invoke.
- * @param {*} thisArg The `this` binding of `func`.
- * @param {Array} args The arguments to invoke `func` with.
- * @returns {*} Returns the result of `func`.
- */
-function apply(func, thisArg, args) {
-  switch (args.length) {
-    case 0: return func.call(thisArg);
-    case 1: return func.call(thisArg, args[0]);
-    case 2: return func.call(thisArg, args[0], args[1]);
-    case 3: return func.call(thisArg, args[0], args[1], args[2]);
-  }
-  return func.apply(thisArg, args);
-}
-
-module.exports = apply;
-
-}).apply(this, arguments);
-
-},{}],43:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_arrayEach.js", module);
-(function(){
-/**
- * A specialized version of `_.forEach` for arrays without support for
- * iteratee shorthands.
- *
- * @private
- * @param {Array} [array] The array to iterate over.
- * @param {Function} iteratee The function invoked per iteration.
- * @returns {Array} Returns `array`.
- */
-function arrayEach(array, iteratee) {
-  var index = -1,
-      length = array == null ? 0 : array.length;
-
-  while (++index < length) {
-    if (iteratee(array[index], index, array) === false) {
-      break;
-    }
-  }
-  return array;
-}
-
-module.exports = arrayEach;
-
-}).apply(this, arguments);
-
-},{}],44:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_arrayFilter.js", module);
-(function(){
-/**
- * A specialized version of `_.filter` for arrays without support for
- * iteratee shorthands.
- *
- * @private
- * @param {Array} [array] The array to iterate over.
- * @param {Function} predicate The function invoked per iteration.
- * @returns {Array} Returns the new filtered array.
- */
-function arrayFilter(array, predicate) {
-  var index = -1,
-      length = array == null ? 0 : array.length,
-      resIndex = 0,
-      result = [];
-
-  while (++index < length) {
-    var value = array[index];
-    if (predicate(value, index, array)) {
-      result[resIndex++] = value;
-    }
-  }
-  return result;
-}
-
-module.exports = arrayFilter;
-
-}).apply(this, arguments);
-
-},{}],45:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_arrayLikeKeys.js", module);
-(function(){
-var baseTimes = require('./_baseTimes'),
-    isArguments = require('./isArguments'),
-    isArray = require('./isArray'),
-    isBuffer = require('./isBuffer'),
-    isIndex = require('./_isIndex'),
-    isTypedArray = require('./isTypedArray');
-
-/** Used for built-in method references. */
-var objectProto = Object.prototype;
-
-/** Used to check objects for own properties. */
-var hasOwnProperty = objectProto.hasOwnProperty;
-
-/**
- * Creates an array of the enumerable property names of the array-like `value`.
- *
- * @private
- * @param {*} value The value to query.
- * @param {boolean} inherited Specify returning inherited property names.
- * @returns {Array} Returns the array of property names.
- */
-function arrayLikeKeys(value, inherited) {
-  var isArr = isArray(value),
-      isArg = !isArr && isArguments(value),
-      isBuff = !isArr && !isArg && isBuffer(value),
-      isType = !isArr && !isArg && !isBuff && isTypedArray(value),
-      skipIndexes = isArr || isArg || isBuff || isType,
-      result = skipIndexes ? baseTimes(value.length, String) : [],
-      length = result.length;
-
-  for (var key in value) {
-    if ((inherited || hasOwnProperty.call(value, key)) &&
-        !(skipIndexes && (
-           // Safari 9 has enumerable `arguments.length` in strict mode.
-           key == 'length' ||
-           // Node.js 0.10 has enumerable non-index properties on buffers.
-           (isBuff && (key == 'offset' || key == 'parent')) ||
-           // PhantomJS 2 has enumerable non-index properties on typed arrays.
-           (isType && (key == 'buffer' || key == 'byteLength' || key == 'byteOffset')) ||
-           // Skip index properties.
-           isIndex(key, length)
-        ))) {
-      result.push(key);
-    }
-  }
-  return result;
-}
-
-module.exports = arrayLikeKeys;
-
-}).apply(this, arguments);
-
-},{"./_baseTimes":76,"./_isIndex":107,"./isArguments":156,"./isArray":157,"./isBuffer":159,"./isTypedArray":165}],46:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_arrayMap.js", module);
-(function(){
-/**
- * A specialized version of `_.map` for arrays without support for iteratee
- * shorthands.
- *
- * @private
- * @param {Array} [array] The array to iterate over.
- * @param {Function} iteratee The function invoked per iteration.
- * @returns {Array} Returns the new mapped array.
- */
-function arrayMap(array, iteratee) {
-  var index = -1,
-      length = array == null ? 0 : array.length,
-      result = Array(length);
-
-  while (++index < length) {
-    result[index] = iteratee(array[index], index, array);
-  }
-  return result;
-}
-
-module.exports = arrayMap;
-
-}).apply(this, arguments);
-
-},{}],47:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_arrayPush.js", module);
-(function(){
-/**
- * Appends the elements of `values` to `array`.
- *
- * @private
- * @param {Array} array The array to modify.
- * @param {Array} values The values to append.
- * @returns {Array} Returns `array`.
- */
-function arrayPush(array, values) {
-  var index = -1,
-      length = values.length,
-      offset = array.length;
-
-  while (++index < length) {
-    array[offset + index] = values[index];
-  }
-  return array;
-}
-
-module.exports = arrayPush;
-
-}).apply(this, arguments);
-
-},{}],48:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_arraySome.js", module);
-(function(){
-/**
- * A specialized version of `_.some` for arrays without support for iteratee
- * shorthands.
- *
- * @private
- * @param {Array} [array] The array to iterate over.
- * @param {Function} predicate The function invoked per iteration.
- * @returns {boolean} Returns `true` if any element passes the predicate check,
- *  else `false`.
- */
-function arraySome(array, predicate) {
-  var index = -1,
-      length = array == null ? 0 : array.length;
-
-  while (++index < length) {
-    if (predicate(array[index], index, array)) {
-      return true;
-    }
-  }
-  return false;
-}
-
-module.exports = arraySome;
-
-}).apply(this, arguments);
-
-},{}],49:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_assignValue.js", module);
-(function(){
-var baseAssignValue = require('./_baseAssignValue'),
-    eq = require('./eq');
-
-/** Used for built-in method references. */
-var objectProto = Object.prototype;
-
-/** Used to check objects for own properties. */
-var hasOwnProperty = objectProto.hasOwnProperty;
-
-/**
- * Assigns `value` to `key` of `object` if the existing value is not equivalent
- * using [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
- * for equality comparisons.
- *
- * @private
- * @param {Object} object The object to modify.
- * @param {string} key The key of the property to assign.
- * @param {*} value The value to assign.
- */
-function assignValue(object, key, value) {
-  var objValue = object[key];
-  if (!(hasOwnProperty.call(object, key) && eq(objValue, value)) ||
-      (value === undefined && !(key in object))) {
-    baseAssignValue(object, key, value);
-  }
-}
-
-module.exports = assignValue;
-
-}).apply(this, arguments);
-
-},{"./_baseAssignValue":51,"./eq":149}],50:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_assocIndexOf.js", module);
-(function(){
-var eq = require('./eq');
-
-/**
- * Gets the index at which the `key` is found in `array` of key-value pairs.
- *
- * @private
- * @param {Array} array The array to inspect.
- * @param {*} key The key to search for.
- * @returns {number} Returns the index of the matched value, else `-1`.
- */
-function assocIndexOf(array, key) {
-  var length = array.length;
-  while (length--) {
-    if (eq(array[length][0], key)) {
-      return length;
-    }
-  }
-  return -1;
-}
-
-module.exports = assocIndexOf;
-
-}).apply(this, arguments);
-
-},{"./eq":149}],51:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_baseAssignValue.js", module);
-(function(){
-var defineProperty = require('./_defineProperty');
-
-/**
- * The base implementation of `assignValue` and `assignMergeValue` without
- * value checks.
- *
- * @private
- * @param {Object} object The object to modify.
- * @param {string} key The key of the property to assign.
- * @param {*} value The value to assign.
- */
-function baseAssignValue(object, key, value) {
-  if (key == '__proto__' && defineProperty) {
-    defineProperty(object, key, {
-      'configurable': true,
-      'enumerable': true,
-      'value': value,
-      'writable': true
-    });
-  } else {
-    object[key] = value;
-  }
-}
-
-module.exports = baseAssignValue;
-
-}).apply(this, arguments);
-
-},{"./_defineProperty":88}],52:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_baseEach.js", module);
-(function(){
-var baseForOwn = require('./_baseForOwn'),
-    createBaseEach = require('./_createBaseEach');
-
-/**
- * The base implementation of `_.forEach` without support for iteratee shorthands.
- *
- * @private
- * @param {Array|Object} collection The collection to iterate over.
- * @param {Function} iteratee The function invoked per iteration.
- * @returns {Array|Object} Returns `collection`.
- */
-var baseEach = createBaseEach(baseForOwn);
-
-module.exports = baseEach;
-
-}).apply(this, arguments);
-
-},{"./_baseForOwn":55,"./_createBaseEach":86}],53:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_baseFilter.js", module);
-(function(){
-var baseEach = require('./_baseEach');
-
-/**
- * The base implementation of `_.filter` without support for iteratee shorthands.
- *
- * @private
- * @param {Array|Object} collection The collection to iterate over.
- * @param {Function} predicate The function invoked per iteration.
- * @returns {Array} Returns the new filtered array.
- */
-function baseFilter(collection, predicate) {
-  var result = [];
-  baseEach(collection, function(value, index, collection) {
-    if (predicate(value, index, collection)) {
-      result.push(value);
-    }
-  });
-  return result;
-}
-
-module.exports = baseFilter;
-
-}).apply(this, arguments);
-
-},{"./_baseEach":52}],54:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_baseFor.js", module);
-(function(){
-var createBaseFor = require('./_createBaseFor');
-
-/**
- * The base implementation of `baseForOwn` which iterates over `object`
- * properties returned by `keysFunc` and invokes `iteratee` for each property.
- * Iteratee functions may exit iteration early by explicitly returning `false`.
- *
- * @private
- * @param {Object} object The object to iterate over.
- * @param {Function} iteratee The function invoked per iteration.
- * @param {Function} keysFunc The function to get the keys of `object`.
- * @returns {Object} Returns `object`.
- */
-var baseFor = createBaseFor();
-
-module.exports = baseFor;
-
-}).apply(this, arguments);
-
-},{"./_createBaseFor":87}],55:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_baseForOwn.js", module);
-(function(){
-var baseFor = require('./_baseFor'),
-    keys = require('./keys');
-
-/**
- * The base implementation of `_.forOwn` without support for iteratee shorthands.
- *
- * @private
- * @param {Object} object The object to iterate over.
- * @param {Function} iteratee The function invoked per iteration.
- * @returns {Object} Returns `object`.
- */
-function baseForOwn(object, iteratee) {
-  return object && baseFor(object, iteratee, keys);
-}
-
-module.exports = baseForOwn;
-
-}).apply(this, arguments);
-
-},{"./_baseFor":54,"./keys":166}],56:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_baseGet.js", module);
-(function(){
-var castPath = require('./_castPath'),
-    toKey = require('./_toKey');
-
-/**
- * The base implementation of `_.get` without support for default values.
- *
- * @private
- * @param {Object} object The object to query.
- * @param {Array|string} path The path of the property to get.
- * @returns {*} Returns the resolved value.
- */
-function baseGet(object, path) {
-  path = castPath(path, object);
-
-  var index = 0,
-      length = path.length;
-
-  while (object != null && index < length) {
-    object = object[toKey(path[index++])];
-  }
-  return (index && index == length) ? object : undefined;
-}
-
-module.exports = baseGet;
-
-}).apply(this, arguments);
-
-},{"./_castPath":82,"./_toKey":145}],57:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_baseGetAllKeys.js", module);
-(function(){
-var arrayPush = require('./_arrayPush'),
-    isArray = require('./isArray');
-
-/**
- * The base implementation of `getAllKeys` and `getAllKeysIn` which uses
- * `keysFunc` and `symbolsFunc` to get the enumerable property names and
- * symbols of `object`.
- *
- * @private
- * @param {Object} object The object to query.
- * @param {Function} keysFunc The function to get the keys of `object`.
- * @param {Function} symbolsFunc The function to get the symbols of `object`.
- * @returns {Array} Returns the array of property names and symbols.
- */
-function baseGetAllKeys(object, keysFunc, symbolsFunc) {
-  var result = keysFunc(object);
-  return isArray(object) ? result : arrayPush(result, symbolsFunc(object));
-}
-
-module.exports = baseGetAllKeys;
-
-}).apply(this, arguments);
-
-},{"./_arrayPush":47,"./isArray":157}],58:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_baseGetTag.js", module);
-(function(){
-var Symbol = require('./_Symbol'),
-    getRawTag = require('./_getRawTag'),
-    objectToString = require('./_objectToString');
-
-/** `Object#toString` result references. */
-var nullTag = '[object Null]',
-    undefinedTag = '[object Undefined]';
-
-/** Built-in value references. */
-var symToStringTag = Symbol ? Symbol.toStringTag : undefined;
-
-/**
- * The base implementation of `getTag` without fallbacks for buggy environments.
- *
- * @private
- * @param {*} value The value to query.
- * @returns {string} Returns the `toStringTag`.
- */
-function baseGetTag(value) {
-  if (value == null) {
-    return value === undefined ? undefinedTag : nullTag;
-  }
-  return (symToStringTag && symToStringTag in Object(value))
-    ? getRawTag(value)
-    : objectToString(value);
-}
-
-module.exports = baseGetTag;
-
-}).apply(this, arguments);
-
-},{"./_Symbol":39,"./_getRawTag":97,"./_objectToString":130}],59:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_baseHasIn.js", module);
-(function(){
-/**
- * The base implementation of `_.hasIn` without support for deep paths.
- *
- * @private
- * @param {Object} [object] The object to query.
- * @param {Array|string} key The key to check.
- * @returns {boolean} Returns `true` if `key` exists, else `false`.
- */
-function baseHasIn(object, key) {
-  return object != null && key in Object(object);
-}
-
-module.exports = baseHasIn;
-
-}).apply(this, arguments);
-
-},{}],60:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_baseIsArguments.js", module);
-(function(){
-var baseGetTag = require('./_baseGetTag'),
-    isObjectLike = require('./isObjectLike');
-
-/** `Object#toString` result references. */
-var argsTag = '[object Arguments]';
-
-/**
- * The base implementation of `_.isArguments`.
- *
- * @private
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is an `arguments` object,
- */
-function baseIsArguments(value) {
-  return isObjectLike(value) && baseGetTag(value) == argsTag;
-}
-
-module.exports = baseIsArguments;
-
-}).apply(this, arguments);
-
-},{"./_baseGetTag":58,"./isObjectLike":163}],61:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_baseIsEqual.js", module);
-(function(){
-var baseIsEqualDeep = require('./_baseIsEqualDeep'),
-    isObjectLike = require('./isObjectLike');
-
-/**
- * The base implementation of `_.isEqual` which supports partial comparisons
- * and tracks traversed objects.
- *
- * @private
- * @param {*} value The value to compare.
- * @param {*} other The other value to compare.
- * @param {boolean} bitmask The bitmask flags.
- *  1 - Unordered comparison
- *  2 - Partial comparison
- * @param {Function} [customizer] The function to customize comparisons.
- * @param {Object} [stack] Tracks traversed `value` and `other` objects.
- * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
- */
-function baseIsEqual(value, other, bitmask, customizer, stack) {
-  if (value === other) {
-    return true;
-  }
-  if (value == null || other == null || (!isObjectLike(value) && !isObjectLike(other))) {
-    return value !== value && other !== other;
-  }
-  return baseIsEqualDeep(value, other, bitmask, customizer, baseIsEqual, stack);
-}
-
-module.exports = baseIsEqual;
-
-}).apply(this, arguments);
-
-},{"./_baseIsEqualDeep":62,"./isObjectLike":163}],62:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_baseIsEqualDeep.js", module);
-(function(){
-var Stack = require('./_Stack'),
-    equalArrays = require('./_equalArrays'),
-    equalByTag = require('./_equalByTag'),
-    equalObjects = require('./_equalObjects'),
-    getTag = require('./_getTag'),
-    isArray = require('./isArray'),
-    isBuffer = require('./isBuffer'),
-    isTypedArray = require('./isTypedArray');
-
-/** Used to compose bitmasks for value comparisons. */
-var COMPARE_PARTIAL_FLAG = 1;
-
-/** `Object#toString` result references. */
-var argsTag = '[object Arguments]',
-    arrayTag = '[object Array]',
-    objectTag = '[object Object]';
-
-/** Used for built-in method references. */
-var objectProto = Object.prototype;
-
-/** Used to check objects for own properties. */
-var hasOwnProperty = objectProto.hasOwnProperty;
-
-/**
- * A specialized version of `baseIsEqual` for arrays and objects which performs
- * deep comparisons and tracks traversed objects enabling objects with circular
- * references to be compared.
- *
- * @private
- * @param {Object} object The object to compare.
- * @param {Object} other The other object to compare.
- * @param {number} bitmask The bitmask flags. See `baseIsEqual` for more details.
- * @param {Function} customizer The function to customize comparisons.
- * @param {Function} equalFunc The function to determine equivalents of values.
- * @param {Object} [stack] Tracks traversed `object` and `other` objects.
- * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
- */
-function baseIsEqualDeep(object, other, bitmask, customizer, equalFunc, stack) {
-  var objIsArr = isArray(object),
-      othIsArr = isArray(other),
-      objTag = objIsArr ? arrayTag : getTag(object),
-      othTag = othIsArr ? arrayTag : getTag(other);
-
-  objTag = objTag == argsTag ? objectTag : objTag;
-  othTag = othTag == argsTag ? objectTag : othTag;
-
-  var objIsObj = objTag == objectTag,
-      othIsObj = othTag == objectTag,
-      isSameTag = objTag == othTag;
-
-  if (isSameTag && isBuffer(object)) {
-    if (!isBuffer(other)) {
-      return false;
-    }
-    objIsArr = true;
-    objIsObj = false;
-  }
-  if (isSameTag && !objIsObj) {
-    stack || (stack = new Stack);
-    return (objIsArr || isTypedArray(object))
-      ? equalArrays(object, other, bitmask, customizer, equalFunc, stack)
-      : equalByTag(object, other, objTag, bitmask, customizer, equalFunc, stack);
-  }
-  if (!(bitmask & COMPARE_PARTIAL_FLAG)) {
-    var objIsWrapped = objIsObj && hasOwnProperty.call(object, '__wrapped__'),
-        othIsWrapped = othIsObj && hasOwnProperty.call(other, '__wrapped__');
-
-    if (objIsWrapped || othIsWrapped) {
-      var objUnwrapped = objIsWrapped ? object.value() : object,
-          othUnwrapped = othIsWrapped ? other.value() : other;
-
-      stack || (stack = new Stack);
-      return equalFunc(objUnwrapped, othUnwrapped, bitmask, customizer, stack);
-    }
-  }
-  if (!isSameTag) {
-    return false;
-  }
-  stack || (stack = new Stack);
-  return equalObjects(object, other, bitmask, customizer, equalFunc, stack);
-}
-
-module.exports = baseIsEqualDeep;
-
-}).apply(this, arguments);
-
-},{"./_Stack":38,"./_equalArrays":89,"./_equalByTag":90,"./_equalObjects":91,"./_getTag":99,"./isArray":157,"./isBuffer":159,"./isTypedArray":165}],63:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_baseIsMatch.js", module);
-(function(){
-var Stack = require('./_Stack'),
-    baseIsEqual = require('./_baseIsEqual');
-
-/** Used to compose bitmasks for value comparisons. */
-var COMPARE_PARTIAL_FLAG = 1,
-    COMPARE_UNORDERED_FLAG = 2;
-
-/**
- * The base implementation of `_.isMatch` without support for iteratee shorthands.
- *
- * @private
- * @param {Object} object The object to inspect.
- * @param {Object} source The object of property values to match.
- * @param {Array} matchData The property names, values, and compare flags to match.
- * @param {Function} [customizer] The function to customize comparisons.
- * @returns {boolean} Returns `true` if `object` is a match, else `false`.
- */
-function baseIsMatch(object, source, matchData, customizer) {
-  var index = matchData.length,
-      length = index,
-      noCustomizer = !customizer;
-
-  if (object == null) {
-    return !length;
-  }
-  object = Object(object);
-  while (index--) {
-    var data = matchData[index];
-    if ((noCustomizer && data[2])
-          ? data[1] !== object[data[0]]
-          : !(data[0] in object)
-        ) {
-      return false;
-    }
-  }
-  while (++index < length) {
-    data = matchData[index];
-    var key = data[0],
-        objValue = object[key],
-        srcValue = data[1];
-
-    if (noCustomizer && data[2]) {
-      if (objValue === undefined && !(key in object)) {
-        return false;
-      }
-    } else {
-      var stack = new Stack;
-      if (customizer) {
-        var result = customizer(objValue, srcValue, key, object, source, stack);
-      }
-      if (!(result === undefined
-            ? baseIsEqual(srcValue, objValue, COMPARE_PARTIAL_FLAG | COMPARE_UNORDERED_FLAG, customizer, stack)
-            : result
-          )) {
-        return false;
-      }
-    }
-  }
-  return true;
-}
-
-module.exports = baseIsMatch;
-
-}).apply(this, arguments);
-
-},{"./_Stack":38,"./_baseIsEqual":61}],64:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_baseIsNative.js", module);
-(function(){
-var isFunction = require('./isFunction'),
-    isMasked = require('./_isMasked'),
-    isObject = require('./isObject'),
-    toSource = require('./_toSource');
-
-/**
- * Used to match `RegExp`
- * [syntax characters](http://ecma-international.org/ecma-262/7.0/#sec-patterns).
- */
-var reRegExpChar = /[\\^$.*+?()[\]{}|]/g;
-
-/** Used to detect host constructors (Safari). */
-var reIsHostCtor = /^\[object .+?Constructor\]$/;
-
-/** Used for built-in method references. */
-var funcProto = Function.prototype,
-    objectProto = Object.prototype;
-
-/** Used to resolve the decompiled source of functions. */
-var funcToString = funcProto.toString;
-
-/** Used to check objects for own properties. */
-var hasOwnProperty = objectProto.hasOwnProperty;
-
-/** Used to detect if a method is native. */
-var reIsNative = RegExp('^' +
-  funcToString.call(hasOwnProperty).replace(reRegExpChar, '\\$&')
-  .replace(/hasOwnProperty|(function).*?(?=\\\()| for .+?(?=\\\])/g, '$1.*?') + '$'
-);
-
-/**
- * The base implementation of `_.isNative` without bad shim checks.
- *
- * @private
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a native function,
- *  else `false`.
- */
-function baseIsNative(value) {
-  if (!isObject(value) || isMasked(value)) {
-    return false;
-  }
-  var pattern = isFunction(value) ? reIsNative : reIsHostCtor;
-  return pattern.test(toSource(value));
-}
-
-module.exports = baseIsNative;
-
-}).apply(this, arguments);
-
-},{"./_isMasked":111,"./_toSource":146,"./isFunction":160,"./isObject":162}],65:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_baseIsTypedArray.js", module);
-(function(){
-var baseGetTag = require('./_baseGetTag'),
-    isLength = require('./isLength'),
-    isObjectLike = require('./isObjectLike');
-
-/** `Object#toString` result references. */
-var argsTag = '[object Arguments]',
-    arrayTag = '[object Array]',
-    boolTag = '[object Boolean]',
-    dateTag = '[object Date]',
-    errorTag = '[object Error]',
-    funcTag = '[object Function]',
-    mapTag = '[object Map]',
-    numberTag = '[object Number]',
-    objectTag = '[object Object]',
-    regexpTag = '[object RegExp]',
-    setTag = '[object Set]',
-    stringTag = '[object String]',
-    weakMapTag = '[object WeakMap]';
-
-var arrayBufferTag = '[object ArrayBuffer]',
-    dataViewTag = '[object DataView]',
-    float32Tag = '[object Float32Array]',
-    float64Tag = '[object Float64Array]',
-    int8Tag = '[object Int8Array]',
-    int16Tag = '[object Int16Array]',
-    int32Tag = '[object Int32Array]',
-    uint8Tag = '[object Uint8Array]',
-    uint8ClampedTag = '[object Uint8ClampedArray]',
-    uint16Tag = '[object Uint16Array]',
-    uint32Tag = '[object Uint32Array]';
-
-/** Used to identify `toStringTag` values of typed arrays. */
-var typedArrayTags = {};
-typedArrayTags[float32Tag] = typedArrayTags[float64Tag] =
-typedArrayTags[int8Tag] = typedArrayTags[int16Tag] =
-typedArrayTags[int32Tag] = typedArrayTags[uint8Tag] =
-typedArrayTags[uint8ClampedTag] = typedArrayTags[uint16Tag] =
-typedArrayTags[uint32Tag] = true;
-typedArrayTags[argsTag] = typedArrayTags[arrayTag] =
-typedArrayTags[arrayBufferTag] = typedArrayTags[boolTag] =
-typedArrayTags[dataViewTag] = typedArrayTags[dateTag] =
-typedArrayTags[errorTag] = typedArrayTags[funcTag] =
-typedArrayTags[mapTag] = typedArrayTags[numberTag] =
-typedArrayTags[objectTag] = typedArrayTags[regexpTag] =
-typedArrayTags[setTag] = typedArrayTags[stringTag] =
-typedArrayTags[weakMapTag] = false;
-
-/**
- * The base implementation of `_.isTypedArray` without Node.js optimizations.
- *
- * @private
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a typed array, else `false`.
- */
-function baseIsTypedArray(value) {
-  return isObjectLike(value) &&
-    isLength(value.length) && !!typedArrayTags[baseGetTag(value)];
-}
-
-module.exports = baseIsTypedArray;
-
-}).apply(this, arguments);
-
-},{"./_baseGetTag":58,"./isLength":161,"./isObjectLike":163}],66:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_baseIteratee.js", module);
-(function(){
-var baseMatches = require('./_baseMatches'),
-    baseMatchesProperty = require('./_baseMatchesProperty'),
-    identity = require('./identity'),
-    isArray = require('./isArray'),
-    property = require('./property');
-
-/**
- * The base implementation of `_.iteratee`.
- *
- * @private
- * @param {*} [value=_.identity] The value to convert to an iteratee.
- * @returns {Function} Returns the iteratee.
- */
-function baseIteratee(value) {
-  // Don't store the `typeof` result in a variable to avoid a JIT bug in Safari 9.
-  // See https://bugs.webkit.org/show_bug.cgi?id=156034 for more details.
-  if (typeof value == 'function') {
-    return value;
-  }
-  if (value == null) {
-    return identity;
-  }
-  if (typeof value == 'object') {
-    return isArray(value)
-      ? baseMatchesProperty(value[0], value[1])
-      : baseMatches(value);
-  }
-  return property(value);
-}
-
-module.exports = baseIteratee;
-
-}).apply(this, arguments);
-
-},{"./_baseMatches":69,"./_baseMatchesProperty":70,"./identity":155,"./isArray":157,"./property":170}],67:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_baseKeys.js", module);
-(function(){
-var isPrototype = require('./_isPrototype'),
-    nativeKeys = require('./_nativeKeys');
-
-/** Used for built-in method references. */
-var objectProto = Object.prototype;
-
-/** Used to check objects for own properties. */
-var hasOwnProperty = objectProto.hasOwnProperty;
-
-/**
- * The base implementation of `_.keys` which doesn't treat sparse arrays as dense.
- *
- * @private
- * @param {Object} object The object to query.
- * @returns {Array} Returns the array of property names.
- */
-function baseKeys(object) {
-  if (!isPrototype(object)) {
-    return nativeKeys(object);
-  }
-  var result = [];
-  for (var key in Object(object)) {
-    if (hasOwnProperty.call(object, key) && key != 'constructor') {
-      result.push(key);
-    }
-  }
-  return result;
-}
-
-module.exports = baseKeys;
-
-}).apply(this, arguments);
-
-},{"./_isPrototype":112,"./_nativeKeys":128}],68:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_baseMap.js", module);
-(function(){
-var baseEach = require('./_baseEach'),
-    isArrayLike = require('./isArrayLike');
-
-/**
- * The base implementation of `_.map` without support for iteratee shorthands.
- *
- * @private
- * @param {Array|Object} collection The collection to iterate over.
- * @param {Function} iteratee The function invoked per iteration.
- * @returns {Array} Returns the new mapped array.
- */
-function baseMap(collection, iteratee) {
-  var index = -1,
-      result = isArrayLike(collection) ? Array(collection.length) : [];
-
-  baseEach(collection, function(value, key, collection) {
-    result[++index] = iteratee(value, key, collection);
-  });
-  return result;
-}
-
-module.exports = baseMap;
-
-}).apply(this, arguments);
-
-},{"./_baseEach":52,"./isArrayLike":158}],69:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_baseMatches.js", module);
-(function(){
-var baseIsMatch = require('./_baseIsMatch'),
-    getMatchData = require('./_getMatchData'),
-    matchesStrictComparable = require('./_matchesStrictComparable');
-
-/**
- * The base implementation of `_.matches` which doesn't clone `source`.
- *
- * @private
- * @param {Object} source The object of property values to match.
- * @returns {Function} Returns the new spec function.
- */
-function baseMatches(source) {
-  var matchData = getMatchData(source);
-  if (matchData.length == 1 && matchData[0][2]) {
-    return matchesStrictComparable(matchData[0][0], matchData[0][1]);
-  }
-  return function(object) {
-    return object === source || baseIsMatch(object, source, matchData);
-  };
-}
-
-module.exports = baseMatches;
-
-}).apply(this, arguments);
-
-},{"./_baseIsMatch":63,"./_getMatchData":95,"./_matchesStrictComparable":125}],70:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_baseMatchesProperty.js", module);
-(function(){
-var baseIsEqual = require('./_baseIsEqual'),
-    get = require('./get'),
-    hasIn = require('./hasIn'),
-    isKey = require('./_isKey'),
-    isStrictComparable = require('./_isStrictComparable'),
-    matchesStrictComparable = require('./_matchesStrictComparable'),
-    toKey = require('./_toKey');
-
-/** Used to compose bitmasks for value comparisons. */
-var COMPARE_PARTIAL_FLAG = 1,
-    COMPARE_UNORDERED_FLAG = 2;
-
-/**
- * The base implementation of `_.matchesProperty` which doesn't clone `srcValue`.
- *
- * @private
- * @param {string} path The path of the property to get.
- * @param {*} srcValue The value to match.
- * @returns {Function} Returns the new spec function.
- */
-function baseMatchesProperty(path, srcValue) {
-  if (isKey(path) && isStrictComparable(srcValue)) {
-    return matchesStrictComparable(toKey(path), srcValue);
-  }
-  return function(object) {
-    var objValue = get(object, path);
-    return (objValue === undefined && objValue === srcValue)
-      ? hasIn(object, path)
-      : baseIsEqual(srcValue, objValue, COMPARE_PARTIAL_FLAG | COMPARE_UNORDERED_FLAG);
-  };
-}
-
-module.exports = baseMatchesProperty;
-
-}).apply(this, arguments);
-
-},{"./_baseIsEqual":61,"./_isKey":109,"./_isStrictComparable":113,"./_matchesStrictComparable":125,"./_toKey":145,"./get":153,"./hasIn":154}],71:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_baseProperty.js", module);
-(function(){
-/**
- * The base implementation of `_.property` without support for deep paths.
- *
- * @private
- * @param {string} key The key of the property to get.
- * @returns {Function} Returns the new accessor function.
- */
-function baseProperty(key) {
-  return function(object) {
-    return object == null ? undefined : object[key];
-  };
-}
-
-module.exports = baseProperty;
-
-}).apply(this, arguments);
-
-},{}],72:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_basePropertyDeep.js", module);
-(function(){
-var baseGet = require('./_baseGet');
-
-/**
- * A specialized version of `baseProperty` which supports deep paths.
- *
- * @private
- * @param {Array|string} path The path of the property to get.
- * @returns {Function} Returns the new accessor function.
- */
-function basePropertyDeep(path) {
-  return function(object) {
-    return baseGet(object, path);
-  };
-}
-
-module.exports = basePropertyDeep;
-
-}).apply(this, arguments);
-
-},{"./_baseGet":56}],73:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_baseRest.js", module);
-(function(){
-var identity = require('./identity'),
-    overRest = require('./_overRest'),
-    setToString = require('./_setToString');
-
-/**
- * The base implementation of `_.rest` which doesn't validate or coerce arguments.
- *
- * @private
- * @param {Function} func The function to apply a rest parameter to.
- * @param {number} [start=func.length-1] The start position of the rest parameter.
- * @returns {Function} Returns the new function.
- */
-function baseRest(func, start) {
-  return setToString(overRest(func, start, identity), func + '');
-}
-
-module.exports = baseRest;
-
-}).apply(this, arguments);
-
-},{"./_overRest":132,"./_setToString":137,"./identity":155}],74:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_baseSetToString.js", module);
-(function(){
-var constant = require('./constant'),
-    defineProperty = require('./_defineProperty'),
-    identity = require('./identity');
-
-/**
- * The base implementation of `setToString` without support for hot loop shorting.
- *
- * @private
- * @param {Function} func The function to modify.
- * @param {Function} string The `toString` result.
- * @returns {Function} Returns `func`.
- */
-var baseSetToString = !defineProperty ? identity : function(func, string) {
-  return defineProperty(func, 'toString', {
-    'configurable': true,
-    'enumerable': false,
-    'value': constant(string),
-    'writable': true
-  });
-};
-
-module.exports = baseSetToString;
-
-}).apply(this, arguments);
-
-},{"./_defineProperty":88,"./constant":148,"./identity":155}],75:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_baseSome.js", module);
-(function(){
-var baseEach = require('./_baseEach');
-
-/**
- * The base implementation of `_.some` without support for iteratee shorthands.
- *
- * @private
- * @param {Array|Object} collection The collection to iterate over.
- * @param {Function} predicate The function invoked per iteration.
- * @returns {boolean} Returns `true` if any element passes the predicate check,
- *  else `false`.
- */
-function baseSome(collection, predicate) {
-  var result;
-
-  baseEach(collection, function(value, index, collection) {
-    result = predicate(value, index, collection);
-    return !result;
-  });
-  return !!result;
-}
-
-module.exports = baseSome;
-
-}).apply(this, arguments);
-
-},{"./_baseEach":52}],76:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_baseTimes.js", module);
-(function(){
-/**
- * The base implementation of `_.times` without support for iteratee shorthands
- * or max array length checks.
- *
- * @private
- * @param {number} n The number of times to invoke `iteratee`.
- * @param {Function} iteratee The function invoked per iteration.
- * @returns {Array} Returns the array of results.
- */
-function baseTimes(n, iteratee) {
-  var index = -1,
-      result = Array(n);
-
-  while (++index < n) {
-    result[index] = iteratee(index);
-  }
-  return result;
-}
-
-module.exports = baseTimes;
-
-}).apply(this, arguments);
-
-},{}],77:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_baseToString.js", module);
-(function(){
-var Symbol = require('./_Symbol'),
-    arrayMap = require('./_arrayMap'),
-    isArray = require('./isArray'),
-    isSymbol = require('./isSymbol');
-
-/** Used as references for various `Number` constants. */
-var INFINITY = 1 / 0;
-
-/** Used to convert symbols to primitives and strings. */
-var symbolProto = Symbol ? Symbol.prototype : undefined,
-    symbolToString = symbolProto ? symbolProto.toString : undefined;
-
-/**
- * The base implementation of `_.toString` which doesn't convert nullish
- * values to empty strings.
- *
- * @private
- * @param {*} value The value to process.
- * @returns {string} Returns the string.
- */
-function baseToString(value) {
-  // Exit early for strings to avoid a performance hit in some environments.
-  if (typeof value == 'string') {
-    return value;
-  }
-  if (isArray(value)) {
-    // Recursively convert values (susceptible to call stack limits).
-    return arrayMap(value, baseToString) + '';
-  }
-  if (isSymbol(value)) {
-    return symbolToString ? symbolToString.call(value) : '';
-  }
-  var result = (value + '');
-  return (result == '0' && (1 / value) == -INFINITY) ? '-0' : result;
-}
-
-module.exports = baseToString;
-
-}).apply(this, arguments);
-
-},{"./_Symbol":39,"./_arrayMap":46,"./isArray":157,"./isSymbol":164}],78:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_baseUnary.js", module);
-(function(){
-/**
- * The base implementation of `_.unary` without support for storing metadata.
- *
- * @private
- * @param {Function} func The function to cap arguments for.
- * @returns {Function} Returns the new capped function.
- */
-function baseUnary(func) {
-  return function(value) {
-    return func(value);
-  };
-}
-
-module.exports = baseUnary;
-
-}).apply(this, arguments);
-
-},{}],79:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_baseZipObject.js", module);
-(function(){
-/**
- * This base implementation of `_.zipObject` which assigns values using `assignFunc`.
- *
- * @private
- * @param {Array} props The property identifiers.
- * @param {Array} values The property values.
- * @param {Function} assignFunc The function to assign values.
- * @returns {Object} Returns the new object.
- */
-function baseZipObject(props, values, assignFunc) {
-  var index = -1,
-      length = props.length,
-      valsLength = values.length,
-      result = {};
-
-  while (++index < length) {
-    var value = index < valsLength ? values[index] : undefined;
-    assignFunc(result, props[index], value);
-  }
-  return result;
-}
-
-module.exports = baseZipObject;
-
-}).apply(this, arguments);
-
-},{}],80:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_cacheHas.js", module);
-(function(){
-/**
- * Checks if a `cache` value for `key` exists.
- *
- * @private
- * @param {Object} cache The cache to query.
- * @param {string} key The key of the entry to check.
- * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
- */
-function cacheHas(cache, key) {
-  return cache.has(key);
-}
-
-module.exports = cacheHas;
-
-}).apply(this, arguments);
-
-},{}],81:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_castFunction.js", module);
-(function(){
-var identity = require('./identity');
-
-/**
- * Casts `value` to `identity` if it's not a function.
- *
- * @private
- * @param {*} value The value to inspect.
- * @returns {Function} Returns cast function.
- */
-function castFunction(value) {
-  return typeof value == 'function' ? value : identity;
-}
-
-module.exports = castFunction;
-
-}).apply(this, arguments);
-
-},{"./identity":155}],82:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_castPath.js", module);
-(function(){
-var isArray = require('./isArray'),
-    isKey = require('./_isKey'),
-    stringToPath = require('./_stringToPath'),
-    toString = require('./toString');
-
-/**
- * Casts `value` to a path array if it's not one.
- *
- * @private
- * @param {*} value The value to inspect.
- * @param {Object} [object] The object to query keys on.
- * @returns {Array} Returns the cast property path array.
- */
-function castPath(value, object) {
-  if (isArray(value)) {
-    return value;
-  }
-  return isKey(value, object) ? [value] : stringToPath(toString(value));
-}
-
-module.exports = castPath;
-
-}).apply(this, arguments);
-
-},{"./_isKey":109,"./_stringToPath":144,"./isArray":157,"./toString":174}],83:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_copyObject.js", module);
-(function(){
-var assignValue = require('./_assignValue'),
-    baseAssignValue = require('./_baseAssignValue');
-
-/**
- * Copies properties of `source` to `object`.
- *
- * @private
- * @param {Object} source The object to copy properties from.
- * @param {Array} props The property identifiers to copy.
- * @param {Object} [object={}] The object to copy properties to.
- * @param {Function} [customizer] The function to customize copied values.
- * @returns {Object} Returns `object`.
- */
-function copyObject(source, props, object, customizer) {
-  var isNew = !object;
-  object || (object = {});
-
-  var index = -1,
-      length = props.length;
-
-  while (++index < length) {
-    var key = props[index];
-
-    var newValue = customizer
-      ? customizer(object[key], source[key], key, object, source)
-      : undefined;
-
-    if (newValue === undefined) {
-      newValue = source[key];
-    }
-    if (isNew) {
-      baseAssignValue(object, key, newValue);
-    } else {
-      assignValue(object, key, newValue);
-    }
-  }
-  return object;
-}
-
-module.exports = copyObject;
-
-}).apply(this, arguments);
-
-},{"./_assignValue":49,"./_baseAssignValue":51}],84:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_coreJsData.js", module);
-(function(){
-var root = require('./_root');
-
-/** Used to detect overreaching core-js shims. */
-var coreJsData = root['__core-js_shared__'];
-
-module.exports = coreJsData;
-
-}).apply(this, arguments);
-
-},{"./_root":133}],85:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_createAssigner.js", module);
-(function(){
-var baseRest = require('./_baseRest'),
-    isIterateeCall = require('./_isIterateeCall');
-
-/**
- * Creates a function like `_.assign`.
- *
- * @private
- * @param {Function} assigner The function to assign values.
- * @returns {Function} Returns the new assigner function.
- */
-function createAssigner(assigner) {
-  return baseRest(function(object, sources) {
-    var index = -1,
-        length = sources.length,
-        customizer = length > 1 ? sources[length - 1] : undefined,
-        guard = length > 2 ? sources[2] : undefined;
-
-    customizer = (assigner.length > 3 && typeof customizer == 'function')
-      ? (length--, customizer)
-      : undefined;
-
-    if (guard && isIterateeCall(sources[0], sources[1], guard)) {
-      customizer = length < 3 ? undefined : customizer;
-      length = 1;
-    }
-    object = Object(object);
-    while (++index < length) {
-      var source = sources[index];
-      if (source) {
-        assigner(object, source, index, customizer);
-      }
-    }
-    return object;
-  });
-}
-
-module.exports = createAssigner;
-
-}).apply(this, arguments);
-
-},{"./_baseRest":73,"./_isIterateeCall":108}],86:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_createBaseEach.js", module);
-(function(){
-var isArrayLike = require('./isArrayLike');
-
-/**
- * Creates a `baseEach` or `baseEachRight` function.
- *
- * @private
- * @param {Function} eachFunc The function to iterate over a collection.
- * @param {boolean} [fromRight] Specify iterating from right to left.
- * @returns {Function} Returns the new base function.
- */
-function createBaseEach(eachFunc, fromRight) {
-  return function(collection, iteratee) {
-    if (collection == null) {
-      return collection;
-    }
-    if (!isArrayLike(collection)) {
-      return eachFunc(collection, iteratee);
-    }
-    var length = collection.length,
-        index = fromRight ? length : -1,
-        iterable = Object(collection);
-
-    while ((fromRight ? index-- : ++index < length)) {
-      if (iteratee(iterable[index], index, iterable) === false) {
-        break;
-      }
-    }
-    return collection;
-  };
-}
-
-module.exports = createBaseEach;
-
-}).apply(this, arguments);
-
-},{"./isArrayLike":158}],87:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_createBaseFor.js", module);
-(function(){
-/**
- * Creates a base function for methods like `_.forIn` and `_.forOwn`.
- *
- * @private
- * @param {boolean} [fromRight] Specify iterating from right to left.
- * @returns {Function} Returns the new base function.
- */
-function createBaseFor(fromRight) {
-  return function(object, iteratee, keysFunc) {
-    var index = -1,
-        iterable = Object(object),
-        props = keysFunc(object),
-        length = props.length;
-
-    while (length--) {
-      var key = props[fromRight ? length : ++index];
-      if (iteratee(iterable[key], key, iterable) === false) {
-        break;
-      }
-    }
-    return object;
-  };
-}
-
-module.exports = createBaseFor;
-
-}).apply(this, arguments);
-
-},{}],88:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_defineProperty.js", module);
-(function(){
-var getNative = require('./_getNative');
-
-var defineProperty = (function() {
-  try {
-    var func = getNative(Object, 'defineProperty');
-    func({}, '', {});
-    return func;
-  } catch (e) {}
-}());
-
-module.exports = defineProperty;
-
-}).apply(this, arguments);
-
-},{"./_getNative":96}],89:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_equalArrays.js", module);
-(function(){
-var SetCache = require('./_SetCache'),
-    arraySome = require('./_arraySome'),
-    cacheHas = require('./_cacheHas');
-
-/** Used to compose bitmasks for value comparisons. */
-var COMPARE_PARTIAL_FLAG = 1,
-    COMPARE_UNORDERED_FLAG = 2;
-
-/**
- * A specialized version of `baseIsEqualDeep` for arrays with support for
- * partial deep comparisons.
- *
- * @private
- * @param {Array} array The array to compare.
- * @param {Array} other The other array to compare.
- * @param {number} bitmask The bitmask flags. See `baseIsEqual` for more details.
- * @param {Function} customizer The function to customize comparisons.
- * @param {Function} equalFunc The function to determine equivalents of values.
- * @param {Object} stack Tracks traversed `array` and `other` objects.
- * @returns {boolean} Returns `true` if the arrays are equivalent, else `false`.
- */
-function equalArrays(array, other, bitmask, customizer, equalFunc, stack) {
-  var isPartial = bitmask & COMPARE_PARTIAL_FLAG,
-      arrLength = array.length,
-      othLength = other.length;
-
-  if (arrLength != othLength && !(isPartial && othLength > arrLength)) {
-    return false;
-  }
-  // Assume cyclic values are equal.
-  var stacked = stack.get(array);
-  if (stacked && stack.get(other)) {
-    return stacked == other;
-  }
-  var index = -1,
-      result = true,
-      seen = (bitmask & COMPARE_UNORDERED_FLAG) ? new SetCache : undefined;
-
-  stack.set(array, other);
-  stack.set(other, array);
-
-  // Ignore non-index properties.
-  while (++index < arrLength) {
-    var arrValue = array[index],
-        othValue = other[index];
-
-    if (customizer) {
-      var compared = isPartial
-        ? customizer(othValue, arrValue, index, other, array, stack)
-        : customizer(arrValue, othValue, index, array, other, stack);
-    }
-    if (compared !== undefined) {
-      if (compared) {
-        continue;
-      }
-      result = false;
-      break;
-    }
-    // Recursively compare arrays (susceptible to call stack limits).
-    if (seen) {
-      if (!arraySome(other, function(othValue, othIndex) {
-            if (!cacheHas(seen, othIndex) &&
-                (arrValue === othValue || equalFunc(arrValue, othValue, bitmask, customizer, stack))) {
-              return seen.push(othIndex);
-            }
-          })) {
-        result = false;
-        break;
-      }
-    } else if (!(
-          arrValue === othValue ||
-            equalFunc(arrValue, othValue, bitmask, customizer, stack)
-        )) {
-      result = false;
-      break;
-    }
-  }
-  stack['delete'](array);
-  stack['delete'](other);
-  return result;
-}
-
-module.exports = equalArrays;
-
-}).apply(this, arguments);
-
-},{"./_SetCache":37,"./_arraySome":48,"./_cacheHas":80}],90:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_equalByTag.js", module);
-(function(){
-var Symbol = require('./_Symbol'),
-    Uint8Array = require('./_Uint8Array'),
-    eq = require('./eq'),
-    equalArrays = require('./_equalArrays'),
-    mapToArray = require('./_mapToArray'),
-    setToArray = require('./_setToArray');
-
-/** Used to compose bitmasks for value comparisons. */
-var COMPARE_PARTIAL_FLAG = 1,
-    COMPARE_UNORDERED_FLAG = 2;
-
-/** `Object#toString` result references. */
-var boolTag = '[object Boolean]',
-    dateTag = '[object Date]',
-    errorTag = '[object Error]',
-    mapTag = '[object Map]',
-    numberTag = '[object Number]',
-    regexpTag = '[object RegExp]',
-    setTag = '[object Set]',
-    stringTag = '[object String]',
-    symbolTag = '[object Symbol]';
-
-var arrayBufferTag = '[object ArrayBuffer]',
-    dataViewTag = '[object DataView]';
-
-/** Used to convert symbols to primitives and strings. */
-var symbolProto = Symbol ? Symbol.prototype : undefined,
-    symbolValueOf = symbolProto ? symbolProto.valueOf : undefined;
-
-/**
- * A specialized version of `baseIsEqualDeep` for comparing objects of
- * the same `toStringTag`.
- *
- * **Note:** This function only supports comparing values with tags of
- * `Boolean`, `Date`, `Error`, `Number`, `RegExp`, or `String`.
- *
- * @private
- * @param {Object} object The object to compare.
- * @param {Object} other The other object to compare.
- * @param {string} tag The `toStringTag` of the objects to compare.
- * @param {number} bitmask The bitmask flags. See `baseIsEqual` for more details.
- * @param {Function} customizer The function to customize comparisons.
- * @param {Function} equalFunc The function to determine equivalents of values.
- * @param {Object} stack Tracks traversed `object` and `other` objects.
- * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
- */
-function equalByTag(object, other, tag, bitmask, customizer, equalFunc, stack) {
-  switch (tag) {
-    case dataViewTag:
-      if ((object.byteLength != other.byteLength) ||
-          (object.byteOffset != other.byteOffset)) {
-        return false;
-      }
-      object = object.buffer;
-      other = other.buffer;
-
-    case arrayBufferTag:
-      if ((object.byteLength != other.byteLength) ||
-          !equalFunc(new Uint8Array(object), new Uint8Array(other))) {
-        return false;
-      }
-      return true;
-
-    case boolTag:
-    case dateTag:
-    case numberTag:
-      // Coerce booleans to `1` or `0` and dates to milliseconds.
-      // Invalid dates are coerced to `NaN`.
-      return eq(+object, +other);
-
-    case errorTag:
-      return object.name == other.name && object.message == other.message;
-
-    case regexpTag:
-    case stringTag:
-      // Coerce regexes to strings and treat strings, primitives and objects,
-      // as equal. See http://www.ecma-international.org/ecma-262/7.0/#sec-regexp.prototype.tostring
-      // for more details.
-      return object == (other + '');
-
-    case mapTag:
-      var convert = mapToArray;
-
-    case setTag:
-      var isPartial = bitmask & COMPARE_PARTIAL_FLAG;
-      convert || (convert = setToArray);
-
-      if (object.size != other.size && !isPartial) {
-        return false;
-      }
-      // Assume cyclic values are equal.
-      var stacked = stack.get(object);
-      if (stacked) {
-        return stacked == other;
-      }
-      bitmask |= COMPARE_UNORDERED_FLAG;
-
-      // Recursively compare objects (susceptible to call stack limits).
-      stack.set(object, other);
-      var result = equalArrays(convert(object), convert(other), bitmask, customizer, equalFunc, stack);
-      stack['delete'](object);
-      return result;
-
-    case symbolTag:
-      if (symbolValueOf) {
-        return symbolValueOf.call(object) == symbolValueOf.call(other);
-      }
-  }
-  return false;
-}
-
-module.exports = equalByTag;
-
-}).apply(this, arguments);
-
-},{"./_Symbol":39,"./_Uint8Array":40,"./_equalArrays":89,"./_mapToArray":124,"./_setToArray":136,"./eq":149}],91:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_equalObjects.js", module);
-(function(){
-var getAllKeys = require('./_getAllKeys');
-
-/** Used to compose bitmasks for value comparisons. */
-var COMPARE_PARTIAL_FLAG = 1;
-
-/** Used for built-in method references. */
-var objectProto = Object.prototype;
-
-/** Used to check objects for own properties. */
-var hasOwnProperty = objectProto.hasOwnProperty;
-
-/**
- * A specialized version of `baseIsEqualDeep` for objects with support for
- * partial deep comparisons.
- *
- * @private
- * @param {Object} object The object to compare.
- * @param {Object} other The other object to compare.
- * @param {number} bitmask The bitmask flags. See `baseIsEqual` for more details.
- * @param {Function} customizer The function to customize comparisons.
- * @param {Function} equalFunc The function to determine equivalents of values.
- * @param {Object} stack Tracks traversed `object` and `other` objects.
- * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
- */
-function equalObjects(object, other, bitmask, customizer, equalFunc, stack) {
-  var isPartial = bitmask & COMPARE_PARTIAL_FLAG,
-      objProps = getAllKeys(object),
-      objLength = objProps.length,
-      othProps = getAllKeys(other),
-      othLength = othProps.length;
-
-  if (objLength != othLength && !isPartial) {
-    return false;
-  }
-  var index = objLength;
-  while (index--) {
-    var key = objProps[index];
-    if (!(isPartial ? key in other : hasOwnProperty.call(other, key))) {
-      return false;
-    }
-  }
-  // Assume cyclic values are equal.
-  var stacked = stack.get(object);
-  if (stacked && stack.get(other)) {
-    return stacked == other;
-  }
-  var result = true;
-  stack.set(object, other);
-  stack.set(other, object);
-
-  var skipCtor = isPartial;
-  while (++index < objLength) {
-    key = objProps[index];
-    var objValue = object[key],
-        othValue = other[key];
-
-    if (customizer) {
-      var compared = isPartial
-        ? customizer(othValue, objValue, key, other, object, stack)
-        : customizer(objValue, othValue, key, object, other, stack);
-    }
-    // Recursively compare objects (susceptible to call stack limits).
-    if (!(compared === undefined
-          ? (objValue === othValue || equalFunc(objValue, othValue, bitmask, customizer, stack))
-          : compared
-        )) {
-      result = false;
-      break;
-    }
-    skipCtor || (skipCtor = key == 'constructor');
-  }
-  if (result && !skipCtor) {
-    var objCtor = object.constructor,
-        othCtor = other.constructor;
-
-    // Non `Object` object instances with different constructors are not equal.
-    if (objCtor != othCtor &&
-        ('constructor' in object && 'constructor' in other) &&
-        !(typeof objCtor == 'function' && objCtor instanceof objCtor &&
-          typeof othCtor == 'function' && othCtor instanceof othCtor)) {
-      result = false;
-    }
-  }
-  stack['delete'](object);
-  stack['delete'](other);
-  return result;
-}
-
-module.exports = equalObjects;
-
-}).apply(this, arguments);
-
-},{"./_getAllKeys":93}],92:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_freeGlobal.js", module);
-(function(){
-(function (global){
-/** Detect free variable `global` from Node.js. */
-var freeGlobal = typeof global == 'object' && global && global.Object === Object && global;
-
-module.exports = freeGlobal;
-
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-}).apply(this, arguments);
-
-},{}],93:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_getAllKeys.js", module);
-(function(){
-var baseGetAllKeys = require('./_baseGetAllKeys'),
-    getSymbols = require('./_getSymbols'),
-    keys = require('./keys');
-
-/**
- * Creates an array of own enumerable property names and symbols of `object`.
- *
- * @private
- * @param {Object} object The object to query.
- * @returns {Array} Returns the array of property names and symbols.
- */
-function getAllKeys(object) {
-  return baseGetAllKeys(object, keys, getSymbols);
-}
-
-module.exports = getAllKeys;
-
-}).apply(this, arguments);
-
-},{"./_baseGetAllKeys":57,"./_getSymbols":98,"./keys":166}],94:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_getMapData.js", module);
-(function(){
-var isKeyable = require('./_isKeyable');
-
-/**
- * Gets the data for `map`.
- *
- * @private
- * @param {Object} map The map to query.
- * @param {string} key The reference key.
- * @returns {*} Returns the map data.
- */
-function getMapData(map, key) {
-  var data = map.__data__;
-  return isKeyable(key)
-    ? data[typeof key == 'string' ? 'string' : 'hash']
-    : data.map;
-}
-
-module.exports = getMapData;
-
-}).apply(this, arguments);
-
-},{"./_isKeyable":110}],95:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_getMatchData.js", module);
-(function(){
-var isStrictComparable = require('./_isStrictComparable'),
-    keys = require('./keys');
-
-/**
- * Gets the property names, values, and compare flags of `object`.
- *
- * @private
- * @param {Object} object The object to query.
- * @returns {Array} Returns the match data of `object`.
- */
-function getMatchData(object) {
-  var result = keys(object),
-      length = result.length;
-
-  while (length--) {
-    var key = result[length],
-        value = object[key];
-
-    result[length] = [key, value, isStrictComparable(value)];
-  }
-  return result;
-}
-
-module.exports = getMatchData;
-
-}).apply(this, arguments);
-
-},{"./_isStrictComparable":113,"./keys":166}],96:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_getNative.js", module);
-(function(){
-var baseIsNative = require('./_baseIsNative'),
-    getValue = require('./_getValue');
-
-/**
- * Gets the native function at `key` of `object`.
- *
- * @private
- * @param {Object} object The object to query.
- * @param {string} key The key of the method to get.
- * @returns {*} Returns the function if it's native, else `undefined`.
- */
-function getNative(object, key) {
-  var value = getValue(object, key);
-  return baseIsNative(value) ? value : undefined;
-}
-
-module.exports = getNative;
-
-}).apply(this, arguments);
-
-},{"./_baseIsNative":64,"./_getValue":100}],97:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_getRawTag.js", module);
-(function(){
-var Symbol = require('./_Symbol');
-
-/** Used for built-in method references. */
-var objectProto = Object.prototype;
-
-/** Used to check objects for own properties. */
-var hasOwnProperty = objectProto.hasOwnProperty;
-
-/**
- * Used to resolve the
- * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
- * of values.
- */
-var nativeObjectToString = objectProto.toString;
-
-/** Built-in value references. */
-var symToStringTag = Symbol ? Symbol.toStringTag : undefined;
-
-/**
- * A specialized version of `baseGetTag` which ignores `Symbol.toStringTag` values.
- *
- * @private
- * @param {*} value The value to query.
- * @returns {string} Returns the raw `toStringTag`.
- */
-function getRawTag(value) {
-  var isOwn = hasOwnProperty.call(value, symToStringTag),
-      tag = value[symToStringTag];
-
-  try {
-    value[symToStringTag] = undefined;
-    var unmasked = true;
-  } catch (e) {}
-
-  var result = nativeObjectToString.call(value);
-  if (unmasked) {
-    if (isOwn) {
-      value[symToStringTag] = tag;
-    } else {
-      delete value[symToStringTag];
-    }
-  }
-  return result;
-}
-
-module.exports = getRawTag;
-
-}).apply(this, arguments);
-
-},{"./_Symbol":39}],98:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_getSymbols.js", module);
-(function(){
-var arrayFilter = require('./_arrayFilter'),
-    stubArray = require('./stubArray');
-
-/** Used for built-in method references. */
-var objectProto = Object.prototype;
-
-/** Built-in value references. */
-var propertyIsEnumerable = objectProto.propertyIsEnumerable;
-
-/* Built-in method references for those with the same name as other `lodash` methods. */
-var nativeGetSymbols = Object.getOwnPropertySymbols;
-
-/**
- * Creates an array of the own enumerable symbols of `object`.
- *
- * @private
- * @param {Object} object The object to query.
- * @returns {Array} Returns the array of symbols.
- */
-var getSymbols = !nativeGetSymbols ? stubArray : function(object) {
-  if (object == null) {
-    return [];
-  }
-  object = Object(object);
-  return arrayFilter(nativeGetSymbols(object), function(symbol) {
-    return propertyIsEnumerable.call(object, symbol);
-  });
-};
-
-module.exports = getSymbols;
-
-}).apply(this, arguments);
-
-},{"./_arrayFilter":44,"./stubArray":172}],99:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_getTag.js", module);
-(function(){
-var DataView = require('./_DataView'),
-    Map = require('./_Map'),
-    Promise = require('./_Promise'),
-    Set = require('./_Set'),
-    WeakMap = require('./_WeakMap'),
-    baseGetTag = require('./_baseGetTag'),
-    toSource = require('./_toSource');
-
-/** `Object#toString` result references. */
-var mapTag = '[object Map]',
-    objectTag = '[object Object]',
-    promiseTag = '[object Promise]',
-    setTag = '[object Set]',
-    weakMapTag = '[object WeakMap]';
-
-var dataViewTag = '[object DataView]';
-
-/** Used to detect maps, sets, and weakmaps. */
-var dataViewCtorString = toSource(DataView),
-    mapCtorString = toSource(Map),
-    promiseCtorString = toSource(Promise),
-    setCtorString = toSource(Set),
-    weakMapCtorString = toSource(WeakMap);
-
-/**
- * Gets the `toStringTag` of `value`.
- *
- * @private
- * @param {*} value The value to query.
- * @returns {string} Returns the `toStringTag`.
- */
-var getTag = baseGetTag;
-
-// Fallback for data views, maps, sets, and weak maps in IE 11 and promises in Node.js < 6.
-if ((DataView && getTag(new DataView(new ArrayBuffer(1))) != dataViewTag) ||
-    (Map && getTag(new Map) != mapTag) ||
-    (Promise && getTag(Promise.resolve()) != promiseTag) ||
-    (Set && getTag(new Set) != setTag) ||
-    (WeakMap && getTag(new WeakMap) != weakMapTag)) {
-  getTag = function(value) {
-    var result = baseGetTag(value),
-        Ctor = result == objectTag ? value.constructor : undefined,
-        ctorString = Ctor ? toSource(Ctor) : '';
-
-    if (ctorString) {
-      switch (ctorString) {
-        case dataViewCtorString: return dataViewTag;
-        case mapCtorString: return mapTag;
-        case promiseCtorString: return promiseTag;
-        case setCtorString: return setTag;
-        case weakMapCtorString: return weakMapTag;
-      }
-    }
-    return result;
-  };
-}
-
-module.exports = getTag;
-
-}).apply(this, arguments);
-
-},{"./_DataView":30,"./_Map":33,"./_Promise":35,"./_Set":36,"./_WeakMap":41,"./_baseGetTag":58,"./_toSource":146}],100:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_getValue.js", module);
-(function(){
-/**
- * Gets the value at `key` of `object`.
- *
- * @private
- * @param {Object} [object] The object to query.
- * @param {string} key The key of the property to get.
- * @returns {*} Returns the property value.
- */
-function getValue(object, key) {
-  return object == null ? undefined : object[key];
-}
-
-module.exports = getValue;
-
-}).apply(this, arguments);
-
-},{}],101:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_hasPath.js", module);
-(function(){
-var castPath = require('./_castPath'),
-    isArguments = require('./isArguments'),
-    isArray = require('./isArray'),
-    isIndex = require('./_isIndex'),
-    isLength = require('./isLength'),
-    toKey = require('./_toKey');
-
-/**
- * Checks if `path` exists on `object`.
- *
- * @private
- * @param {Object} object The object to query.
- * @param {Array|string} path The path to check.
- * @param {Function} hasFunc The function to check properties.
- * @returns {boolean} Returns `true` if `path` exists, else `false`.
- */
-function hasPath(object, path, hasFunc) {
-  path = castPath(path, object);
-
-  var index = -1,
-      length = path.length,
-      result = false;
-
-  while (++index < length) {
-    var key = toKey(path[index]);
-    if (!(result = object != null && hasFunc(object, key))) {
-      break;
-    }
-    object = object[key];
-  }
-  if (result || ++index != length) {
-    return result;
-  }
-  length = object == null ? 0 : object.length;
-  return !!length && isLength(length) && isIndex(key, length) &&
-    (isArray(object) || isArguments(object));
-}
-
-module.exports = hasPath;
-
-}).apply(this, arguments);
-
-},{"./_castPath":82,"./_isIndex":107,"./_toKey":145,"./isArguments":156,"./isArray":157,"./isLength":161}],102:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_hashClear.js", module);
-(function(){
-var nativeCreate = require('./_nativeCreate');
-
-/**
- * Removes all key-value entries from the hash.
- *
- * @private
- * @name clear
- * @memberOf Hash
- */
-function hashClear() {
-  this.__data__ = nativeCreate ? nativeCreate(null) : {};
-  this.size = 0;
-}
-
-module.exports = hashClear;
-
-}).apply(this, arguments);
-
-},{"./_nativeCreate":127}],103:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_hashDelete.js", module);
-(function(){
-/**
- * Removes `key` and its value from the hash.
- *
- * @private
- * @name delete
- * @memberOf Hash
- * @param {Object} hash The hash to modify.
- * @param {string} key The key of the value to remove.
- * @returns {boolean} Returns `true` if the entry was removed, else `false`.
- */
-function hashDelete(key) {
-  var result = this.has(key) && delete this.__data__[key];
-  this.size -= result ? 1 : 0;
-  return result;
-}
-
-module.exports = hashDelete;
-
-}).apply(this, arguments);
-
-},{}],104:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_hashGet.js", module);
-(function(){
-var nativeCreate = require('./_nativeCreate');
-
-/** Used to stand-in for `undefined` hash values. */
-var HASH_UNDEFINED = '__lodash_hash_undefined__';
-
-/** Used for built-in method references. */
-var objectProto = Object.prototype;
-
-/** Used to check objects for own properties. */
-var hasOwnProperty = objectProto.hasOwnProperty;
-
-/**
- * Gets the hash value for `key`.
- *
- * @private
- * @name get
- * @memberOf Hash
- * @param {string} key The key of the value to get.
- * @returns {*} Returns the entry value.
- */
-function hashGet(key) {
-  var data = this.__data__;
-  if (nativeCreate) {
-    var result = data[key];
-    return result === HASH_UNDEFINED ? undefined : result;
-  }
-  return hasOwnProperty.call(data, key) ? data[key] : undefined;
-}
-
-module.exports = hashGet;
-
-}).apply(this, arguments);
-
-},{"./_nativeCreate":127}],105:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_hashHas.js", module);
-(function(){
-var nativeCreate = require('./_nativeCreate');
-
-/** Used for built-in method references. */
-var objectProto = Object.prototype;
-
-/** Used to check objects for own properties. */
-var hasOwnProperty = objectProto.hasOwnProperty;
-
-/**
- * Checks if a hash value for `key` exists.
- *
- * @private
- * @name has
- * @memberOf Hash
- * @param {string} key The key of the entry to check.
- * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
- */
-function hashHas(key) {
-  var data = this.__data__;
-  return nativeCreate ? (data[key] !== undefined) : hasOwnProperty.call(data, key);
-}
-
-module.exports = hashHas;
-
-}).apply(this, arguments);
-
-},{"./_nativeCreate":127}],106:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_hashSet.js", module);
-(function(){
-var nativeCreate = require('./_nativeCreate');
-
-/** Used to stand-in for `undefined` hash values. */
-var HASH_UNDEFINED = '__lodash_hash_undefined__';
-
-/**
- * Sets the hash `key` to `value`.
- *
- * @private
- * @name set
- * @memberOf Hash
- * @param {string} key The key of the value to set.
- * @param {*} value The value to set.
- * @returns {Object} Returns the hash instance.
- */
-function hashSet(key, value) {
-  var data = this.__data__;
-  this.size += this.has(key) ? 0 : 1;
-  data[key] = (nativeCreate && value === undefined) ? HASH_UNDEFINED : value;
-  return this;
-}
-
-module.exports = hashSet;
-
-}).apply(this, arguments);
-
-},{"./_nativeCreate":127}],107:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_isIndex.js", module);
-(function(){
-/** Used as references for various `Number` constants. */
-var MAX_SAFE_INTEGER = 9007199254740991;
-
-/** Used to detect unsigned integer values. */
-var reIsUint = /^(?:0|[1-9]\d*)$/;
-
-/**
- * Checks if `value` is a valid array-like index.
- *
- * @private
- * @param {*} value The value to check.
- * @param {number} [length=MAX_SAFE_INTEGER] The upper bounds of a valid index.
- * @returns {boolean} Returns `true` if `value` is a valid index, else `false`.
- */
-function isIndex(value, length) {
-  length = length == null ? MAX_SAFE_INTEGER : length;
-  return !!length &&
-    (typeof value == 'number' || reIsUint.test(value)) &&
-    (value > -1 && value % 1 == 0 && value < length);
-}
-
-module.exports = isIndex;
-
-}).apply(this, arguments);
-
-},{}],108:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_isIterateeCall.js", module);
-(function(){
-var eq = require('./eq'),
-    isArrayLike = require('./isArrayLike'),
-    isIndex = require('./_isIndex'),
-    isObject = require('./isObject');
-
-/**
- * Checks if the given arguments are from an iteratee call.
- *
- * @private
- * @param {*} value The potential iteratee value argument.
- * @param {*} index The potential iteratee index or key argument.
- * @param {*} object The potential iteratee object argument.
- * @returns {boolean} Returns `true` if the arguments are from an iteratee call,
- *  else `false`.
- */
-function isIterateeCall(value, index, object) {
-  if (!isObject(object)) {
-    return false;
-  }
-  var type = typeof index;
-  if (type == 'number'
-        ? (isArrayLike(object) && isIndex(index, object.length))
-        : (type == 'string' && index in object)
-      ) {
-    return eq(object[index], value);
-  }
-  return false;
-}
-
-module.exports = isIterateeCall;
-
-}).apply(this, arguments);
-
-},{"./_isIndex":107,"./eq":149,"./isArrayLike":158,"./isObject":162}],109:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_isKey.js", module);
-(function(){
-var isArray = require('./isArray'),
-    isSymbol = require('./isSymbol');
-
-/** Used to match property names within property paths. */
-var reIsDeepProp = /\.|\[(?:[^[\]]*|(["'])(?:(?!\1)[^\\]|\\.)*?\1)\]/,
-    reIsPlainProp = /^\w*$/;
-
-/**
- * Checks if `value` is a property name and not a property path.
- *
- * @private
- * @param {*} value The value to check.
- * @param {Object} [object] The object to query keys on.
- * @returns {boolean} Returns `true` if `value` is a property name, else `false`.
- */
-function isKey(value, object) {
-  if (isArray(value)) {
-    return false;
-  }
-  var type = typeof value;
-  if (type == 'number' || type == 'symbol' || type == 'boolean' ||
-      value == null || isSymbol(value)) {
-    return true;
-  }
-  return reIsPlainProp.test(value) || !reIsDeepProp.test(value) ||
-    (object != null && value in Object(object));
-}
-
-module.exports = isKey;
-
-}).apply(this, arguments);
-
-},{"./isArray":157,"./isSymbol":164}],110:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_isKeyable.js", module);
-(function(){
-/**
- * Checks if `value` is suitable for use as unique object key.
- *
- * @private
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is suitable, else `false`.
- */
-function isKeyable(value) {
-  var type = typeof value;
-  return (type == 'string' || type == 'number' || type == 'symbol' || type == 'boolean')
-    ? (value !== '__proto__')
-    : (value === null);
-}
-
-module.exports = isKeyable;
-
-}).apply(this, arguments);
-
-},{}],111:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_isMasked.js", module);
-(function(){
-var coreJsData = require('./_coreJsData');
-
-/** Used to detect methods masquerading as native. */
-var maskSrcKey = (function() {
-  var uid = /[^.]+$/.exec(coreJsData && coreJsData.keys && coreJsData.keys.IE_PROTO || '');
-  return uid ? ('Symbol(src)_1.' + uid) : '';
-}());
-
-/**
- * Checks if `func` has its source masked.
- *
- * @private
- * @param {Function} func The function to check.
- * @returns {boolean} Returns `true` if `func` is masked, else `false`.
- */
-function isMasked(func) {
-  return !!maskSrcKey && (maskSrcKey in func);
-}
-
-module.exports = isMasked;
-
-}).apply(this, arguments);
-
-},{"./_coreJsData":84}],112:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_isPrototype.js", module);
-(function(){
-/** Used for built-in method references. */
-var objectProto = Object.prototype;
-
-/**
- * Checks if `value` is likely a prototype object.
- *
- * @private
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a prototype, else `false`.
- */
-function isPrototype(value) {
-  var Ctor = value && value.constructor,
-      proto = (typeof Ctor == 'function' && Ctor.prototype) || objectProto;
-
-  return value === proto;
-}
-
-module.exports = isPrototype;
-
-}).apply(this, arguments);
-
-},{}],113:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_isStrictComparable.js", module);
-(function(){
-var isObject = require('./isObject');
-
-/**
- * Checks if `value` is suitable for strict equality comparisons, i.e. `===`.
- *
- * @private
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` if suitable for strict
- *  equality comparisons, else `false`.
- */
-function isStrictComparable(value) {
-  return value === value && !isObject(value);
-}
-
-module.exports = isStrictComparable;
-
-}).apply(this, arguments);
-
-},{"./isObject":162}],114:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_listCacheClear.js", module);
-(function(){
-/**
- * Removes all key-value entries from the list cache.
- *
- * @private
- * @name clear
- * @memberOf ListCache
- */
-function listCacheClear() {
-  this.__data__ = [];
-  this.size = 0;
-}
-
-module.exports = listCacheClear;
-
-}).apply(this, arguments);
-
-},{}],115:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_listCacheDelete.js", module);
-(function(){
-var assocIndexOf = require('./_assocIndexOf');
-
-/** Used for built-in method references. */
-var arrayProto = Array.prototype;
-
-/** Built-in value references. */
-var splice = arrayProto.splice;
-
-/**
- * Removes `key` and its value from the list cache.
- *
- * @private
- * @name delete
- * @memberOf ListCache
- * @param {string} key The key of the value to remove.
- * @returns {boolean} Returns `true` if the entry was removed, else `false`.
- */
-function listCacheDelete(key) {
-  var data = this.__data__,
-      index = assocIndexOf(data, key);
-
-  if (index < 0) {
-    return false;
-  }
-  var lastIndex = data.length - 1;
-  if (index == lastIndex) {
-    data.pop();
-  } else {
-    splice.call(data, index, 1);
-  }
-  --this.size;
-  return true;
-}
-
-module.exports = listCacheDelete;
-
-}).apply(this, arguments);
-
-},{"./_assocIndexOf":50}],116:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_listCacheGet.js", module);
-(function(){
-var assocIndexOf = require('./_assocIndexOf');
-
-/**
- * Gets the list cache value for `key`.
- *
- * @private
- * @name get
- * @memberOf ListCache
- * @param {string} key The key of the value to get.
- * @returns {*} Returns the entry value.
- */
-function listCacheGet(key) {
-  var data = this.__data__,
-      index = assocIndexOf(data, key);
-
-  return index < 0 ? undefined : data[index][1];
-}
-
-module.exports = listCacheGet;
-
-}).apply(this, arguments);
-
-},{"./_assocIndexOf":50}],117:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_listCacheHas.js", module);
-(function(){
-var assocIndexOf = require('./_assocIndexOf');
-
-/**
- * Checks if a list cache value for `key` exists.
- *
- * @private
- * @name has
- * @memberOf ListCache
- * @param {string} key The key of the entry to check.
- * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
- */
-function listCacheHas(key) {
-  return assocIndexOf(this.__data__, key) > -1;
-}
-
-module.exports = listCacheHas;
-
-}).apply(this, arguments);
-
-},{"./_assocIndexOf":50}],118:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_listCacheSet.js", module);
-(function(){
-var assocIndexOf = require('./_assocIndexOf');
-
-/**
- * Sets the list cache `key` to `value`.
- *
- * @private
- * @name set
- * @memberOf ListCache
- * @param {string} key The key of the value to set.
- * @param {*} value The value to set.
- * @returns {Object} Returns the list cache instance.
- */
-function listCacheSet(key, value) {
-  var data = this.__data__,
-      index = assocIndexOf(data, key);
-
-  if (index < 0) {
-    ++this.size;
-    data.push([key, value]);
-  } else {
-    data[index][1] = value;
-  }
-  return this;
-}
-
-module.exports = listCacheSet;
-
-}).apply(this, arguments);
-
-},{"./_assocIndexOf":50}],119:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_mapCacheClear.js", module);
-(function(){
-var Hash = require('./_Hash'),
-    ListCache = require('./_ListCache'),
-    Map = require('./_Map');
-
-/**
- * Removes all key-value entries from the map.
- *
- * @private
- * @name clear
- * @memberOf MapCache
- */
-function mapCacheClear() {
-  this.size = 0;
-  this.__data__ = {
-    'hash': new Hash,
-    'map': new (Map || ListCache),
-    'string': new Hash
-  };
-}
-
-module.exports = mapCacheClear;
-
-}).apply(this, arguments);
-
-},{"./_Hash":31,"./_ListCache":32,"./_Map":33}],120:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_mapCacheDelete.js", module);
-(function(){
-var getMapData = require('./_getMapData');
-
-/**
- * Removes `key` and its value from the map.
- *
- * @private
- * @name delete
- * @memberOf MapCache
- * @param {string} key The key of the value to remove.
- * @returns {boolean} Returns `true` if the entry was removed, else `false`.
- */
-function mapCacheDelete(key) {
-  var result = getMapData(this, key)['delete'](key);
-  this.size -= result ? 1 : 0;
-  return result;
-}
-
-module.exports = mapCacheDelete;
-
-}).apply(this, arguments);
-
-},{"./_getMapData":94}],121:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_mapCacheGet.js", module);
-(function(){
-var getMapData = require('./_getMapData');
-
-/**
- * Gets the map value for `key`.
- *
- * @private
- * @name get
- * @memberOf MapCache
- * @param {string} key The key of the value to get.
- * @returns {*} Returns the entry value.
- */
-function mapCacheGet(key) {
-  return getMapData(this, key).get(key);
-}
-
-module.exports = mapCacheGet;
-
-}).apply(this, arguments);
-
-},{"./_getMapData":94}],122:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_mapCacheHas.js", module);
-(function(){
-var getMapData = require('./_getMapData');
-
-/**
- * Checks if a map value for `key` exists.
- *
- * @private
- * @name has
- * @memberOf MapCache
- * @param {string} key The key of the entry to check.
- * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
- */
-function mapCacheHas(key) {
-  return getMapData(this, key).has(key);
-}
-
-module.exports = mapCacheHas;
-
-}).apply(this, arguments);
-
-},{"./_getMapData":94}],123:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_mapCacheSet.js", module);
-(function(){
-var getMapData = require('./_getMapData');
-
-/**
- * Sets the map `key` to `value`.
- *
- * @private
- * @name set
- * @memberOf MapCache
- * @param {string} key The key of the value to set.
- * @param {*} value The value to set.
- * @returns {Object} Returns the map cache instance.
- */
-function mapCacheSet(key, value) {
-  var data = getMapData(this, key),
-      size = data.size;
-
-  data.set(key, value);
-  this.size += data.size == size ? 0 : 1;
-  return this;
-}
-
-module.exports = mapCacheSet;
-
-}).apply(this, arguments);
-
-},{"./_getMapData":94}],124:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_mapToArray.js", module);
-(function(){
-/**
- * Converts `map` to its key-value pairs.
- *
- * @private
- * @param {Object} map The map to convert.
- * @returns {Array} Returns the key-value pairs.
- */
-function mapToArray(map) {
-  var index = -1,
-      result = Array(map.size);
-
-  map.forEach(function(value, key) {
-    result[++index] = [key, value];
-  });
-  return result;
-}
-
-module.exports = mapToArray;
-
-}).apply(this, arguments);
-
-},{}],125:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_matchesStrictComparable.js", module);
-(function(){
-/**
- * A specialized version of `matchesProperty` for source values suitable
- * for strict equality comparisons, i.e. `===`.
- *
- * @private
- * @param {string} key The key of the property to get.
- * @param {*} srcValue The value to match.
- * @returns {Function} Returns the new spec function.
- */
-function matchesStrictComparable(key, srcValue) {
-  return function(object) {
-    if (object == null) {
-      return false;
-    }
-    return object[key] === srcValue &&
-      (srcValue !== undefined || (key in Object(object)));
-  };
-}
-
-module.exports = matchesStrictComparable;
-
-}).apply(this, arguments);
-
-},{}],126:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_memoizeCapped.js", module);
-(function(){
-var memoize = require('./memoize');
-
-/** Used as the maximum memoize cache size. */
-var MAX_MEMOIZE_SIZE = 500;
-
-/**
- * A specialized version of `_.memoize` which clears the memoized function's
- * cache when it exceeds `MAX_MEMOIZE_SIZE`.
- *
- * @private
- * @param {Function} func The function to have its output memoized.
- * @returns {Function} Returns the new memoized function.
- */
-function memoizeCapped(func) {
-  var result = memoize(func, function(key) {
-    if (cache.size === MAX_MEMOIZE_SIZE) {
-      cache.clear();
-    }
-    return key;
-  });
-
-  var cache = result.cache;
-  return result;
-}
-
-module.exports = memoizeCapped;
-
-}).apply(this, arguments);
-
-},{"./memoize":169}],127:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_nativeCreate.js", module);
-(function(){
-var getNative = require('./_getNative');
-
-/* Built-in method references that are verified to be native. */
-var nativeCreate = getNative(Object, 'create');
-
-module.exports = nativeCreate;
-
-}).apply(this, arguments);
-
-},{"./_getNative":96}],128:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_nativeKeys.js", module);
-(function(){
-var overArg = require('./_overArg');
-
-/* Built-in method references for those with the same name as other `lodash` methods. */
-var nativeKeys = overArg(Object.keys, Object);
-
-module.exports = nativeKeys;
-
-}).apply(this, arguments);
-
-},{"./_overArg":131}],129:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_nodeUtil.js", module);
-(function(){
-var freeGlobal = require('./_freeGlobal');
-
-/** Detect free variable `exports`. */
-var freeExports = typeof exports == 'object' && exports && !exports.nodeType && exports;
-
-/** Detect free variable `module`. */
-var freeModule = freeExports && typeof module == 'object' && module && !module.nodeType && module;
-
-/** Detect the popular CommonJS extension `module.exports`. */
-var moduleExports = freeModule && freeModule.exports === freeExports;
-
-/** Detect free variable `process` from Node.js. */
-var freeProcess = moduleExports && freeGlobal.process;
-
-/** Used to access faster Node.js helpers. */
-var nodeUtil = (function() {
-  try {
-    return freeProcess && freeProcess.binding && freeProcess.binding('util');
-  } catch (e) {}
-}());
-
-module.exports = nodeUtil;
-
-}).apply(this, arguments);
-
-},{"./_freeGlobal":92}],130:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_objectToString.js", module);
-(function(){
-/** Used for built-in method references. */
-var objectProto = Object.prototype;
-
-/**
- * Used to resolve the
- * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
- * of values.
- */
-var nativeObjectToString = objectProto.toString;
-
-/**
- * Converts `value` to a string using `Object.prototype.toString`.
- *
- * @private
- * @param {*} value The value to convert.
- * @returns {string} Returns the converted string.
- */
-function objectToString(value) {
-  return nativeObjectToString.call(value);
-}
-
-module.exports = objectToString;
-
-}).apply(this, arguments);
-
-},{}],131:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_overArg.js", module);
-(function(){
-/**
- * Creates a unary function that invokes `func` with its argument transformed.
- *
- * @private
- * @param {Function} func The function to wrap.
- * @param {Function} transform The argument transform.
- * @returns {Function} Returns the new function.
- */
-function overArg(func, transform) {
-  return function(arg) {
-    return func(transform(arg));
-  };
-}
-
-module.exports = overArg;
-
-}).apply(this, arguments);
-
-},{}],132:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_overRest.js", module);
-(function(){
-var apply = require('./_apply');
-
-/* Built-in method references for those with the same name as other `lodash` methods. */
-var nativeMax = Math.max;
-
-/**
- * A specialized version of `baseRest` which transforms the rest array.
- *
- * @private
- * @param {Function} func The function to apply a rest parameter to.
- * @param {number} [start=func.length-1] The start position of the rest parameter.
- * @param {Function} transform The rest array transform.
- * @returns {Function} Returns the new function.
- */
-function overRest(func, start, transform) {
-  start = nativeMax(start === undefined ? (func.length - 1) : start, 0);
-  return function() {
-    var args = arguments,
-        index = -1,
-        length = nativeMax(args.length - start, 0),
-        array = Array(length);
-
-    while (++index < length) {
-      array[index] = args[start + index];
-    }
-    index = -1;
-    var otherArgs = Array(start + 1);
-    while (++index < start) {
-      otherArgs[index] = args[index];
-    }
-    otherArgs[start] = transform(array);
-    return apply(func, this, otherArgs);
-  };
-}
-
-module.exports = overRest;
-
-}).apply(this, arguments);
-
-},{"./_apply":42}],133:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_root.js", module);
-(function(){
-var freeGlobal = require('./_freeGlobal');
-
-/** Detect free variable `self`. */
-var freeSelf = typeof self == 'object' && self && self.Object === Object && self;
-
-/** Used as a reference to the global object. */
-var root = freeGlobal || freeSelf || Function('return this')();
-
-module.exports = root;
-
-}).apply(this, arguments);
-
-},{"./_freeGlobal":92}],134:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_setCacheAdd.js", module);
-(function(){
-/** Used to stand-in for `undefined` hash values. */
-var HASH_UNDEFINED = '__lodash_hash_undefined__';
-
-/**
- * Adds `value` to the array cache.
- *
- * @private
- * @name add
- * @memberOf SetCache
- * @alias push
- * @param {*} value The value to cache.
- * @returns {Object} Returns the cache instance.
- */
-function setCacheAdd(value) {
-  this.__data__.set(value, HASH_UNDEFINED);
-  return this;
-}
-
-module.exports = setCacheAdd;
-
-}).apply(this, arguments);
-
-},{}],135:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_setCacheHas.js", module);
-(function(){
-/**
- * Checks if `value` is in the array cache.
- *
- * @private
- * @name has
- * @memberOf SetCache
- * @param {*} value The value to search for.
- * @returns {number} Returns `true` if `value` is found, else `false`.
- */
-function setCacheHas(value) {
-  return this.__data__.has(value);
-}
-
-module.exports = setCacheHas;
-
-}).apply(this, arguments);
-
-},{}],136:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_setToArray.js", module);
-(function(){
-/**
- * Converts `set` to an array of its values.
- *
- * @private
- * @param {Object} set The set to convert.
- * @returns {Array} Returns the values.
- */
-function setToArray(set) {
-  var index = -1,
-      result = Array(set.size);
-
-  set.forEach(function(value) {
-    result[++index] = value;
-  });
-  return result;
-}
-
-module.exports = setToArray;
-
-}).apply(this, arguments);
-
-},{}],137:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_setToString.js", module);
-(function(){
-var baseSetToString = require('./_baseSetToString'),
-    shortOut = require('./_shortOut');
-
-/**
- * Sets the `toString` method of `func` to return `string`.
- *
- * @private
- * @param {Function} func The function to modify.
- * @param {Function} string The `toString` result.
- * @returns {Function} Returns `func`.
- */
-var setToString = shortOut(baseSetToString);
-
-module.exports = setToString;
-
-}).apply(this, arguments);
-
-},{"./_baseSetToString":74,"./_shortOut":138}],138:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_shortOut.js", module);
-(function(){
-/** Used to detect hot functions by number of calls within a span of milliseconds. */
-var HOT_COUNT = 800,
-    HOT_SPAN = 16;
-
-/* Built-in method references for those with the same name as other `lodash` methods. */
-var nativeNow = Date.now;
-
-/**
- * Creates a function that'll short out and invoke `identity` instead
- * of `func` when it's called `HOT_COUNT` or more times in `HOT_SPAN`
- * milliseconds.
- *
- * @private
- * @param {Function} func The function to restrict.
- * @returns {Function} Returns the new shortable function.
- */
-function shortOut(func) {
-  var count = 0,
-      lastCalled = 0;
-
-  return function() {
-    var stamp = nativeNow(),
-        remaining = HOT_SPAN - (stamp - lastCalled);
-
-    lastCalled = stamp;
-    if (remaining > 0) {
-      if (++count >= HOT_COUNT) {
-        return arguments[0];
-      }
-    } else {
-      count = 0;
-    }
-    return func.apply(undefined, arguments);
-  };
-}
-
-module.exports = shortOut;
-
-}).apply(this, arguments);
-
-},{}],139:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_stackClear.js", module);
-(function(){
-var ListCache = require('./_ListCache');
-
-/**
- * Removes all key-value entries from the stack.
- *
- * @private
- * @name clear
- * @memberOf Stack
- */
-function stackClear() {
-  this.__data__ = new ListCache;
-  this.size = 0;
-}
-
-module.exports = stackClear;
-
-}).apply(this, arguments);
-
-},{"./_ListCache":32}],140:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_stackDelete.js", module);
-(function(){
-/**
- * Removes `key` and its value from the stack.
- *
- * @private
- * @name delete
- * @memberOf Stack
- * @param {string} key The key of the value to remove.
- * @returns {boolean} Returns `true` if the entry was removed, else `false`.
- */
-function stackDelete(key) {
-  var data = this.__data__,
-      result = data['delete'](key);
-
-  this.size = data.size;
-  return result;
-}
-
-module.exports = stackDelete;
-
-}).apply(this, arguments);
-
-},{}],141:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_stackGet.js", module);
-(function(){
-/**
- * Gets the stack value for `key`.
- *
- * @private
- * @name get
- * @memberOf Stack
- * @param {string} key The key of the value to get.
- * @returns {*} Returns the entry value.
- */
-function stackGet(key) {
-  return this.__data__.get(key);
-}
-
-module.exports = stackGet;
-
-}).apply(this, arguments);
-
-},{}],142:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_stackHas.js", module);
-(function(){
-/**
- * Checks if a stack value for `key` exists.
- *
- * @private
- * @name has
- * @memberOf Stack
- * @param {string} key The key of the entry to check.
- * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
- */
-function stackHas(key) {
-  return this.__data__.has(key);
-}
-
-module.exports = stackHas;
-
-}).apply(this, arguments);
-
-},{}],143:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_stackSet.js", module);
-(function(){
-var ListCache = require('./_ListCache'),
-    Map = require('./_Map'),
-    MapCache = require('./_MapCache');
-
-/** Used as the size to enable large array optimizations. */
-var LARGE_ARRAY_SIZE = 200;
-
-/**
- * Sets the stack `key` to `value`.
- *
- * @private
- * @name set
- * @memberOf Stack
- * @param {string} key The key of the value to set.
- * @param {*} value The value to set.
- * @returns {Object} Returns the stack cache instance.
- */
-function stackSet(key, value) {
-  var data = this.__data__;
-  if (data instanceof ListCache) {
-    var pairs = data.__data__;
-    if (!Map || (pairs.length < LARGE_ARRAY_SIZE - 1)) {
-      pairs.push([key, value]);
-      this.size = ++data.size;
-      return this;
-    }
-    data = this.__data__ = new MapCache(pairs);
-  }
-  data.set(key, value);
-  this.size = data.size;
-  return this;
-}
-
-module.exports = stackSet;
-
-}).apply(this, arguments);
-
-},{"./_ListCache":32,"./_Map":33,"./_MapCache":34}],144:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_stringToPath.js", module);
-(function(){
-var memoizeCapped = require('./_memoizeCapped');
-
-/** Used to match property names within property paths. */
-var reLeadingDot = /^\./,
-    rePropName = /[^.[\]]+|\[(?:(-?\d+(?:\.\d+)?)|(["'])((?:(?!\2)[^\\]|\\.)*?)\2)\]|(?=(?:\.|\[\])(?:\.|\[\]|$))/g;
-
-/** Used to match backslashes in property paths. */
-var reEscapeChar = /\\(\\)?/g;
-
-/**
- * Converts `string` to a property path array.
- *
- * @private
- * @param {string} string The string to convert.
- * @returns {Array} Returns the property path array.
- */
-var stringToPath = memoizeCapped(function(string) {
-  var result = [];
-  if (reLeadingDot.test(string)) {
-    result.push('');
-  }
-  string.replace(rePropName, function(match, number, quote, string) {
-    result.push(quote ? string.replace(reEscapeChar, '$1') : (number || match));
-  });
-  return result;
-});
-
-module.exports = stringToPath;
-
-}).apply(this, arguments);
-
-},{"./_memoizeCapped":126}],145:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_toKey.js", module);
-(function(){
-var isSymbol = require('./isSymbol');
-
-/** Used as references for various `Number` constants. */
-var INFINITY = 1 / 0;
-
-/**
- * Converts `value` to a string key if it's not a string or symbol.
- *
- * @private
- * @param {*} value The value to inspect.
- * @returns {string|symbol} Returns the key.
- */
-function toKey(value) {
-  if (typeof value == 'string' || isSymbol(value)) {
-    return value;
-  }
-  var result = (value + '');
-  return (result == '0' && (1 / value) == -INFINITY) ? '-0' : result;
-}
-
-module.exports = toKey;
-
-}).apply(this, arguments);
-
-},{"./isSymbol":164}],146:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/_toSource.js", module);
-(function(){
-/** Used for built-in method references. */
-var funcProto = Function.prototype;
-
-/** Used to resolve the decompiled source of functions. */
-var funcToString = funcProto.toString;
-
-/**
- * Converts `func` to its source code.
- *
- * @private
- * @param {Function} func The function to convert.
- * @returns {string} Returns the source code.
- */
-function toSource(func) {
-  if (func != null) {
-    try {
-      return funcToString.call(func);
-    } catch (e) {}
-    try {
-      return (func + '');
-    } catch (e) {}
-  }
-  return '';
-}
-
-module.exports = toSource;
-
-}).apply(this, arguments);
-
-},{}],147:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/assign.js", module);
-(function(){
-var assignValue = require('./_assignValue'),
-    copyObject = require('./_copyObject'),
-    createAssigner = require('./_createAssigner'),
-    isArrayLike = require('./isArrayLike'),
-    isPrototype = require('./_isPrototype'),
-    keys = require('./keys');
-
-/** Used for built-in method references. */
-var objectProto = Object.prototype;
-
-/** Used to check objects for own properties. */
-var hasOwnProperty = objectProto.hasOwnProperty;
-
-/**
- * Assigns own enumerable string keyed properties of source objects to the
- * destination object. Source objects are applied from left to right.
- * Subsequent sources overwrite property assignments of previous sources.
- *
- * **Note:** This method mutates `object` and is loosely based on
- * [`Object.assign`](https://mdn.io/Object/assign).
- *
- * @static
- * @memberOf _
- * @since 0.10.0
- * @category Object
- * @param {Object} object The destination object.
- * @param {...Object} [sources] The source objects.
- * @returns {Object} Returns `object`.
- * @see _.assignIn
- * @example
- *
- * function Foo() {
- *   this.a = 1;
- * }
- *
- * function Bar() {
- *   this.c = 3;
- * }
- *
- * Foo.prototype.b = 2;
- * Bar.prototype.d = 4;
- *
- * _.assign({ 'a': 0 }, new Foo, new Bar);
- * // => { 'a': 1, 'c': 3 }
- */
-var assign = createAssigner(function(object, source) {
-  if (isPrototype(source) || isArrayLike(source)) {
-    copyObject(source, keys(source), object);
-    return;
-  }
-  for (var key in source) {
-    if (hasOwnProperty.call(source, key)) {
-      assignValue(object, key, source[key]);
-    }
-  }
-});
-
-module.exports = assign;
-
-}).apply(this, arguments);
-
-},{"./_assignValue":49,"./_copyObject":83,"./_createAssigner":85,"./_isPrototype":112,"./isArrayLike":158,"./keys":166}],148:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/constant.js", module);
-(function(){
-/**
- * Creates a function that returns `value`.
- *
- * @static
- * @memberOf _
- * @since 2.4.0
- * @category Util
- * @param {*} value The value to return from the new function.
- * @returns {Function} Returns the new constant function.
- * @example
- *
- * var objects = _.times(2, _.constant({ 'a': 1 }));
- *
- * console.log(objects);
- * // => [{ 'a': 1 }, { 'a': 1 }]
- *
- * console.log(objects[0] === objects[1]);
- * // => true
- */
-function constant(value) {
-  return function() {
-    return value;
-  };
-}
-
-module.exports = constant;
-
-}).apply(this, arguments);
-
-},{}],149:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/eq.js", module);
-(function(){
-/**
- * Performs a
- * [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
- * comparison between two values to determine if they are equivalent.
- *
- * @static
- * @memberOf _
- * @since 4.0.0
- * @category Lang
- * @param {*} value The value to compare.
- * @param {*} other The other value to compare.
- * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
- * @example
- *
- * var object = { 'a': 1 };
- * var other = { 'a': 1 };
- *
- * _.eq(object, object);
- * // => true
- *
- * _.eq(object, other);
- * // => false
- *
- * _.eq('a', 'a');
- * // => true
- *
- * _.eq('a', Object('a'));
- * // => false
- *
- * _.eq(NaN, NaN);
- * // => true
- */
-function eq(value, other) {
-  return value === other || (value !== value && other !== other);
-}
-
-module.exports = eq;
-
-}).apply(this, arguments);
-
-},{}],150:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/filter.js", module);
-(function(){
-var arrayFilter = require('./_arrayFilter'),
-    baseFilter = require('./_baseFilter'),
-    baseIteratee = require('./_baseIteratee'),
-    isArray = require('./isArray');
-
-/**
- * Iterates over elements of `collection`, returning an array of all elements
- * `predicate` returns truthy for. The predicate is invoked with three
- * arguments: (value, index|key, collection).
- *
- * **Note:** Unlike `_.remove`, this method returns a new array.
- *
- * @static
- * @memberOf _
- * @since 0.1.0
- * @category Collection
- * @param {Array|Object} collection The collection to iterate over.
- * @param {Function} [predicate=_.identity] The function invoked per iteration.
- * @returns {Array} Returns the new filtered array.
- * @see _.reject
- * @example
- *
- * var users = [
- *   { 'user': 'barney', 'age': 36, 'active': true },
- *   { 'user': 'fred',   'age': 40, 'active': false }
- * ];
- *
- * _.filter(users, function(o) { return !o.active; });
- * // => objects for ['fred']
- *
- * // The `_.matches` iteratee shorthand.
- * _.filter(users, { 'age': 36, 'active': true });
- * // => objects for ['barney']
- *
- * // The `_.matchesProperty` iteratee shorthand.
- * _.filter(users, ['active', false]);
- * // => objects for ['fred']
- *
- * // The `_.property` iteratee shorthand.
- * _.filter(users, 'active');
- * // => objects for ['barney']
- */
-function filter(collection, predicate) {
-  var func = isArray(collection) ? arrayFilter : baseFilter;
-  return func(collection, baseIteratee(predicate, 3));
-}
-
-module.exports = filter;
-
-}).apply(this, arguments);
-
-},{"./_arrayFilter":44,"./_baseFilter":53,"./_baseIteratee":66,"./isArray":157}],151:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/forEach.js", module);
-(function(){
-var arrayEach = require('./_arrayEach'),
-    baseEach = require('./_baseEach'),
-    castFunction = require('./_castFunction'),
-    isArray = require('./isArray');
-
-/**
- * Iterates over elements of `collection` and invokes `iteratee` for each element.
- * The iteratee is invoked with three arguments: (value, index|key, collection).
- * Iteratee functions may exit iteration early by explicitly returning `false`.
- *
- * **Note:** As with other "Collections" methods, objects with a "length"
- * property are iterated like arrays. To avoid this behavior use `_.forIn`
- * or `_.forOwn` for object iteration.
- *
- * @static
- * @memberOf _
- * @since 0.1.0
- * @alias each
- * @category Collection
- * @param {Array|Object} collection The collection to iterate over.
- * @param {Function} [iteratee=_.identity] The function invoked per iteration.
- * @returns {Array|Object} Returns `collection`.
- * @see _.forEachRight
- * @example
- *
- * _.forEach([1, 2], function(value) {
- *   console.log(value);
- * });
- * // => Logs `1` then `2`.
- *
- * _.forEach({ 'a': 1, 'b': 2 }, function(value, key) {
- *   console.log(key);
- * });
- * // => Logs 'a' then 'b' (iteration order is not guaranteed).
- */
-function forEach(collection, iteratee) {
-  var func = isArray(collection) ? arrayEach : baseEach;
-  return func(collection, castFunction(iteratee));
-}
-
-module.exports = forEach;
-
-}).apply(this, arguments);
-
-},{"./_arrayEach":43,"./_baseEach":52,"./_castFunction":81,"./isArray":157}],152:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/forOwn.js", module);
-(function(){
-var baseForOwn = require('./_baseForOwn'),
-    castFunction = require('./_castFunction');
-
-/**
- * Iterates over own enumerable string keyed properties of an object and
- * invokes `iteratee` for each property. The iteratee is invoked with three
- * arguments: (value, key, object). Iteratee functions may exit iteration
- * early by explicitly returning `false`.
- *
- * @static
- * @memberOf _
- * @since 0.3.0
- * @category Object
- * @param {Object} object The object to iterate over.
- * @param {Function} [iteratee=_.identity] The function invoked per iteration.
- * @returns {Object} Returns `object`.
- * @see _.forOwnRight
- * @example
- *
- * function Foo() {
- *   this.a = 1;
- *   this.b = 2;
- * }
- *
- * Foo.prototype.c = 3;
- *
- * _.forOwn(new Foo, function(value, key) {
- *   console.log(key);
- * });
- * // => Logs 'a' then 'b' (iteration order is not guaranteed).
- */
-function forOwn(object, iteratee) {
-  return object && baseForOwn(object, castFunction(iteratee));
-}
-
-module.exports = forOwn;
-
-}).apply(this, arguments);
-
-},{"./_baseForOwn":55,"./_castFunction":81}],153:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/get.js", module);
-(function(){
-var baseGet = require('./_baseGet');
-
-/**
- * Gets the value at `path` of `object`. If the resolved value is
- * `undefined`, the `defaultValue` is returned in its place.
- *
- * @static
- * @memberOf _
- * @since 3.7.0
- * @category Object
- * @param {Object} object The object to query.
- * @param {Array|string} path The path of the property to get.
- * @param {*} [defaultValue] The value returned for `undefined` resolved values.
- * @returns {*} Returns the resolved value.
- * @example
- *
- * var object = { 'a': [{ 'b': { 'c': 3 } }] };
- *
- * _.get(object, 'a[0].b.c');
- * // => 3
- *
- * _.get(object, ['a', '0', 'b', 'c']);
- * // => 3
- *
- * _.get(object, 'a.b.c', 'default');
- * // => 'default'
- */
-function get(object, path, defaultValue) {
-  var result = object == null ? undefined : baseGet(object, path);
-  return result === undefined ? defaultValue : result;
-}
-
-module.exports = get;
-
-}).apply(this, arguments);
-
-},{"./_baseGet":56}],154:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/hasIn.js", module);
-(function(){
-var baseHasIn = require('./_baseHasIn'),
-    hasPath = require('./_hasPath');
-
-/**
- * Checks if `path` is a direct or inherited property of `object`.
- *
- * @static
- * @memberOf _
- * @since 4.0.0
- * @category Object
- * @param {Object} object The object to query.
- * @param {Array|string} path The path to check.
- * @returns {boolean} Returns `true` if `path` exists, else `false`.
- * @example
- *
- * var object = _.create({ 'a': _.create({ 'b': 2 }) });
- *
- * _.hasIn(object, 'a');
- * // => true
- *
- * _.hasIn(object, 'a.b');
- * // => true
- *
- * _.hasIn(object, ['a', 'b']);
- * // => true
- *
- * _.hasIn(object, 'b');
- * // => false
- */
-function hasIn(object, path) {
-  return object != null && hasPath(object, path, baseHasIn);
-}
-
-module.exports = hasIn;
-
-}).apply(this, arguments);
-
-},{"./_baseHasIn":59,"./_hasPath":101}],155:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/identity.js", module);
-(function(){
-/**
- * This method returns the first argument it receives.
- *
- * @static
- * @since 0.1.0
- * @memberOf _
- * @category Util
- * @param {*} value Any value.
- * @returns {*} Returns `value`.
- * @example
- *
- * var object = { 'a': 1 };
- *
- * console.log(_.identity(object) === object);
- * // => true
- */
-function identity(value) {
-  return value;
-}
-
-module.exports = identity;
-
-}).apply(this, arguments);
-
-},{}],156:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/isArguments.js", module);
-(function(){
-var baseIsArguments = require('./_baseIsArguments'),
-    isObjectLike = require('./isObjectLike');
-
-/** Used for built-in method references. */
-var objectProto = Object.prototype;
-
-/** Used to check objects for own properties. */
-var hasOwnProperty = objectProto.hasOwnProperty;
-
-/** Built-in value references. */
-var propertyIsEnumerable = objectProto.propertyIsEnumerable;
-
-/**
- * Checks if `value` is likely an `arguments` object.
- *
- * @static
- * @memberOf _
- * @since 0.1.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is an `arguments` object,
- *  else `false`.
- * @example
- *
- * _.isArguments(function() { return arguments; }());
- * // => true
- *
- * _.isArguments([1, 2, 3]);
- * // => false
- */
-var isArguments = baseIsArguments(function() { return arguments; }()) ? baseIsArguments : function(value) {
-  return isObjectLike(value) && hasOwnProperty.call(value, 'callee') &&
-    !propertyIsEnumerable.call(value, 'callee');
-};
-
-module.exports = isArguments;
-
-}).apply(this, arguments);
-
-},{"./_baseIsArguments":60,"./isObjectLike":163}],157:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/isArray.js", module);
-(function(){
-/**
- * Checks if `value` is classified as an `Array` object.
- *
- * @static
- * @memberOf _
- * @since 0.1.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is an array, else `false`.
- * @example
- *
- * _.isArray([1, 2, 3]);
- * // => true
- *
- * _.isArray(document.body.children);
- * // => false
- *
- * _.isArray('abc');
- * // => false
- *
- * _.isArray(_.noop);
- * // => false
- */
-var isArray = Array.isArray;
-
-module.exports = isArray;
-
-}).apply(this, arguments);
-
-},{}],158:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/isArrayLike.js", module);
-(function(){
-var isFunction = require('./isFunction'),
-    isLength = require('./isLength');
-
-/**
- * Checks if `value` is array-like. A value is considered array-like if it's
- * not a function and has a `value.length` that's an integer greater than or
- * equal to `0` and less than or equal to `Number.MAX_SAFE_INTEGER`.
- *
- * @static
- * @memberOf _
- * @since 4.0.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is array-like, else `false`.
- * @example
- *
- * _.isArrayLike([1, 2, 3]);
- * // => true
- *
- * _.isArrayLike(document.body.children);
- * // => true
- *
- * _.isArrayLike('abc');
- * // => true
- *
- * _.isArrayLike(_.noop);
- * // => false
- */
-function isArrayLike(value) {
-  return value != null && isLength(value.length) && !isFunction(value);
-}
-
-module.exports = isArrayLike;
-
-}).apply(this, arguments);
-
-},{"./isFunction":160,"./isLength":161}],159:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/isBuffer.js", module);
-(function(){
-var root = require('./_root'),
-    stubFalse = require('./stubFalse');
-
-/** Detect free variable `exports`. */
-var freeExports = typeof exports == 'object' && exports && !exports.nodeType && exports;
-
-/** Detect free variable `module`. */
-var freeModule = freeExports && typeof module == 'object' && module && !module.nodeType && module;
-
-/** Detect the popular CommonJS extension `module.exports`. */
-var moduleExports = freeModule && freeModule.exports === freeExports;
-
-/** Built-in value references. */
-var Buffer = moduleExports ? root.Buffer : undefined;
-
-/* Built-in method references for those with the same name as other `lodash` methods. */
-var nativeIsBuffer = Buffer ? Buffer.isBuffer : undefined;
-
-/**
- * Checks if `value` is a buffer.
- *
- * @static
- * @memberOf _
- * @since 4.3.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a buffer, else `false`.
- * @example
- *
- * _.isBuffer(new Buffer(2));
- * // => true
- *
- * _.isBuffer(new Uint8Array(2));
- * // => false
- */
-var isBuffer = nativeIsBuffer || stubFalse;
-
-module.exports = isBuffer;
-
-}).apply(this, arguments);
-
-},{"./_root":133,"./stubFalse":173}],160:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/isFunction.js", module);
-(function(){
-var baseGetTag = require('./_baseGetTag'),
-    isObject = require('./isObject');
-
-/** `Object#toString` result references. */
-var asyncTag = '[object AsyncFunction]',
-    funcTag = '[object Function]',
-    genTag = '[object GeneratorFunction]',
-    proxyTag = '[object Proxy]';
-
-/**
- * Checks if `value` is classified as a `Function` object.
- *
- * @static
- * @memberOf _
- * @since 0.1.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a function, else `false`.
- * @example
- *
- * _.isFunction(_);
- * // => true
- *
- * _.isFunction(/abc/);
- * // => false
- */
-function isFunction(value) {
-  if (!isObject(value)) {
-    return false;
-  }
-  // The use of `Object#toString` avoids issues with the `typeof` operator
-  // in Safari 9 which returns 'object' for typed arrays and other constructors.
-  var tag = baseGetTag(value);
-  return tag == funcTag || tag == genTag || tag == asyncTag || tag == proxyTag;
-}
-
-module.exports = isFunction;
-
-}).apply(this, arguments);
-
-},{"./_baseGetTag":58,"./isObject":162}],161:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/isLength.js", module);
-(function(){
-/** Used as references for various `Number` constants. */
-var MAX_SAFE_INTEGER = 9007199254740991;
-
-/**
- * Checks if `value` is a valid array-like length.
- *
- * **Note:** This method is loosely based on
- * [`ToLength`](http://ecma-international.org/ecma-262/7.0/#sec-tolength).
- *
- * @static
- * @memberOf _
- * @since 4.0.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a valid length, else `false`.
- * @example
- *
- * _.isLength(3);
- * // => true
- *
- * _.isLength(Number.MIN_VALUE);
- * // => false
- *
- * _.isLength(Infinity);
- * // => false
- *
- * _.isLength('3');
- * // => false
- */
-function isLength(value) {
-  return typeof value == 'number' &&
-    value > -1 && value % 1 == 0 && value <= MAX_SAFE_INTEGER;
-}
-
-module.exports = isLength;
-
-}).apply(this, arguments);
-
-},{}],162:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/isObject.js", module);
-(function(){
-/**
- * Checks if `value` is the
- * [language type](http://www.ecma-international.org/ecma-262/7.0/#sec-ecmascript-language-types)
- * of `Object`. (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
- *
- * @static
- * @memberOf _
- * @since 0.1.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is an object, else `false`.
- * @example
- *
- * _.isObject({});
- * // => true
- *
- * _.isObject([1, 2, 3]);
- * // => true
- *
- * _.isObject(_.noop);
- * // => true
- *
- * _.isObject(null);
- * // => false
- */
-function isObject(value) {
-  var type = typeof value;
-  return value != null && (type == 'object' || type == 'function');
-}
-
-module.exports = isObject;
-
-}).apply(this, arguments);
-
-},{}],163:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/isObjectLike.js", module);
-(function(){
-/**
- * Checks if `value` is object-like. A value is object-like if it's not `null`
- * and has a `typeof` result of "object".
- *
- * @static
- * @memberOf _
- * @since 4.0.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
- * @example
- *
- * _.isObjectLike({});
- * // => true
- *
- * _.isObjectLike([1, 2, 3]);
- * // => true
- *
- * _.isObjectLike(_.noop);
- * // => false
- *
- * _.isObjectLike(null);
- * // => false
- */
-function isObjectLike(value) {
-  return value != null && typeof value == 'object';
-}
-
-module.exports = isObjectLike;
-
-}).apply(this, arguments);
-
-},{}],164:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/isSymbol.js", module);
-(function(){
-var baseGetTag = require('./_baseGetTag'),
-    isObjectLike = require('./isObjectLike');
-
-/** `Object#toString` result references. */
-var symbolTag = '[object Symbol]';
-
-/**
- * Checks if `value` is classified as a `Symbol` primitive or object.
- *
- * @static
- * @memberOf _
- * @since 4.0.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a symbol, else `false`.
- * @example
- *
- * _.isSymbol(Symbol.iterator);
- * // => true
- *
- * _.isSymbol('abc');
- * // => false
- */
-function isSymbol(value) {
-  return typeof value == 'symbol' ||
-    (isObjectLike(value) && baseGetTag(value) == symbolTag);
-}
-
-module.exports = isSymbol;
-
-}).apply(this, arguments);
-
-},{"./_baseGetTag":58,"./isObjectLike":163}],165:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/isTypedArray.js", module);
-(function(){
-var baseIsTypedArray = require('./_baseIsTypedArray'),
-    baseUnary = require('./_baseUnary'),
-    nodeUtil = require('./_nodeUtil');
-
-/* Node.js helper references. */
-var nodeIsTypedArray = nodeUtil && nodeUtil.isTypedArray;
-
-/**
- * Checks if `value` is classified as a typed array.
- *
- * @static
- * @memberOf _
- * @since 3.0.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a typed array, else `false`.
- * @example
- *
- * _.isTypedArray(new Uint8Array);
- * // => true
- *
- * _.isTypedArray([]);
- * // => false
- */
-var isTypedArray = nodeIsTypedArray ? baseUnary(nodeIsTypedArray) : baseIsTypedArray;
-
-module.exports = isTypedArray;
-
-}).apply(this, arguments);
-
-},{"./_baseIsTypedArray":65,"./_baseUnary":78,"./_nodeUtil":129}],166:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/keys.js", module);
-(function(){
-var arrayLikeKeys = require('./_arrayLikeKeys'),
-    baseKeys = require('./_baseKeys'),
-    isArrayLike = require('./isArrayLike');
-
-/**
- * Creates an array of the own enumerable property names of `object`.
- *
- * **Note:** Non-object values are coerced to objects. See the
- * [ES spec](http://ecma-international.org/ecma-262/7.0/#sec-object.keys)
- * for more details.
- *
- * @static
- * @since 0.1.0
- * @memberOf _
- * @category Object
- * @param {Object} object The object to query.
- * @returns {Array} Returns the array of property names.
- * @example
- *
- * function Foo() {
- *   this.a = 1;
- *   this.b = 2;
- * }
- *
- * Foo.prototype.c = 3;
- *
- * _.keys(new Foo);
- * // => ['a', 'b'] (iteration order is not guaranteed)
- *
- * _.keys('hi');
- * // => ['0', '1']
- */
-function keys(object) {
-  return isArrayLike(object) ? arrayLikeKeys(object) : baseKeys(object);
-}
-
-module.exports = keys;
-
-}).apply(this, arguments);
-
-},{"./_arrayLikeKeys":45,"./_baseKeys":67,"./isArrayLike":158}],167:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/map.js", module);
-(function(){
-var arrayMap = require('./_arrayMap'),
-    baseIteratee = require('./_baseIteratee'),
-    baseMap = require('./_baseMap'),
-    isArray = require('./isArray');
-
-/**
- * Creates an array of values by running each element in `collection` thru
- * `iteratee`. The iteratee is invoked with three arguments:
- * (value, index|key, collection).
- *
- * Many lodash methods are guarded to work as iteratees for methods like
- * `_.every`, `_.filter`, `_.map`, `_.mapValues`, `_.reject`, and `_.some`.
- *
- * The guarded methods are:
- * `ary`, `chunk`, `curry`, `curryRight`, `drop`, `dropRight`, `every`,
- * `fill`, `invert`, `parseInt`, `random`, `range`, `rangeRight`, `repeat`,
- * `sampleSize`, `slice`, `some`, `sortBy`, `split`, `take`, `takeRight`,
- * `template`, `trim`, `trimEnd`, `trimStart`, and `words`
- *
- * @static
- * @memberOf _
- * @since 0.1.0
- * @category Collection
- * @param {Array|Object} collection The collection to iterate over.
- * @param {Function} [iteratee=_.identity] The function invoked per iteration.
- * @returns {Array} Returns the new mapped array.
- * @example
- *
- * function square(n) {
- *   return n * n;
- * }
- *
- * _.map([4, 8], square);
- * // => [16, 64]
- *
- * _.map({ 'a': 4, 'b': 8 }, square);
- * // => [16, 64] (iteration order is not guaranteed)
- *
- * var users = [
- *   { 'user': 'barney' },
- *   { 'user': 'fred' }
- * ];
- *
- * // The `_.property` iteratee shorthand.
- * _.map(users, 'user');
- * // => ['barney', 'fred']
- */
-function map(collection, iteratee) {
-  var func = isArray(collection) ? arrayMap : baseMap;
-  return func(collection, baseIteratee(iteratee, 3));
-}
-
-module.exports = map;
-
-}).apply(this, arguments);
-
-},{"./_arrayMap":46,"./_baseIteratee":66,"./_baseMap":68,"./isArray":157}],168:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/mapValues.js", module);
-(function(){
-var baseAssignValue = require('./_baseAssignValue'),
-    baseForOwn = require('./_baseForOwn'),
-    baseIteratee = require('./_baseIteratee');
-
-/**
- * Creates an object with the same keys as `object` and values generated
- * by running each own enumerable string keyed property of `object` thru
- * `iteratee`. The iteratee is invoked with three arguments:
- * (value, key, object).
- *
- * @static
- * @memberOf _
- * @since 2.4.0
- * @category Object
- * @param {Object} object The object to iterate over.
- * @param {Function} [iteratee=_.identity] The function invoked per iteration.
- * @returns {Object} Returns the new mapped object.
- * @see _.mapKeys
- * @example
- *
- * var users = {
- *   'fred':    { 'user': 'fred',    'age': 40 },
- *   'pebbles': { 'user': 'pebbles', 'age': 1 }
- * };
- *
- * _.mapValues(users, function(o) { return o.age; });
- * // => { 'fred': 40, 'pebbles': 1 } (iteration order is not guaranteed)
- *
- * // The `_.property` iteratee shorthand.
- * _.mapValues(users, 'age');
- * // => { 'fred': 40, 'pebbles': 1 } (iteration order is not guaranteed)
- */
-function mapValues(object, iteratee) {
-  var result = {};
-  iteratee = baseIteratee(iteratee, 3);
-
-  baseForOwn(object, function(value, key, object) {
-    baseAssignValue(result, key, iteratee(value, key, object));
-  });
-  return result;
-}
-
-module.exports = mapValues;
-
-}).apply(this, arguments);
-
-},{"./_baseAssignValue":51,"./_baseForOwn":55,"./_baseIteratee":66}],169:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/memoize.js", module);
-(function(){
-var MapCache = require('./_MapCache');
-
-/** Error message constants. */
-var FUNC_ERROR_TEXT = 'Expected a function';
-
-/**
- * Creates a function that memoizes the result of `func`. If `resolver` is
- * provided, it determines the cache key for storing the result based on the
- * arguments provided to the memoized function. By default, the first argument
- * provided to the memoized function is used as the map cache key. The `func`
- * is invoked with the `this` binding of the memoized function.
- *
- * **Note:** The cache is exposed as the `cache` property on the memoized
- * function. Its creation may be customized by replacing the `_.memoize.Cache`
- * constructor with one whose instances implement the
- * [`Map`](http://ecma-international.org/ecma-262/7.0/#sec-properties-of-the-map-prototype-object)
- * method interface of `clear`, `delete`, `get`, `has`, and `set`.
- *
- * @static
- * @memberOf _
- * @since 0.1.0
- * @category Function
- * @param {Function} func The function to have its output memoized.
- * @param {Function} [resolver] The function to resolve the cache key.
- * @returns {Function} Returns the new memoized function.
- * @example
- *
- * var object = { 'a': 1, 'b': 2 };
- * var other = { 'c': 3, 'd': 4 };
- *
- * var values = _.memoize(_.values);
- * values(object);
- * // => [1, 2]
- *
- * values(other);
- * // => [3, 4]
- *
- * object.a = 2;
- * values(object);
- * // => [1, 2]
- *
- * // Modify the result cache.
- * values.cache.set(object, ['a', 'b']);
- * values(object);
- * // => ['a', 'b']
- *
- * // Replace `_.memoize.Cache`.
- * _.memoize.Cache = WeakMap;
- */
-function memoize(func, resolver) {
-  if (typeof func != 'function' || (resolver != null && typeof resolver != 'function')) {
-    throw new TypeError(FUNC_ERROR_TEXT);
-  }
-  var memoized = function() {
-    var args = arguments,
-        key = resolver ? resolver.apply(this, args) : args[0],
-        cache = memoized.cache;
-
-    if (cache.has(key)) {
-      return cache.get(key);
-    }
-    var result = func.apply(this, args);
-    memoized.cache = cache.set(key, result) || cache;
-    return result;
-  };
-  memoized.cache = new (memoize.Cache || MapCache);
-  return memoized;
-}
-
-// Expose `MapCache`.
-memoize.Cache = MapCache;
-
-module.exports = memoize;
-
-}).apply(this, arguments);
-
-},{"./_MapCache":34}],170:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/property.js", module);
-(function(){
-var baseProperty = require('./_baseProperty'),
-    basePropertyDeep = require('./_basePropertyDeep'),
-    isKey = require('./_isKey'),
-    toKey = require('./_toKey');
-
-/**
- * Creates a function that returns the value at `path` of a given object.
- *
- * @static
- * @memberOf _
- * @since 2.4.0
- * @category Util
- * @param {Array|string} path The path of the property to get.
- * @returns {Function} Returns the new accessor function.
- * @example
- *
- * var objects = [
- *   { 'a': { 'b': 2 } },
- *   { 'a': { 'b': 1 } }
- * ];
- *
- * _.map(objects, _.property('a.b'));
- * // => [2, 1]
- *
- * _.map(_.sortBy(objects, _.property(['a', 'b'])), 'a.b');
- * // => [1, 2]
- */
-function property(path) {
-  return isKey(path) ? baseProperty(toKey(path)) : basePropertyDeep(path);
-}
-
-module.exports = property;
-
-}).apply(this, arguments);
-
-},{"./_baseProperty":71,"./_basePropertyDeep":72,"./_isKey":109,"./_toKey":145}],171:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/some.js", module);
-(function(){
-var arraySome = require('./_arraySome'),
-    baseIteratee = require('./_baseIteratee'),
-    baseSome = require('./_baseSome'),
-    isArray = require('./isArray'),
-    isIterateeCall = require('./_isIterateeCall');
-
-/**
- * Checks if `predicate` returns truthy for **any** element of `collection`.
- * Iteration is stopped once `predicate` returns truthy. The predicate is
- * invoked with three arguments: (value, index|key, collection).
- *
- * @static
- * @memberOf _
- * @since 0.1.0
- * @category Collection
- * @param {Array|Object} collection The collection to iterate over.
- * @param {Function} [predicate=_.identity] The function invoked per iteration.
- * @param- {Object} [guard] Enables use as an iteratee for methods like `_.map`.
- * @returns {boolean} Returns `true` if any element passes the predicate check,
- *  else `false`.
- * @example
- *
- * _.some([null, 0, 'yes', false], Boolean);
- * // => true
- *
- * var users = [
- *   { 'user': 'barney', 'active': true },
- *   { 'user': 'fred',   'active': false }
- * ];
- *
- * // The `_.matches` iteratee shorthand.
- * _.some(users, { 'user': 'barney', 'active': false });
- * // => false
- *
- * // The `_.matchesProperty` iteratee shorthand.
- * _.some(users, ['active', false]);
- * // => true
- *
- * // The `_.property` iteratee shorthand.
- * _.some(users, 'active');
- * // => true
- */
-function some(collection, predicate, guard) {
-  var func = isArray(collection) ? arraySome : baseSome;
-  if (guard && isIterateeCall(collection, predicate, guard)) {
-    predicate = undefined;
-  }
-  return func(collection, baseIteratee(predicate, 3));
-}
-
-module.exports = some;
-
-}).apply(this, arguments);
-
-},{"./_arraySome":48,"./_baseIteratee":66,"./_baseSome":75,"./_isIterateeCall":108,"./isArray":157}],172:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/stubArray.js", module);
-(function(){
-/**
- * This method returns a new empty array.
- *
- * @static
- * @memberOf _
- * @since 4.13.0
- * @category Util
- * @returns {Array} Returns the new empty array.
- * @example
- *
- * var arrays = _.times(2, _.stubArray);
- *
- * console.log(arrays);
- * // => [[], []]
- *
- * console.log(arrays[0] === arrays[1]);
- * // => false
- */
-function stubArray() {
-  return [];
-}
-
-module.exports = stubArray;
-
-}).apply(this, arguments);
-
-},{}],173:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/stubFalse.js", module);
-(function(){
-/**
- * This method returns `false`.
- *
- * @static
- * @memberOf _
- * @since 4.13.0
- * @category Util
- * @returns {boolean} Returns `false`.
- * @example
- *
- * _.times(2, _.stubFalse);
- * // => [false, false]
- */
-function stubFalse() {
-  return false;
-}
-
-module.exports = stubFalse;
-
-}).apply(this, arguments);
-
-},{}],174:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/toString.js", module);
-(function(){
-var baseToString = require('./_baseToString');
-
-/**
- * Converts `value` to a string. An empty string is returned for `null`
- * and `undefined` values. The sign of `-0` is preserved.
- *
- * @static
- * @memberOf _
- * @since 4.0.0
- * @category Lang
- * @param {*} value The value to convert.
- * @returns {string} Returns the converted string.
- * @example
- *
- * _.toString(null);
- * // => ''
- *
- * _.toString(-0);
- * // => '-0'
- *
- * _.toString([1, 2, 3]);
- * // => '1,2,3'
- */
-function toString(value) {
-  return value == null ? '' : baseToString(value);
-}
-
-module.exports = toString;
-
-}).apply(this, arguments);
-
-},{"./_baseToString":77}],175:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/lodash/zipObject.js", module);
-(function(){
-var assignValue = require('./_assignValue'),
-    baseZipObject = require('./_baseZipObject');
-
-/**
- * This method is like `_.fromPairs` except that it accepts two arrays,
- * one of property identifiers and one of corresponding values.
- *
- * @static
- * @memberOf _
- * @since 0.4.0
- * @category Array
- * @param {Array} [props=[]] The property identifiers.
- * @param {Array} [values=[]] The property values.
- * @returns {Object} Returns the new object.
- * @example
- *
- * _.zipObject(['a', 'b'], [1, 2]);
- * // => { 'a': 1, 'b': 2 }
- */
-function zipObject(props, values) {
-  return baseZipObject(props || [], values || [], assignValue);
-}
-
-module.exports = zipObject;
-
-}).apply(this, arguments);
-
-},{"./_assignValue":49,"./_baseZipObject":79}],176:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/socket.io-client/lib/index.js", module);
-(function(){
-
-/**
- * Module dependencies.
- */
-
-var url = require('./url');
-var parser = require('socket.io-parser');
-var Manager = require('./manager');
-var debug = require('debug')('socket.io-client');
-
-/**
- * Module exports.
- */
-
-module.exports = exports = lookup;
-
-/**
- * Managers cache.
- */
-
-var cache = exports.managers = {};
-
-/**
- * Looks up an existing `Manager` for multiplexing.
- * If the user summons:
- *
- *   `io('http://localhost/a');`
- *   `io('http://localhost/b');`
- *
- * We reuse the existing instance based on same scheme/port/host,
- * and we initialize sockets for each namespace.
- *
- * @api public
- */
-
-function lookup (uri, opts) {
-  if (typeof uri === 'object') {
-    opts = uri;
-    uri = undefined;
-  }
-
-  opts = opts || {};
-
-  var parsed = url(uri);
-  var source = parsed.source;
-  var id = parsed.id;
-  var path = parsed.path;
-  var sameNamespace = cache[id] && path in cache[id].nsps;
-  var newConnection = opts.forceNew || opts['force new connection'] ||
-                      false === opts.multiplex || sameNamespace;
-
-  var io;
-
-  if (newConnection) {
-    debug('ignoring socket cache for %s', source);
-    io = Manager(source, opts);
-  } else {
-    if (!cache[id]) {
-      debug('new io instance for %s', source);
-      cache[id] = Manager(source, opts);
-    }
-    io = cache[id];
-  }
-  if (parsed.query && !opts.query) {
-    opts.query = parsed.query;
-  } else if (opts && 'object' === typeof opts.query) {
-    opts.query = encodeQueryString(opts.query);
-  }
-  return io.socket(parsed.path, opts);
-}
-/**
- *  Helper method to parse query objects to string.
- * @param {object} query
- * @returns {string}
- */
-function encodeQueryString (obj) {
-  var str = [];
-  for (var p in obj) {
-    if (obj.hasOwnProperty(p)) {
-      str.push(encodeURIComponent(p) + '=' + encodeURIComponent(obj[p]));
-    }
-  }
-  return str.join('&');
-}
-/**
- * Protocol version.
- *
- * @api public
- */
-
-exports.protocol = parser.protocol;
-
-/**
- * `connect`.
- *
- * @param {String} uri
- * @api public
- */
-
-exports.connect = lookup;
-
-/**
- * Expose constructors for standalone build.
- *
- * @api public
- */
-
-exports.Manager = require('./manager');
-exports.Socket = require('./socket');
-
-}).apply(this, arguments);
-
-},{"./manager":177,"./socket":179,"./url":180,"debug":184,"socket.io-parser":214}],177:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/socket.io-client/lib/manager.js", module);
-(function(){
-
-/**
- * Module dependencies.
- */
-
-var eio = require('engine.io-client');
-var Socket = require('./socket');
-var Emitter = require('component-emitter');
-var parser = require('socket.io-parser');
-var on = require('./on');
-var bind = require('component-bind');
-var debug = require('debug')('socket.io-client:manager');
-var indexOf = require('indexof');
-var Backoff = require('backo2');
-
-/**
- * IE6+ hasOwnProperty
- */
-
-var has = Object.prototype.hasOwnProperty;
-
-/**
- * Module exports
- */
-
-module.exports = Manager;
-
-/**
- * `Manager` constructor.
- *
- * @param {String} engine instance or engine uri/opts
- * @param {Object} options
- * @api public
- */
-
-function Manager (uri, opts) {
-  if (!(this instanceof Manager)) return new Manager(uri, opts);
-  if (uri && ('object' === typeof uri)) {
-    opts = uri;
-    uri = undefined;
-  }
-  opts = opts || {};
-
-  opts.path = opts.path || '/socket.io';
-  this.nsps = {};
-  this.subs = [];
-  this.opts = opts;
-  this.reconnection(opts.reconnection !== false);
-  this.reconnectionAttempts(opts.reconnectionAttempts || Infinity);
-  this.reconnectionDelay(opts.reconnectionDelay || 1000);
-  this.reconnectionDelayMax(opts.reconnectionDelayMax || 5000);
-  this.randomizationFactor(opts.randomizationFactor || 0.5);
-  this.backoff = new Backoff({
-    min: this.reconnectionDelay(),
-    max: this.reconnectionDelayMax(),
-    jitter: this.randomizationFactor()
-  });
-  this.timeout(null == opts.timeout ? 20000 : opts.timeout);
-  this.readyState = 'closed';
-  this.uri = uri;
-  this.connecting = [];
-  this.lastPing = null;
-  this.encoding = false;
-  this.packetBuffer = [];
-  this.encoder = new parser.Encoder();
-  this.decoder = new parser.Decoder();
-  this.autoConnect = opts.autoConnect !== false;
-  if (this.autoConnect) this.open();
-}
-
-/**
- * Propagate given event to sockets and emit on `this`
- *
- * @api private
- */
-
-Manager.prototype.emitAll = function () {
-  this.emit.apply(this, arguments);
-  for (var nsp in this.nsps) {
-    if (has.call(this.nsps, nsp)) {
-      this.nsps[nsp].emit.apply(this.nsps[nsp], arguments);
-    }
-  }
-};
-
-/**
- * Update `socket.id` of all sockets
- *
- * @api private
- */
-
-Manager.prototype.updateSocketIds = function () {
-  for (var nsp in this.nsps) {
-    if (has.call(this.nsps, nsp)) {
-      this.nsps[nsp].id = this.engine.id;
-    }
-  }
-};
-
-/**
- * Mix in `Emitter`.
- */
-
-Emitter(Manager.prototype);
-
-/**
- * Sets the `reconnection` config.
- *
- * @param {Boolean} true/false if it should automatically reconnect
- * @return {Manager} self or value
- * @api public
- */
-
-Manager.prototype.reconnection = function (v) {
-  if (!arguments.length) return this._reconnection;
-  this._reconnection = !!v;
-  return this;
-};
-
-/**
- * Sets the reconnection attempts config.
- *
- * @param {Number} max reconnection attempts before giving up
- * @return {Manager} self or value
- * @api public
- */
-
-Manager.prototype.reconnectionAttempts = function (v) {
-  if (!arguments.length) return this._reconnectionAttempts;
-  this._reconnectionAttempts = v;
-  return this;
-};
-
-/**
- * Sets the delay between reconnections.
- *
- * @param {Number} delay
- * @return {Manager} self or value
- * @api public
- */
-
-Manager.prototype.reconnectionDelay = function (v) {
-  if (!arguments.length) return this._reconnectionDelay;
-  this._reconnectionDelay = v;
-  this.backoff && this.backoff.setMin(v);
-  return this;
-};
-
-Manager.prototype.randomizationFactor = function (v) {
-  if (!arguments.length) return this._randomizationFactor;
-  this._randomizationFactor = v;
-  this.backoff && this.backoff.setJitter(v);
-  return this;
-};
-
-/**
- * Sets the maximum delay between reconnections.
- *
- * @param {Number} delay
- * @return {Manager} self or value
- * @api public
- */
-
-Manager.prototype.reconnectionDelayMax = function (v) {
-  if (!arguments.length) return this._reconnectionDelayMax;
-  this._reconnectionDelayMax = v;
-  this.backoff && this.backoff.setMax(v);
-  return this;
-};
-
-/**
- * Sets the connection timeout. `false` to disable
- *
- * @return {Manager} self or value
- * @api public
- */
-
-Manager.prototype.timeout = function (v) {
-  if (!arguments.length) return this._timeout;
-  this._timeout = v;
-  return this;
-};
-
-/**
- * Starts trying to reconnect if reconnection is enabled and we have not
- * started reconnecting yet
- *
- * @api private
- */
-
-Manager.prototype.maybeReconnectOnOpen = function () {
-  // Only try to reconnect if it's the first time we're connecting
-  if (!this.reconnecting && this._reconnection && this.backoff.attempts === 0) {
-    // keeps reconnection from firing twice for the same reconnection loop
-    this.reconnect();
-  }
-};
-
-/**
- * Sets the current transport `socket`.
- *
- * @param {Function} optional, callback
- * @return {Manager} self
- * @api public
- */
-
-Manager.prototype.open =
-Manager.prototype.connect = function (fn, opts) {
-  debug('readyState %s', this.readyState);
-  if (~this.readyState.indexOf('open')) return this;
-
-  debug('opening %s', this.uri);
-  this.engine = eio(this.uri, this.opts);
-  var socket = this.engine;
-  var self = this;
-  this.readyState = 'opening';
-  this.skipReconnect = false;
-
-  // emit `open`
-  var openSub = on(socket, 'open', function () {
-    self.onopen();
-    fn && fn();
-  });
-
-  // emit `connect_error`
-  var errorSub = on(socket, 'error', function (data) {
-    debug('connect_error');
-    self.cleanup();
-    self.readyState = 'closed';
-    self.emitAll('connect_error', data);
-    if (fn) {
-      var err = new Error('Connection error');
-      err.data = data;
-      fn(err);
-    } else {
-      // Only do this if there is no fn to handle the error
-      self.maybeReconnectOnOpen();
-    }
-  });
-
-  // emit `connect_timeout`
-  if (false !== this._timeout) {
-    var timeout = this._timeout;
-    debug('connect attempt will timeout after %d', timeout);
-
-    // set timer
-    var timer = setTimeout(function () {
-      debug('connect attempt timed out after %d', timeout);
-      openSub.destroy();
-      socket.close();
-      socket.emit('error', 'timeout');
-      self.emitAll('connect_timeout', timeout);
-    }, timeout);
-
-    this.subs.push({
-      destroy: function () {
-        clearTimeout(timer);
-      }
-    });
-  }
-
-  this.subs.push(openSub);
-  this.subs.push(errorSub);
-
-  return this;
-};
-
-/**
- * Called upon transport open.
- *
- * @api private
- */
-
-Manager.prototype.onopen = function () {
-  debug('open');
-
-  // clear old subs
-  this.cleanup();
-
-  // mark as open
-  this.readyState = 'open';
-  this.emit('open');
-
-  // add new subs
-  var socket = this.engine;
-  this.subs.push(on(socket, 'data', bind(this, 'ondata')));
-  this.subs.push(on(socket, 'ping', bind(this, 'onping')));
-  this.subs.push(on(socket, 'pong', bind(this, 'onpong')));
-  this.subs.push(on(socket, 'error', bind(this, 'onerror')));
-  this.subs.push(on(socket, 'close', bind(this, 'onclose')));
-  this.subs.push(on(this.decoder, 'decoded', bind(this, 'ondecoded')));
-};
-
-/**
- * Called upon a ping.
- *
- * @api private
- */
-
-Manager.prototype.onping = function () {
-  this.lastPing = new Date();
-  this.emitAll('ping');
-};
-
-/**
- * Called upon a packet.
- *
- * @api private
- */
-
-Manager.prototype.onpong = function () {
-  this.emitAll('pong', new Date() - this.lastPing);
-};
-
-/**
- * Called with data.
- *
- * @api private
- */
-
-Manager.prototype.ondata = function (data) {
-  this.decoder.add(data);
-};
-
-/**
- * Called when parser fully decodes a packet.
- *
- * @api private
- */
-
-Manager.prototype.ondecoded = function (packet) {
-  this.emit('packet', packet);
-};
-
-/**
- * Called upon socket error.
- *
- * @api private
- */
-
-Manager.prototype.onerror = function (err) {
-  debug('error', err);
-  this.emitAll('error', err);
-};
-
-/**
- * Creates a new socket for the given `nsp`.
- *
- * @return {Socket}
- * @api public
- */
-
-Manager.prototype.socket = function (nsp, opts) {
-  var socket = this.nsps[nsp];
-  if (!socket) {
-    socket = new Socket(this, nsp, opts);
-    this.nsps[nsp] = socket;
-    var self = this;
-    socket.on('connecting', onConnecting);
-    socket.on('connect', function () {
-      socket.id = self.engine.id;
-    });
-
-    if (this.autoConnect) {
-      // manually call here since connecting evnet is fired before listening
-      onConnecting();
-    }
-  }
-
-  function onConnecting () {
-    if (!~indexOf(self.connecting, socket)) {
-      self.connecting.push(socket);
-    }
-  }
-
-  return socket;
-};
-
-/**
- * Called upon a socket close.
- *
- * @param {Socket} socket
- */
-
-Manager.prototype.destroy = function (socket) {
-  var index = indexOf(this.connecting, socket);
-  if (~index) this.connecting.splice(index, 1);
-  if (this.connecting.length) return;
-
-  this.close();
-};
-
-/**
- * Writes a packet.
- *
- * @param {Object} packet
- * @api private
- */
-
-Manager.prototype.packet = function (packet) {
-  debug('writing packet %j', packet);
-  var self = this;
-  if (packet.query && packet.type === 0) packet.nsp += '?' + packet.query;
-
-  if (!self.encoding) {
-    // encode, then write to engine with result
-    self.encoding = true;
-    this.encoder.encode(packet, function (encodedPackets) {
-      for (var i = 0; i < encodedPackets.length; i++) {
-        self.engine.write(encodedPackets[i], packet.options);
-      }
-      self.encoding = false;
-      self.processPacketQueue();
-    });
-  } else { // add packet to the queue
-    self.packetBuffer.push(packet);
-  }
-};
-
-/**
- * If packet buffer is non-empty, begins encoding the
- * next packet in line.
- *
- * @api private
- */
-
-Manager.prototype.processPacketQueue = function () {
-  if (this.packetBuffer.length > 0 && !this.encoding) {
-    var pack = this.packetBuffer.shift();
-    this.packet(pack);
-  }
-};
-
-/**
- * Clean up transport subscriptions and packet buffer.
- *
- * @api private
- */
-
-Manager.prototype.cleanup = function () {
-  debug('cleanup');
-
-  var subsLength = this.subs.length;
-  for (var i = 0; i < subsLength; i++) {
-    var sub = this.subs.shift();
-    sub.destroy();
-  }
-
-  this.packetBuffer = [];
-  this.encoding = false;
-  this.lastPing = null;
-
-  this.decoder.destroy();
-};
-
-/**
- * Close the current socket.
- *
- * @api private
- */
-
-Manager.prototype.close =
-Manager.prototype.disconnect = function () {
-  debug('disconnect');
-  this.skipReconnect = true;
-  this.reconnecting = false;
-  if ('opening' === this.readyState) {
-    // `onclose` will not fire because
-    // an open event never happened
-    this.cleanup();
-  }
-  this.backoff.reset();
-  this.readyState = 'closed';
-  if (this.engine) this.engine.close();
-};
-
-/**
- * Called upon engine close.
- *
- * @api private
- */
-
-Manager.prototype.onclose = function (reason) {
-  debug('onclose');
-
-  this.cleanup();
-  this.backoff.reset();
-  this.readyState = 'closed';
-  this.emit('close', reason);
-
-  if (this._reconnection && !this.skipReconnect) {
-    this.reconnect();
-  }
-};
-
-/**
- * Attempt a reconnection.
- *
- * @api private
- */
-
-Manager.prototype.reconnect = function () {
-  if (this.reconnecting || this.skipReconnect) return this;
-
-  var self = this;
-
-  if (this.backoff.attempts >= this._reconnectionAttempts) {
-    debug('reconnect failed');
-    this.backoff.reset();
-    this.emitAll('reconnect_failed');
-    this.reconnecting = false;
-  } else {
-    var delay = this.backoff.duration();
-    debug('will wait %dms before reconnect attempt', delay);
-
-    this.reconnecting = true;
-    var timer = setTimeout(function () {
-      if (self.skipReconnect) return;
-
-      debug('attempting reconnect');
-      self.emitAll('reconnect_attempt', self.backoff.attempts);
-      self.emitAll('reconnecting', self.backoff.attempts);
-
-      // check again for the case socket closed in above events
-      if (self.skipReconnect) return;
-
-      self.open(function (err) {
-        if (err) {
-          debug('reconnect attempt error');
-          self.reconnecting = false;
-          self.reconnect();
-          self.emitAll('reconnect_error', err.data);
-        } else {
-          debug('reconnect success');
-          self.onreconnect();
-        }
-      });
-    }, delay);
-
-    this.subs.push({
-      destroy: function () {
-        clearTimeout(timer);
-      }
-    });
-  }
-};
-
-/**
- * Called upon successful reconnect.
- *
- * @api private
- */
-
-Manager.prototype.onreconnect = function () {
-  var attempt = this.backoff.attempts;
-  this.reconnecting = false;
-  this.backoff.reset();
-  this.updateSocketIds();
-  this.emitAll('reconnect', attempt);
-};
-
-}).apply(this, arguments);
-
-},{"./on":178,"./socket":179,"backo2":181,"component-bind":182,"component-emitter":183,"debug":184,"engine.io-client":187,"indexof":211,"socket.io-parser":214}],178:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/socket.io-client/lib/on.js", module);
-(function(){
-
-/**
- * Module exports.
- */
-
-module.exports = on;
-
-/**
- * Helper for subscriptions.
- *
- * @param {Object|EventEmitter} obj with `Emitter` mixin or `EventEmitter`
- * @param {String} event name
- * @param {Function} callback
- * @api public
- */
-
-function on (obj, ev, fn) {
-  obj.on(ev, fn);
-  return {
-    destroy: function () {
-      obj.removeListener(ev, fn);
-    }
-  };
-}
-
-}).apply(this, arguments);
-
-},{}],179:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/socket.io-client/lib/socket.js", module);
-(function(){
-
-/**
- * Module dependencies.
- */
-
-var parser = require('socket.io-parser');
-var Emitter = require('component-emitter');
-var toArray = require('to-array');
-var on = require('./on');
-var bind = require('component-bind');
-var debug = require('debug')('socket.io-client:socket');
-var hasBin = require('has-binary');
-
-/**
- * Module exports.
- */
-
-module.exports = exports = Socket;
-
-/**
- * Internal events (blacklisted).
- * These events can't be emitted by the user.
- *
- * @api private
- */
-
-var events = {
-  connect: 1,
-  connect_error: 1,
-  connect_timeout: 1,
-  connecting: 1,
-  disconnect: 1,
-  error: 1,
-  reconnect: 1,
-  reconnect_attempt: 1,
-  reconnect_failed: 1,
-  reconnect_error: 1,
-  reconnecting: 1,
-  ping: 1,
-  pong: 1
-};
-
-/**
- * Shortcut to `Emitter#emit`.
- */
-
-var emit = Emitter.prototype.emit;
-
-/**
- * `Socket` constructor.
- *
- * @api public
- */
-
-function Socket (io, nsp, opts) {
-  this.io = io;
-  this.nsp = nsp;
-  this.json = this; // compat
-  this.ids = 0;
-  this.acks = {};
-  this.receiveBuffer = [];
-  this.sendBuffer = [];
-  this.connected = false;
-  this.disconnected = true;
-  if (opts && opts.query) {
-    this.query = opts.query;
-  }
-  if (this.io.autoConnect) this.open();
-}
-
-/**
- * Mix in `Emitter`.
- */
-
-Emitter(Socket.prototype);
-
-/**
- * Subscribe to open, close and packet events
- *
- * @api private
- */
-
-Socket.prototype.subEvents = function () {
-  if (this.subs) return;
-
-  var io = this.io;
-  this.subs = [
-    on(io, 'open', bind(this, 'onopen')),
-    on(io, 'packet', bind(this, 'onpacket')),
-    on(io, 'close', bind(this, 'onclose'))
-  ];
-};
-
-/**
- * "Opens" the socket.
- *
- * @api public
- */
-
-Socket.prototype.open =
-Socket.prototype.connect = function () {
-  if (this.connected) return this;
-
-  this.subEvents();
-  this.io.open(); // ensure open
-  if ('open' === this.io.readyState) this.onopen();
-  this.emit('connecting');
-  return this;
-};
-
-/**
- * Sends a `message` event.
- *
- * @return {Socket} self
- * @api public
- */
-
-Socket.prototype.send = function () {
-  var args = toArray(arguments);
-  args.unshift('message');
-  this.emit.apply(this, args);
-  return this;
-};
-
-/**
- * Override `emit`.
- * If the event is in `events`, it's emitted normally.
- *
- * @param {String} event name
- * @return {Socket} self
- * @api public
- */
-
-Socket.prototype.emit = function (ev) {
-  if (events.hasOwnProperty(ev)) {
-    emit.apply(this, arguments);
-    return this;
-  }
-
-  var args = toArray(arguments);
-  var parserType = parser.EVENT; // default
-  if (hasBin(args)) { parserType = parser.BINARY_EVENT; } // binary
-  var packet = { type: parserType, data: args };
-
-  packet.options = {};
-  packet.options.compress = !this.flags || false !== this.flags.compress;
-
-  // event ack callback
-  if ('function' === typeof args[args.length - 1]) {
-    debug('emitting packet with ack id %d', this.ids);
-    this.acks[this.ids] = args.pop();
-    packet.id = this.ids++;
-  }
-
-  if (this.connected) {
-    this.packet(packet);
-  } else {
-    this.sendBuffer.push(packet);
-  }
-
-  delete this.flags;
-
-  return this;
-};
-
-/**
- * Sends a packet.
- *
- * @param {Object} packet
- * @api private
- */
-
-Socket.prototype.packet = function (packet) {
-  packet.nsp = this.nsp;
-  this.io.packet(packet);
-};
-
-/**
- * Called upon engine `open`.
- *
- * @api private
- */
-
-Socket.prototype.onopen = function () {
-  debug('transport is open - connecting');
-
-  // write connect packet if necessary
-  if ('/' !== this.nsp) {
-    if (this.query) {
-      this.packet({type: parser.CONNECT, query: this.query});
-    } else {
-      this.packet({type: parser.CONNECT});
-    }
-  }
-};
-
-/**
- * Called upon engine `close`.
- *
- * @param {String} reason
- * @api private
- */
-
-Socket.prototype.onclose = function (reason) {
-  debug('close (%s)', reason);
-  this.connected = false;
-  this.disconnected = true;
-  delete this.id;
-  this.emit('disconnect', reason);
-};
-
-/**
- * Called with socket packet.
- *
- * @param {Object} packet
- * @api private
- */
-
-Socket.prototype.onpacket = function (packet) {
-  if (packet.nsp !== this.nsp) return;
-
-  switch (packet.type) {
-    case parser.CONNECT:
-      this.onconnect();
-      break;
-
-    case parser.EVENT:
-      this.onevent(packet);
-      break;
-
-    case parser.BINARY_EVENT:
-      this.onevent(packet);
-      break;
-
-    case parser.ACK:
-      this.onack(packet);
-      break;
-
-    case parser.BINARY_ACK:
-      this.onack(packet);
-      break;
-
-    case parser.DISCONNECT:
-      this.ondisconnect();
-      break;
-
-    case parser.ERROR:
-      this.emit('error', packet.data);
-      break;
-  }
-};
-
-/**
- * Called upon a server event.
- *
- * @param {Object} packet
- * @api private
- */
-
-Socket.prototype.onevent = function (packet) {
-  var args = packet.data || [];
-  debug('emitting event %j', args);
-
-  if (null != packet.id) {
-    debug('attaching ack callback to event');
-    args.push(this.ack(packet.id));
-  }
-
-  if (this.connected) {
-    emit.apply(this, args);
-  } else {
-    this.receiveBuffer.push(args);
-  }
-};
-
-/**
- * Produces an ack callback to emit with an event.
- *
- * @api private
- */
-
-Socket.prototype.ack = function (id) {
-  var self = this;
-  var sent = false;
-  return function () {
-    // prevent double callbacks
-    if (sent) return;
-    sent = true;
-    var args = toArray(arguments);
-    debug('sending ack %j', args);
-
-    var type = hasBin(args) ? parser.BINARY_ACK : parser.ACK;
-    self.packet({
-      type: type,
-      id: id,
-      data: args
-    });
-  };
-};
-
-/**
- * Called upon a server acknowlegement.
- *
- * @param {Object} packet
- * @api private
- */
-
-Socket.prototype.onack = function (packet) {
-  var ack = this.acks[packet.id];
-  if ('function' === typeof ack) {
-    debug('calling ack %s with %j', packet.id, packet.data);
-    ack.apply(this, packet.data);
-    delete this.acks[packet.id];
-  } else {
-    debug('bad ack %s', packet.id);
-  }
-};
-
-/**
- * Called upon server connect.
- *
- * @api private
- */
-
-Socket.prototype.onconnect = function () {
-  this.connected = true;
-  this.disconnected = false;
-  this.emit('connect');
-  this.emitBuffered();
-};
-
-/**
- * Emit buffered events (received and emitted).
- *
- * @api private
- */
-
-Socket.prototype.emitBuffered = function () {
-  var i;
-  for (i = 0; i < this.receiveBuffer.length; i++) {
-    emit.apply(this, this.receiveBuffer[i]);
-  }
-  this.receiveBuffer = [];
-
-  for (i = 0; i < this.sendBuffer.length; i++) {
-    this.packet(this.sendBuffer[i]);
-  }
-  this.sendBuffer = [];
-};
-
-/**
- * Called upon server disconnect.
- *
- * @api private
- */
-
-Socket.prototype.ondisconnect = function () {
-  debug('server disconnect (%s)', this.nsp);
-  this.destroy();
-  this.onclose('io server disconnect');
-};
-
-/**
- * Called upon forced client/server side disconnections,
- * this method ensures the manager stops tracking us and
- * that reconnections don't get triggered for this.
- *
- * @api private.
- */
-
-Socket.prototype.destroy = function () {
-  if (this.subs) {
-    // clean subscriptions to avoid reconnections
-    for (var i = 0; i < this.subs.length; i++) {
-      this.subs[i].destroy();
-    }
-    this.subs = null;
-  }
-
-  this.io.destroy(this);
-};
-
-/**
- * Disconnects the socket manually.
- *
- * @return {Socket} self
- * @api public
- */
-
-Socket.prototype.close =
-Socket.prototype.disconnect = function () {
-  if (this.connected) {
-    debug('performing disconnect (%s)', this.nsp);
-    this.packet({ type: parser.DISCONNECT });
-  }
-
-  // remove socket from pool
-  this.destroy();
-
-  if (this.connected) {
-    // fire events
-    this.onclose('io client disconnect');
-  }
-  return this;
-};
-
-/**
- * Sets the compress flag.
- *
- * @param {Boolean} if `true`, compresses the sending data
- * @return {Socket} self
- * @api public
- */
-
-Socket.prototype.compress = function (compress) {
-  this.flags = this.flags || {};
-  this.flags.compress = compress;
-  return this;
-};
-
-}).apply(this, arguments);
-
-},{"./on":178,"component-bind":182,"component-emitter":183,"debug":184,"has-binary":209,"socket.io-parser":214,"to-array":222}],180:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/socket.io-client/lib/url.js", module);
-(function(){
-(function (global){
-
-/**
- * Module dependencies.
- */
-
-var parseuri = require('parseuri');
-var debug = require('debug')('socket.io-client:url');
-
-/**
- * Module exports.
- */
-
-module.exports = url;
-
-/**
- * URL parser.
- *
- * @param {String} url
- * @param {Object} An object meant to mimic window.location.
- *                 Defaults to window.location.
- * @api public
- */
-
-function url (uri, loc) {
-  var obj = uri;
-
-  // default to window.location
-  loc = loc || global.location;
-  if (null == uri) uri = loc.protocol + '//' + loc.host;
-
-  // relative path support
-  if ('string' === typeof uri) {
-    if ('/' === uri.charAt(0)) {
-      if ('/' === uri.charAt(1)) {
-        uri = loc.protocol + uri;
-      } else {
-        uri = loc.host + uri;
-      }
-    }
-
-    if (!/^(https?|wss?):\/\//.test(uri)) {
-      debug('protocol-less url %s', uri);
-      if ('undefined' !== typeof loc) {
-        uri = loc.protocol + '//' + uri;
-      } else {
-        uri = 'https://' + uri;
-      }
-    }
-
-    // parse
-    debug('parse %s', uri);
-    obj = parseuri(uri);
-  }
-
-  // make sure we treat `localhost:80` and `localhost` equally
-  if (!obj.port) {
-    if (/^(http|ws)$/.test(obj.protocol)) {
-      obj.port = '80';
-    } else if (/^(http|ws)s$/.test(obj.protocol)) {
-      obj.port = '443';
-    }
-  }
-
-  obj.path = obj.path || '/';
-
-  var ipv6 = obj.host.indexOf(':') !== -1;
-  var host = ipv6 ? '[' + obj.host + ']' : obj.host;
-
-  // define unique id
-  obj.id = obj.protocol + '://' + host + ':' + obj.port;
-  // define href
-  obj.href = obj.protocol + '://' + host + (loc && loc.port === obj.port ? '' : (':' + obj.port));
-
-  return obj;
-}
-
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-}).apply(this, arguments);
-
-},{"debug":184,"parseuri":212}],181:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/backo2/index.js", module);
-(function(){
-
-/**
- * Expose `Backoff`.
- */
-
-module.exports = Backoff;
-
-/**
- * Initialize backoff timer with `opts`.
- *
- * - `min` initial timeout in milliseconds [100]
- * - `max` max timeout [10000]
- * - `jitter` [0]
- * - `factor` [2]
- *
- * @param {Object} opts
- * @api public
- */
-
-function Backoff(opts) {
-  opts = opts || {};
-  this.ms = opts.min || 100;
-  this.max = opts.max || 10000;
-  this.factor = opts.factor || 2;
-  this.jitter = opts.jitter > 0 && opts.jitter <= 1 ? opts.jitter : 0;
-  this.attempts = 0;
-}
-
-/**
- * Return the backoff duration.
- *
- * @return {Number}
- * @api public
- */
-
-Backoff.prototype.duration = function(){
-  var ms = this.ms * Math.pow(this.factor, this.attempts++);
-  if (this.jitter) {
-    var rand =  Math.random();
-    var deviation = Math.floor(rand * this.jitter * ms);
-    ms = (Math.floor(rand * 10) & 1) == 0  ? ms - deviation : ms + deviation;
-  }
-  return Math.min(ms, this.max) | 0;
-};
-
-/**
- * Reset the number of attempts.
- *
- * @api public
- */
-
-Backoff.prototype.reset = function(){
-  this.attempts = 0;
-};
-
-/**
- * Set the minimum duration
- *
- * @api public
- */
-
-Backoff.prototype.setMin = function(min){
-  this.ms = min;
-};
-
-/**
- * Set the maximum duration
- *
- * @api public
- */
-
-Backoff.prototype.setMax = function(max){
-  this.max = max;
-};
-
-/**
- * Set the jitter
- *
- * @api public
- */
-
-Backoff.prototype.setJitter = function(jitter){
-  this.jitter = jitter;
-};
-
-
-}).apply(this, arguments);
-
-},{}],182:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/component-bind/index.js", module);
+},{"./has":34}],36:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/component-bind/index.js", module);
 (function(){
 /**
  * Slice reference.
@@ -8386,17 +2620,15 @@ module.exports = function(obj, fn){
 
 }).apply(this, arguments);
 
-},{}],183:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/component-emitter/index.js", module);
+},{}],37:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/component-emitter/index.js", module);
 (function(){
 
 /**
  * Expose `Emitter`.
  */
 
-if (typeof module !== 'undefined') {
-  module.exports = Emitter;
-}
+module.exports = Emitter;
 
 /**
  * Initialize a new `Emitter`.
@@ -8435,7 +2667,7 @@ function mixin(obj) {
 Emitter.prototype.on =
 Emitter.prototype.addEventListener = function(event, fn){
   this._callbacks = this._callbacks || {};
-  (this._callbacks['$' + event] = this._callbacks['$' + event] || [])
+  (this._callbacks[event] = this._callbacks[event] || [])
     .push(fn);
   return this;
 };
@@ -8451,8 +2683,11 @@ Emitter.prototype.addEventListener = function(event, fn){
  */
 
 Emitter.prototype.once = function(event, fn){
+  var self = this;
+  this._callbacks = this._callbacks || {};
+
   function on() {
-    this.off(event, on);
+    self.off(event, on);
     fn.apply(this, arguments);
   }
 
@@ -8484,12 +2719,12 @@ Emitter.prototype.removeEventListener = function(event, fn){
   }
 
   // specific event
-  var callbacks = this._callbacks['$' + event];
+  var callbacks = this._callbacks[event];
   if (!callbacks) return this;
 
   // remove all handlers
   if (1 == arguments.length) {
-    delete this._callbacks['$' + event];
+    delete this._callbacks[event];
     return this;
   }
 
@@ -8516,7 +2751,7 @@ Emitter.prototype.removeEventListener = function(event, fn){
 Emitter.prototype.emit = function(event){
   this._callbacks = this._callbacks || {};
   var args = [].slice.call(arguments, 1)
-    , callbacks = this._callbacks['$' + event];
+    , callbacks = this._callbacks[event];
 
   if (callbacks) {
     callbacks = callbacks.slice(0);
@@ -8538,7 +2773,7 @@ Emitter.prototype.emit = function(event){
 
 Emitter.prototype.listeners = function(event){
   this._callbacks = this._callbacks || {};
-  return this._callbacks['$' + event] || [];
+  return this._callbacks[event] || [];
 };
 
 /**
@@ -8555,562 +2790,28 @@ Emitter.prototype.hasListeners = function(event){
 
 }).apply(this, arguments);
 
-},{}],184:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/debug/browser.js", module);
+},{}],38:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/component-inherit/index.js", module);
 (function(){
-(function (process){
 
-/**
- * This is the web browser implementation of `debug()`.
- *
- * Expose `debug()` as the module.
- */
-
-exports = module.exports = require('./debug');
-exports.log = log;
-exports.formatArgs = formatArgs;
-exports.save = save;
-exports.load = load;
-exports.useColors = useColors;
-exports.storage = 'undefined' != typeof chrome
-               && 'undefined' != typeof chrome.storage
-                  ? chrome.storage.local
-                  : localstorage();
-
-/**
- * Colors.
- */
-
-exports.colors = [
-  'lightseagreen',
-  'forestgreen',
-  'goldenrod',
-  'dodgerblue',
-  'darkorchid',
-  'crimson'
-];
-
-/**
- * Currently only WebKit-based Web Inspectors, Firefox >= v31,
- * and the Firebug extension (any Firefox version) are known
- * to support "%c" CSS customizations.
- *
- * TODO: add a `localStorage` variable to explicitly enable/disable colors
- */
-
-function useColors() {
-  // is webkit? http://stackoverflow.com/a/16459606/376773
-  // document is undefined in react-native: https://github.com/facebook/react-native/pull/1632
-  return (typeof document !== 'undefined' && 'WebkitAppearance' in document.documentElement.style) ||
-    // is firebug? http://stackoverflow.com/a/398120/376773
-    (window.console && (console.firebug || (console.exception && console.table))) ||
-    // is firefox >= v31?
-    // https://developer.mozilla.org/en-US/docs/Tools/Web_Console#Styling_messages
-    (navigator.userAgent.toLowerCase().match(/firefox\/(\d+)/) && parseInt(RegExp.$1, 10) >= 31);
-}
-
-/**
- * Map %j to `JSON.stringify()`, since no Web Inspectors do that by default.
- */
-
-exports.formatters.j = function(v) {
-  try {
-    return JSON.stringify(v);
-  } catch (err) {
-    return '[UnexpectedJSONParseError]: ' + err.message;
-  }
+module.exports = function(a, b){
+  var fn = function(){};
+  fn.prototype = b.prototype;
+  a.prototype = new fn;
+  a.prototype.constructor = a;
 };
-
-
-/**
- * Colorize log arguments if enabled.
- *
- * @api public
- */
-
-function formatArgs() {
-  var args = arguments;
-  var useColors = this.useColors;
-
-  args[0] = (useColors ? '%c' : '')
-    + this.namespace
-    + (useColors ? ' %c' : ' ')
-    + args[0]
-    + (useColors ? '%c ' : ' ')
-    + '+' + exports.humanize(this.diff);
-
-  if (!useColors) return args;
-
-  var c = 'color: ' + this.color;
-  args = [args[0], c, 'color: inherit'].concat(Array.prototype.slice.call(args, 1));
-
-  // the final "%c" is somewhat tricky, because there could be other
-  // arguments passed either before or after the %c, so we need to
-  // figure out the correct index to insert the CSS into
-  var index = 0;
-  var lastC = 0;
-  args[0].replace(/%[a-z%]/g, function(match) {
-    if ('%%' === match) return;
-    index++;
-    if ('%c' === match) {
-      // we only are interested in the *last* %c
-      // (the user may have provided their own)
-      lastC = index;
-    }
-  });
-
-  args.splice(lastC, 0, c);
-  return args;
-}
-
-/**
- * Invokes `console.log()` when available.
- * No-op when `console.log` is not a "function".
- *
- * @api public
- */
-
-function log() {
-  // this hackery is required for IE8/9, where
-  // the `console.log` function doesn't have 'apply'
-  return 'object' === typeof console
-    && console.log
-    && Function.prototype.apply.call(console.log, console, arguments);
-}
-
-/**
- * Save `namespaces`.
- *
- * @param {String} namespaces
- * @api private
- */
-
-function save(namespaces) {
-  try {
-    if (null == namespaces) {
-      exports.storage.removeItem('debug');
-    } else {
-      exports.storage.debug = namespaces;
-    }
-  } catch(e) {}
-}
-
-/**
- * Load `namespaces`.
- *
- * @return {String} returns the previously persisted debug modes
- * @api private
- */
-
-function load() {
-  var r;
-  try {
-    return exports.storage.debug;
-  } catch(e) {}
-
-  // If debug isn't set in LS, and we're in Electron, try to load $DEBUG
-  if (typeof process !== 'undefined' && 'env' in process) {
-    return process.env.DEBUG;
-  }
-}
-
-/**
- * Enable namespaces listed in `localStorage.debug` initially.
- */
-
-exports.enable(load());
-
-/**
- * Localstorage attempts to return the localstorage.
- *
- * This is necessary because safari throws
- * when a user disables cookies/localstorage
- * and you attempt to access it.
- *
- * @return {LocalStorage}
- * @api private
- */
-
-function localstorage(){
-  try {
-    return window.localStorage;
-  } catch (e) {}
-}
-
-}).call(this,require('_process'))
 }).apply(this, arguments);
 
-},{"./debug":185,"_process":225}],185:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/debug/debug.js", module);
-(function(){
-
-/**
- * This is the common logic for both the Node.js and web browser
- * implementations of `debug()`.
- *
- * Expose `debug()` as the module.
- */
-
-exports = module.exports = debug.debug = debug;
-exports.coerce = coerce;
-exports.disable = disable;
-exports.enable = enable;
-exports.enabled = enabled;
-exports.humanize = require('ms');
-
-/**
- * The currently active debug mode names, and names to skip.
- */
-
-exports.names = [];
-exports.skips = [];
-
-/**
- * Map of special "%n" handling functions, for the debug "format" argument.
- *
- * Valid key names are a single, lowercased letter, i.e. "n".
- */
-
-exports.formatters = {};
-
-/**
- * Previously assigned color.
- */
-
-var prevColor = 0;
-
-/**
- * Previous log timestamp.
- */
-
-var prevTime;
-
-/**
- * Select a color.
- *
- * @return {Number}
- * @api private
- */
-
-function selectColor() {
-  return exports.colors[prevColor++ % exports.colors.length];
-}
-
-/**
- * Create a debugger with the given `namespace`.
- *
- * @param {String} namespace
- * @return {Function}
- * @api public
- */
-
-function debug(namespace) {
-
-  // define the `disabled` version
-  function disabled() {
-  }
-  disabled.enabled = false;
-
-  // define the `enabled` version
-  function enabled() {
-
-    var self = enabled;
-
-    // set `diff` timestamp
-    var curr = +new Date();
-    var ms = curr - (prevTime || curr);
-    self.diff = ms;
-    self.prev = prevTime;
-    self.curr = curr;
-    prevTime = curr;
-
-    // add the `color` if not set
-    if (null == self.useColors) self.useColors = exports.useColors();
-    if (null == self.color && self.useColors) self.color = selectColor();
-
-    var args = new Array(arguments.length);
-    for (var i = 0; i < args.length; i++) {
-      args[i] = arguments[i];
-    }
-
-    args[0] = exports.coerce(args[0]);
-
-    if ('string' !== typeof args[0]) {
-      // anything else let's inspect with %o
-      args = ['%o'].concat(args);
-    }
-
-    // apply any `formatters` transformations
-    var index = 0;
-    args[0] = args[0].replace(/%([a-z%])/g, function(match, format) {
-      // if we encounter an escaped % then don't increase the array index
-      if (match === '%%') return match;
-      index++;
-      var formatter = exports.formatters[format];
-      if ('function' === typeof formatter) {
-        var val = args[index];
-        match = formatter.call(self, val);
-
-        // now we need to remove `args[index]` since it's inlined in the `format`
-        args.splice(index, 1);
-        index--;
-      }
-      return match;
-    });
-
-    // apply env-specific formatting
-    args = exports.formatArgs.apply(self, args);
-
-    var logFn = enabled.log || exports.log || console.log.bind(console);
-    logFn.apply(self, args);
-  }
-  enabled.enabled = true;
-
-  var fn = exports.enabled(namespace) ? enabled : disabled;
-
-  fn.namespace = namespace;
-
-  return fn;
-}
-
-/**
- * Enables a debug mode by namespaces. This can include modes
- * separated by a colon and wildcards.
- *
- * @param {String} namespaces
- * @api public
- */
-
-function enable(namespaces) {
-  exports.save(namespaces);
-
-  var split = (namespaces || '').split(/[\s,]+/);
-  var len = split.length;
-
-  for (var i = 0; i < len; i++) {
-    if (!split[i]) continue; // ignore empty strings
-    namespaces = split[i].replace(/[\\^$+?.()|[\]{}]/g, '\\$&').replace(/\*/g, '.*?');
-    if (namespaces[0] === '-') {
-      exports.skips.push(new RegExp('^' + namespaces.substr(1) + '$'));
-    } else {
-      exports.names.push(new RegExp('^' + namespaces + '$'));
-    }
-  }
-}
-
-/**
- * Disable debug output.
- *
- * @api public
- */
-
-function disable() {
-  exports.enable('');
-}
-
-/**
- * Returns true if the given mode name is enabled, false otherwise.
- *
- * @param {String} name
- * @return {Boolean}
- * @api public
- */
-
-function enabled(name) {
-  var i, len;
-  for (i = 0, len = exports.skips.length; i < len; i++) {
-    if (exports.skips[i].test(name)) {
-      return false;
-    }
-  }
-  for (i = 0, len = exports.names.length; i < len; i++) {
-    if (exports.names[i].test(name)) {
-      return true;
-    }
-  }
-  return false;
-}
-
-/**
- * Coerce `val`.
- *
- * @param {Mixed} val
- * @return {Mixed}
- * @api private
- */
-
-function coerce(val) {
-  if (val instanceof Error) return val.stack || val.message;
-  return val;
-}
-
-}).apply(this, arguments);
-
-},{"ms":186}],186:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/debug/node_modules/ms/index.js", module);
-(function(){
-/**
- * Helpers.
- */
-
-var s = 1000
-var m = s * 60
-var h = m * 60
-var d = h * 24
-var y = d * 365.25
-
-/**
- * Parse or format the given `val`.
- *
- * Options:
- *
- *  - `long` verbose formatting [false]
- *
- * @param {String|Number} val
- * @param {Object} options
- * @throws {Error} throw an error if val is not a non-empty string or a number
- * @return {String|Number}
- * @api public
- */
-
-module.exports = function (val, options) {
-  options = options || {}
-  var type = typeof val
-  if (type === 'string' && val.length > 0) {
-    return parse(val)
-  } else if (type === 'number' && isNaN(val) === false) {
-    return options.long ?
-			fmtLong(val) :
-			fmtShort(val)
-  }
-  throw new Error('val is not a non-empty string or a valid number. val=' + JSON.stringify(val))
-}
-
-/**
- * Parse the given `str` and return milliseconds.
- *
- * @param {String} str
- * @return {Number}
- * @api private
- */
-
-function parse(str) {
-  str = String(str)
-  if (str.length > 10000) {
-    return
-  }
-  var match = /^((?:\d+)?\.?\d+) *(milliseconds?|msecs?|ms|seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h|days?|d|years?|yrs?|y)?$/i.exec(str)
-  if (!match) {
-    return
-  }
-  var n = parseFloat(match[1])
-  var type = (match[2] || 'ms').toLowerCase()
-  switch (type) {
-    case 'years':
-    case 'year':
-    case 'yrs':
-    case 'yr':
-    case 'y':
-      return n * y
-    case 'days':
-    case 'day':
-    case 'd':
-      return n * d
-    case 'hours':
-    case 'hour':
-    case 'hrs':
-    case 'hr':
-    case 'h':
-      return n * h
-    case 'minutes':
-    case 'minute':
-    case 'mins':
-    case 'min':
-    case 'm':
-      return n * m
-    case 'seconds':
-    case 'second':
-    case 'secs':
-    case 'sec':
-    case 's':
-      return n * s
-    case 'milliseconds':
-    case 'millisecond':
-    case 'msecs':
-    case 'msec':
-    case 'ms':
-      return n
-    default:
-      return undefined
-  }
-}
-
-/**
- * Short format for `ms`.
- *
- * @param {Number} ms
- * @return {String}
- * @api private
- */
-
-function fmtShort(ms) {
-  if (ms >= d) {
-    return Math.round(ms / d) + 'd'
-  }
-  if (ms >= h) {
-    return Math.round(ms / h) + 'h'
-  }
-  if (ms >= m) {
-    return Math.round(ms / m) + 'm'
-  }
-  if (ms >= s) {
-    return Math.round(ms / s) + 's'
-  }
-  return ms + 'ms'
-}
-
-/**
- * Long format for `ms`.
- *
- * @param {Number} ms
- * @return {String}
- * @api private
- */
-
-function fmtLong(ms) {
-  return plural(ms, d, 'day') ||
-    plural(ms, h, 'hour') ||
-    plural(ms, m, 'minute') ||
-    plural(ms, s, 'second') ||
-    ms + ' ms'
-}
-
-/**
- * Pluralization helper.
- */
-
-function plural(ms, n, name) {
-  if (ms < n) {
-    return
-  }
-  if (ms < n * 1.5) {
-    return Math.floor(ms / n) + ' ' + name
-  }
-  return Math.ceil(ms / n) + ' ' + name + 's'
-}
-
-}).apply(this, arguments);
-
-},{}],187:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/index.js", module);
+},{}],39:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/engine.io-client/index.js", module);
 (function(){
 
 module.exports = require('./lib/index');
 
 }).apply(this, arguments);
 
-},{"./lib/index":188}],188:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/lib/index.js", module);
+},{"./lib/index":40}],40:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/engine.io-client/lib/index.js", module);
 (function(){
 
 module.exports = require('./socket');
@@ -9125,8 +2826,8 @@ module.exports.parser = require('engine.io-parser');
 
 }).apply(this, arguments);
 
-},{"./socket":189,"engine.io-parser":198}],189:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/lib/socket.js", module);
+},{"./socket":41,"engine.io-parser":53}],41:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/engine.io-client/lib/socket.js", module);
 (function(){
 (function (global){
 /**
@@ -9871,8 +3572,8 @@ Socket.prototype.filterUpgrades = function (upgrades) {
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 }).apply(this, arguments);
 
-},{"./transport":190,"./transports/index":191,"component-emitter":183,"debug":184,"engine.io-parser":198,"indexof":211,"parsejson":206,"parseqs":207,"parseuri":212}],190:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/lib/transport.js", module);
+},{"./transport":42,"./transports/index":43,"component-emitter":49,"debug":50,"engine.io-parser":53,"indexof":58,"parsejson":207,"parseqs":208,"parseuri":209}],42:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/engine.io-client/lib/transport.js", module);
 (function(){
 /**
  * Module dependencies.
@@ -10034,8 +3735,8 @@ Transport.prototype.onClose = function () {
 
 }).apply(this, arguments);
 
-},{"component-emitter":183,"engine.io-parser":198}],191:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/lib/transports/index.js", module);
+},{"component-emitter":49,"engine.io-parser":53}],43:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/engine.io-client/lib/transports/index.js", module);
 (function(){
 (function (global){
 /**
@@ -10095,8 +3796,8 @@ function polling (opts) {
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 }).apply(this, arguments);
 
-},{"./polling-jsonp":192,"./polling-xhr":193,"./websocket":195,"xmlhttprequest-ssl":196}],192:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/lib/transports/polling-jsonp.js", module);
+},{"./polling-jsonp":44,"./polling-xhr":45,"./websocket":47,"xmlhttprequest-ssl":48}],44:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/engine.io-client/lib/transports/polling-jsonp.js", module);
 (function(){
 (function (global){
 
@@ -10334,8 +4035,8 @@ JSONPPolling.prototype.doWrite = function (data, fn) {
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 }).apply(this, arguments);
 
-},{"./polling":194,"component-inherit":197}],193:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/lib/transports/polling-xhr.js", module);
+},{"./polling":46,"component-inherit":38}],45:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/engine.io-client/lib/transports/polling-xhr.js", module);
 (function(){
 (function (global){
 /**
@@ -10766,8 +4467,8 @@ function unloadHandler () {
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 }).apply(this, arguments);
 
-},{"./polling":194,"component-emitter":183,"component-inherit":197,"debug":184,"xmlhttprequest-ssl":196}],194:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/lib/transports/polling.js", module);
+},{"./polling":46,"component-emitter":49,"component-inherit":38,"debug":50,"xmlhttprequest-ssl":48}],46:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/engine.io-client/lib/transports/polling.js", module);
 (function(){
 /**
  * Module dependencies.
@@ -11017,8 +4718,8 @@ Polling.prototype.uri = function () {
 
 }).apply(this, arguments);
 
-},{"../transport":190,"component-inherit":197,"debug":184,"engine.io-parser":198,"parseqs":207,"xmlhttprequest-ssl":196,"yeast":208}],195:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/lib/transports/websocket.js", module);
+},{"../transport":42,"component-inherit":38,"debug":50,"engine.io-parser":53,"parseqs":208,"xmlhttprequest-ssl":48,"yeast":228}],47:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/engine.io-client/lib/transports/websocket.js", module);
 (function(){
 (function (global){
 /**
@@ -11310,8 +5011,8 @@ WS.prototype.check = function () {
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 }).apply(this, arguments);
 
-},{"../transport":190,"component-inherit":197,"debug":184,"engine.io-parser":198,"parseqs":207,"ws":224,"yeast":208}],196:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/lib/xmlhttprequest.js", module);
+},{"../transport":42,"component-inherit":38,"debug":50,"engine.io-parser":53,"parseqs":208,"ws":32,"yeast":228}],48:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/engine.io-client/lib/xmlhttprequest.js", module);
 (function(){
 (function (global){
 // browser shim for xmlhttprequest module
@@ -11355,20 +5056,723 @@ module.exports = function (opts) {
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 }).apply(this, arguments);
 
-},{"has-cors":205}],197:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/node_modules/component-inherit/index.js", module);
+},{"has-cors":57}],49:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/engine.io-client/node_modules/component-emitter/index.js", module);
 (function(){
 
-module.exports = function(a, b){
-  var fn = function(){};
-  fn.prototype = b.prototype;
-  a.prototype = new fn;
-  a.prototype.constructor = a;
+/**
+ * Expose `Emitter`.
+ */
+
+if (typeof module !== 'undefined') {
+  module.exports = Emitter;
+}
+
+/**
+ * Initialize a new `Emitter`.
+ *
+ * @api public
+ */
+
+function Emitter(obj) {
+  if (obj) return mixin(obj);
 };
+
+/**
+ * Mixin the emitter properties.
+ *
+ * @param {Object} obj
+ * @return {Object}
+ * @api private
+ */
+
+function mixin(obj) {
+  for (var key in Emitter.prototype) {
+    obj[key] = Emitter.prototype[key];
+  }
+  return obj;
+}
+
+/**
+ * Listen on the given `event` with `fn`.
+ *
+ * @param {String} event
+ * @param {Function} fn
+ * @return {Emitter}
+ * @api public
+ */
+
+Emitter.prototype.on =
+Emitter.prototype.addEventListener = function(event, fn){
+  this._callbacks = this._callbacks || {};
+  (this._callbacks['$' + event] = this._callbacks['$' + event] || [])
+    .push(fn);
+  return this;
+};
+
+/**
+ * Adds an `event` listener that will be invoked a single
+ * time then automatically removed.
+ *
+ * @param {String} event
+ * @param {Function} fn
+ * @return {Emitter}
+ * @api public
+ */
+
+Emitter.prototype.once = function(event, fn){
+  function on() {
+    this.off(event, on);
+    fn.apply(this, arguments);
+  }
+
+  on.fn = fn;
+  this.on(event, on);
+  return this;
+};
+
+/**
+ * Remove the given callback for `event` or all
+ * registered callbacks.
+ *
+ * @param {String} event
+ * @param {Function} fn
+ * @return {Emitter}
+ * @api public
+ */
+
+Emitter.prototype.off =
+Emitter.prototype.removeListener =
+Emitter.prototype.removeAllListeners =
+Emitter.prototype.removeEventListener = function(event, fn){
+  this._callbacks = this._callbacks || {};
+
+  // all
+  if (0 == arguments.length) {
+    this._callbacks = {};
+    return this;
+  }
+
+  // specific event
+  var callbacks = this._callbacks['$' + event];
+  if (!callbacks) return this;
+
+  // remove all handlers
+  if (1 == arguments.length) {
+    delete this._callbacks['$' + event];
+    return this;
+  }
+
+  // remove specific handler
+  var cb;
+  for (var i = 0; i < callbacks.length; i++) {
+    cb = callbacks[i];
+    if (cb === fn || cb.fn === fn) {
+      callbacks.splice(i, 1);
+      break;
+    }
+  }
+  return this;
+};
+
+/**
+ * Emit `event` with the given args.
+ *
+ * @param {String} event
+ * @param {Mixed} ...
+ * @return {Emitter}
+ */
+
+Emitter.prototype.emit = function(event){
+  this._callbacks = this._callbacks || {};
+  var args = [].slice.call(arguments, 1)
+    , callbacks = this._callbacks['$' + event];
+
+  if (callbacks) {
+    callbacks = callbacks.slice(0);
+    for (var i = 0, len = callbacks.length; i < len; ++i) {
+      callbacks[i].apply(this, args);
+    }
+  }
+
+  return this;
+};
+
+/**
+ * Return array of callbacks for `event`.
+ *
+ * @param {String} event
+ * @return {Array}
+ * @api public
+ */
+
+Emitter.prototype.listeners = function(event){
+  this._callbacks = this._callbacks || {};
+  return this._callbacks['$' + event] || [];
+};
+
+/**
+ * Check if this emitter has `event` handlers.
+ *
+ * @param {String} event
+ * @return {Boolean}
+ * @api public
+ */
+
+Emitter.prototype.hasListeners = function(event){
+  return !! this.listeners(event).length;
+};
+
 }).apply(this, arguments);
 
-},{}],198:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/node_modules/engine.io-parser/lib/browser.js", module);
+},{}],50:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/engine.io-client/node_modules/debug/browser.js", module);
+(function(){
+(function (process){
+
+/**
+ * This is the web browser implementation of `debug()`.
+ *
+ * Expose `debug()` as the module.
+ */
+
+exports = module.exports = require('./debug');
+exports.log = log;
+exports.formatArgs = formatArgs;
+exports.save = save;
+exports.load = load;
+exports.useColors = useColors;
+exports.storage = 'undefined' != typeof chrome
+               && 'undefined' != typeof chrome.storage
+                  ? chrome.storage.local
+                  : localstorage();
+
+/**
+ * Colors.
+ */
+
+exports.colors = [
+  'lightseagreen',
+  'forestgreen',
+  'goldenrod',
+  'dodgerblue',
+  'darkorchid',
+  'crimson'
+];
+
+/**
+ * Currently only WebKit-based Web Inspectors, Firefox >= v31,
+ * and the Firebug extension (any Firefox version) are known
+ * to support "%c" CSS customizations.
+ *
+ * TODO: add a `localStorage` variable to explicitly enable/disable colors
+ */
+
+function useColors() {
+  // is webkit? http://stackoverflow.com/a/16459606/376773
+  // document is undefined in react-native: https://github.com/facebook/react-native/pull/1632
+  return (typeof document !== 'undefined' && 'WebkitAppearance' in document.documentElement.style) ||
+    // is firebug? http://stackoverflow.com/a/398120/376773
+    (window.console && (console.firebug || (console.exception && console.table))) ||
+    // is firefox >= v31?
+    // https://developer.mozilla.org/en-US/docs/Tools/Web_Console#Styling_messages
+    (navigator.userAgent.toLowerCase().match(/firefox\/(\d+)/) && parseInt(RegExp.$1, 10) >= 31);
+}
+
+/**
+ * Map %j to `JSON.stringify()`, since no Web Inspectors do that by default.
+ */
+
+exports.formatters.j = function(v) {
+  try {
+    return JSON.stringify(v);
+  } catch (err) {
+    return '[UnexpectedJSONParseError]: ' + err.message;
+  }
+};
+
+
+/**
+ * Colorize log arguments if enabled.
+ *
+ * @api public
+ */
+
+function formatArgs() {
+  var args = arguments;
+  var useColors = this.useColors;
+
+  args[0] = (useColors ? '%c' : '')
+    + this.namespace
+    + (useColors ? ' %c' : ' ')
+    + args[0]
+    + (useColors ? '%c ' : ' ')
+    + '+' + exports.humanize(this.diff);
+
+  if (!useColors) return args;
+
+  var c = 'color: ' + this.color;
+  args = [args[0], c, 'color: inherit'].concat(Array.prototype.slice.call(args, 1));
+
+  // the final "%c" is somewhat tricky, because there could be other
+  // arguments passed either before or after the %c, so we need to
+  // figure out the correct index to insert the CSS into
+  var index = 0;
+  var lastC = 0;
+  args[0].replace(/%[a-z%]/g, function(match) {
+    if ('%%' === match) return;
+    index++;
+    if ('%c' === match) {
+      // we only are interested in the *last* %c
+      // (the user may have provided their own)
+      lastC = index;
+    }
+  });
+
+  args.splice(lastC, 0, c);
+  return args;
+}
+
+/**
+ * Invokes `console.log()` when available.
+ * No-op when `console.log` is not a "function".
+ *
+ * @api public
+ */
+
+function log() {
+  // this hackery is required for IE8/9, where
+  // the `console.log` function doesn't have 'apply'
+  return 'object' === typeof console
+    && console.log
+    && Function.prototype.apply.call(console.log, console, arguments);
+}
+
+/**
+ * Save `namespaces`.
+ *
+ * @param {String} namespaces
+ * @api private
+ */
+
+function save(namespaces) {
+  try {
+    if (null == namespaces) {
+      exports.storage.removeItem('debug');
+    } else {
+      exports.storage.debug = namespaces;
+    }
+  } catch(e) {}
+}
+
+/**
+ * Load `namespaces`.
+ *
+ * @return {String} returns the previously persisted debug modes
+ * @api private
+ */
+
+function load() {
+  var r;
+  try {
+    return exports.storage.debug;
+  } catch(e) {}
+
+  // If debug isn't set in LS, and we're in Electron, try to load $DEBUG
+  if (typeof process !== 'undefined' && 'env' in process) {
+    return process.env.DEBUG;
+  }
+}
+
+/**
+ * Enable namespaces listed in `localStorage.debug` initially.
+ */
+
+exports.enable(load());
+
+/**
+ * Localstorage attempts to return the localstorage.
+ *
+ * This is necessary because safari throws
+ * when a user disables cookies/localstorage
+ * and you attempt to access it.
+ *
+ * @return {LocalStorage}
+ * @api private
+ */
+
+function localstorage(){
+  try {
+    return window.localStorage;
+  } catch (e) {}
+}
+
+}).call(this,require('_process'))
+}).apply(this, arguments);
+
+},{"./debug":51,"_process":210}],51:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/engine.io-client/node_modules/debug/debug.js", module);
+(function(){
+
+/**
+ * This is the common logic for both the Node.js and web browser
+ * implementations of `debug()`.
+ *
+ * Expose `debug()` as the module.
+ */
+
+exports = module.exports = debug.debug = debug;
+exports.coerce = coerce;
+exports.disable = disable;
+exports.enable = enable;
+exports.enabled = enabled;
+exports.humanize = require('ms');
+
+/**
+ * The currently active debug mode names, and names to skip.
+ */
+
+exports.names = [];
+exports.skips = [];
+
+/**
+ * Map of special "%n" handling functions, for the debug "format" argument.
+ *
+ * Valid key names are a single, lowercased letter, i.e. "n".
+ */
+
+exports.formatters = {};
+
+/**
+ * Previously assigned color.
+ */
+
+var prevColor = 0;
+
+/**
+ * Previous log timestamp.
+ */
+
+var prevTime;
+
+/**
+ * Select a color.
+ *
+ * @return {Number}
+ * @api private
+ */
+
+function selectColor() {
+  return exports.colors[prevColor++ % exports.colors.length];
+}
+
+/**
+ * Create a debugger with the given `namespace`.
+ *
+ * @param {String} namespace
+ * @return {Function}
+ * @api public
+ */
+
+function debug(namespace) {
+
+  // define the `disabled` version
+  function disabled() {
+  }
+  disabled.enabled = false;
+
+  // define the `enabled` version
+  function enabled() {
+
+    var self = enabled;
+
+    // set `diff` timestamp
+    var curr = +new Date();
+    var ms = curr - (prevTime || curr);
+    self.diff = ms;
+    self.prev = prevTime;
+    self.curr = curr;
+    prevTime = curr;
+
+    // add the `color` if not set
+    if (null == self.useColors) self.useColors = exports.useColors();
+    if (null == self.color && self.useColors) self.color = selectColor();
+
+    var args = new Array(arguments.length);
+    for (var i = 0; i < args.length; i++) {
+      args[i] = arguments[i];
+    }
+
+    args[0] = exports.coerce(args[0]);
+
+    if ('string' !== typeof args[0]) {
+      // anything else let's inspect with %o
+      args = ['%o'].concat(args);
+    }
+
+    // apply any `formatters` transformations
+    var index = 0;
+    args[0] = args[0].replace(/%([a-z%])/g, function(match, format) {
+      // if we encounter an escaped % then don't increase the array index
+      if (match === '%%') return match;
+      index++;
+      var formatter = exports.formatters[format];
+      if ('function' === typeof formatter) {
+        var val = args[index];
+        match = formatter.call(self, val);
+
+        // now we need to remove `args[index]` since it's inlined in the `format`
+        args.splice(index, 1);
+        index--;
+      }
+      return match;
+    });
+
+    // apply env-specific formatting
+    args = exports.formatArgs.apply(self, args);
+
+    var logFn = enabled.log || exports.log || console.log.bind(console);
+    logFn.apply(self, args);
+  }
+  enabled.enabled = true;
+
+  var fn = exports.enabled(namespace) ? enabled : disabled;
+
+  fn.namespace = namespace;
+
+  return fn;
+}
+
+/**
+ * Enables a debug mode by namespaces. This can include modes
+ * separated by a colon and wildcards.
+ *
+ * @param {String} namespaces
+ * @api public
+ */
+
+function enable(namespaces) {
+  exports.save(namespaces);
+
+  var split = (namespaces || '').split(/[\s,]+/);
+  var len = split.length;
+
+  for (var i = 0; i < len; i++) {
+    if (!split[i]) continue; // ignore empty strings
+    namespaces = split[i].replace(/[\\^$+?.()|[\]{}]/g, '\\$&').replace(/\*/g, '.*?');
+    if (namespaces[0] === '-') {
+      exports.skips.push(new RegExp('^' + namespaces.substr(1) + '$'));
+    } else {
+      exports.names.push(new RegExp('^' + namespaces + '$'));
+    }
+  }
+}
+
+/**
+ * Disable debug output.
+ *
+ * @api public
+ */
+
+function disable() {
+  exports.enable('');
+}
+
+/**
+ * Returns true if the given mode name is enabled, false otherwise.
+ *
+ * @param {String} name
+ * @return {Boolean}
+ * @api public
+ */
+
+function enabled(name) {
+  var i, len;
+  for (i = 0, len = exports.skips.length; i < len; i++) {
+    if (exports.skips[i].test(name)) {
+      return false;
+    }
+  }
+  for (i = 0, len = exports.names.length; i < len; i++) {
+    if (exports.names[i].test(name)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+/**
+ * Coerce `val`.
+ *
+ * @param {Mixed} val
+ * @return {Mixed}
+ * @api private
+ */
+
+function coerce(val) {
+  if (val instanceof Error) return val.stack || val.message;
+  return val;
+}
+
+}).apply(this, arguments);
+
+},{"ms":52}],52:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/engine.io-client/node_modules/ms/index.js", module);
+(function(){
+/**
+ * Helpers.
+ */
+
+var s = 1000
+var m = s * 60
+var h = m * 60
+var d = h * 24
+var y = d * 365.25
+
+/**
+ * Parse or format the given `val`.
+ *
+ * Options:
+ *
+ *  - `long` verbose formatting [false]
+ *
+ * @param {String|Number} val
+ * @param {Object} options
+ * @throws {Error} throw an error if val is not a non-empty string or a number
+ * @return {String|Number}
+ * @api public
+ */
+
+module.exports = function (val, options) {
+  options = options || {}
+  var type = typeof val
+  if (type === 'string' && val.length > 0) {
+    return parse(val)
+  } else if (type === 'number' && isNaN(val) === false) {
+    return options.long ?
+			fmtLong(val) :
+			fmtShort(val)
+  }
+  throw new Error('val is not a non-empty string or a valid number. val=' + JSON.stringify(val))
+}
+
+/**
+ * Parse the given `str` and return milliseconds.
+ *
+ * @param {String} str
+ * @return {Number}
+ * @api private
+ */
+
+function parse(str) {
+  str = String(str)
+  if (str.length > 10000) {
+    return
+  }
+  var match = /^((?:\d+)?\.?\d+) *(milliseconds?|msecs?|ms|seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h|days?|d|years?|yrs?|y)?$/i.exec(str)
+  if (!match) {
+    return
+  }
+  var n = parseFloat(match[1])
+  var type = (match[2] || 'ms').toLowerCase()
+  switch (type) {
+    case 'years':
+    case 'year':
+    case 'yrs':
+    case 'yr':
+    case 'y':
+      return n * y
+    case 'days':
+    case 'day':
+    case 'd':
+      return n * d
+    case 'hours':
+    case 'hour':
+    case 'hrs':
+    case 'hr':
+    case 'h':
+      return n * h
+    case 'minutes':
+    case 'minute':
+    case 'mins':
+    case 'min':
+    case 'm':
+      return n * m
+    case 'seconds':
+    case 'second':
+    case 'secs':
+    case 'sec':
+    case 's':
+      return n * s
+    case 'milliseconds':
+    case 'millisecond':
+    case 'msecs':
+    case 'msec':
+    case 'ms':
+      return n
+    default:
+      return undefined
+  }
+}
+
+/**
+ * Short format for `ms`.
+ *
+ * @param {Number} ms
+ * @return {String}
+ * @api private
+ */
+
+function fmtShort(ms) {
+  if (ms >= d) {
+    return Math.round(ms / d) + 'd'
+  }
+  if (ms >= h) {
+    return Math.round(ms / h) + 'h'
+  }
+  if (ms >= m) {
+    return Math.round(ms / m) + 'm'
+  }
+  if (ms >= s) {
+    return Math.round(ms / s) + 's'
+  }
+  return ms + 'ms'
+}
+
+/**
+ * Long format for `ms`.
+ *
+ * @param {Number} ms
+ * @return {String}
+ * @api private
+ */
+
+function fmtLong(ms) {
+  return plural(ms, d, 'day') ||
+    plural(ms, h, 'hour') ||
+    plural(ms, m, 'minute') ||
+    plural(ms, s, 'second') ||
+    ms + ' ms'
+}
+
+/**
+ * Pluralization helper.
+ */
+
+function plural(ms, n, name) {
+  if (ms < n) {
+    return
+  }
+  if (ms < n * 1.5) {
+    return Math.floor(ms / n) + ' ' + name
+  }
+  return Math.ceil(ms / n) + ' ' + name + 's'
+}
+
+}).apply(this, arguments);
+
+},{}],53:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/engine.io-parser/lib/browser.js", module);
 (function(){
 (function (global){
 /**
@@ -11984,8 +6388,8 @@ exports.decodePayloadAsBinary = function (data, binaryType, callback) {
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 }).apply(this, arguments);
 
-},{"./keys":199,"after":200,"arraybuffer.slice":201,"base64-arraybuffer":202,"blob":203,"has-binary":209,"wtf-8":204}],199:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/node_modules/engine.io-parser/lib/keys.js", module);
+},{"./keys":54,"after":2,"arraybuffer.slice":3,"base64-arraybuffer":30,"blob":31,"has-binary":56,"wtf-8":227}],54:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/engine.io-parser/lib/keys.js", module);
 (function(){
 
 /**
@@ -12009,675 +6413,263 @@ module.exports = Object.keys || function keys (obj){
 
 }).apply(this, arguments);
 
-},{}],200:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/node_modules/engine.io-parser/node_modules/after/index.js", module);
-(function(){
-module.exports = after
-
-function after(count, callback, err_cb) {
-    var bail = false
-    err_cb = err_cb || noop
-    proxy.count = count
-
-    return (count === 0) ? callback() : proxy
-
-    function proxy(err, result) {
-        if (proxy.count <= 0) {
-            throw new Error('after called too many times')
-        }
-        --proxy.count
-
-        // after first error, rest are passed to err_cb
-        if (err) {
-            bail = true
-            callback(err)
-            // future error callbacks will go to error handler
-            callback = err_cb
-        } else if (proxy.count === 0 && !bail) {
-            callback(null, result)
-        }
-    }
-}
-
-function noop() {}
-
-}).apply(this, arguments);
-
-},{}],201:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/node_modules/engine.io-parser/node_modules/arraybuffer.slice/index.js", module);
-(function(){
-/**
- * An abstraction for slicing an arraybuffer even when
- * ArrayBuffer.prototype.slice is not supported
- *
- * @api public
- */
-
-module.exports = function(arraybuffer, start, end) {
-  var bytes = arraybuffer.byteLength;
-  start = start || 0;
-  end = end || bytes;
-
-  if (arraybuffer.slice) { return arraybuffer.slice(start, end); }
-
-  if (start < 0) { start += bytes; }
-  if (end < 0) { end += bytes; }
-  if (end > bytes) { end = bytes; }
-
-  if (start >= bytes || start >= end || bytes === 0) {
-    return new ArrayBuffer(0);
-  }
-
-  var abv = new Uint8Array(arraybuffer);
-  var result = new Uint8Array(end - start);
-  for (var i = start, ii = 0; i < end; i++, ii++) {
-    result[ii] = abv[i];
-  }
-  return result.buffer;
-};
-
-}).apply(this, arguments);
-
-},{}],202:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/node_modules/engine.io-parser/node_modules/base64-arraybuffer/lib/base64-arraybuffer.js", module);
-(function(){
-/*
- * base64-arraybuffer
- * https://github.com/niklasvh/base64-arraybuffer
- *
- * Copyright (c) 2012 Niklas von Hertzen
- * Licensed under the MIT license.
- */
-(function(){
-  "use strict";
-
-  var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-
-  // Use a lookup table to find the index.
-  var lookup = new Uint8Array(256);
-  for (var i = 0; i < chars.length; i++) {
-    lookup[chars.charCodeAt(i)] = i;
-  }
-
-  exports.encode = function(arraybuffer) {
-    var bytes = new Uint8Array(arraybuffer),
-    i, len = bytes.length, base64 = "";
-
-    for (i = 0; i < len; i+=3) {
-      base64 += chars[bytes[i] >> 2];
-      base64 += chars[((bytes[i] & 3) << 4) | (bytes[i + 1] >> 4)];
-      base64 += chars[((bytes[i + 1] & 15) << 2) | (bytes[i + 2] >> 6)];
-      base64 += chars[bytes[i + 2] & 63];
-    }
-
-    if ((len % 3) === 2) {
-      base64 = base64.substring(0, base64.length - 1) + "=";
-    } else if (len % 3 === 1) {
-      base64 = base64.substring(0, base64.length - 2) + "==";
-    }
-
-    return base64;
-  };
-
-  exports.decode =  function(base64) {
-    var bufferLength = base64.length * 0.75,
-    len = base64.length, i, p = 0,
-    encoded1, encoded2, encoded3, encoded4;
-
-    if (base64[base64.length - 1] === "=") {
-      bufferLength--;
-      if (base64[base64.length - 2] === "=") {
-        bufferLength--;
-      }
-    }
-
-    var arraybuffer = new ArrayBuffer(bufferLength),
-    bytes = new Uint8Array(arraybuffer);
-
-    for (i = 0; i < len; i+=4) {
-      encoded1 = lookup[base64.charCodeAt(i)];
-      encoded2 = lookup[base64.charCodeAt(i+1)];
-      encoded3 = lookup[base64.charCodeAt(i+2)];
-      encoded4 = lookup[base64.charCodeAt(i+3)];
-
-      bytes[p++] = (encoded1 << 2) | (encoded2 >> 4);
-      bytes[p++] = ((encoded2 & 15) << 4) | (encoded3 >> 2);
-      bytes[p++] = ((encoded3 & 3) << 6) | (encoded4 & 63);
-    }
-
-    return arraybuffer;
-  };
-})();
-
-}).apply(this, arguments);
-
-},{}],203:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/node_modules/engine.io-parser/node_modules/blob/index.js", module);
-(function(){
-(function (global){
-/**
- * Create a blob builder even when vendor prefixes exist
- */
-
-var BlobBuilder = global.BlobBuilder
-  || global.WebKitBlobBuilder
-  || global.MSBlobBuilder
-  || global.MozBlobBuilder;
-
-/**
- * Check if Blob constructor is supported
- */
-
-var blobSupported = (function() {
-  try {
-    var a = new Blob(['hi']);
-    return a.size === 2;
-  } catch(e) {
-    return false;
-  }
-})();
-
-/**
- * Check if Blob constructor supports ArrayBufferViews
- * Fails in Safari 6, so we need to map to ArrayBuffers there.
- */
-
-var blobSupportsArrayBufferView = blobSupported && (function() {
-  try {
-    var b = new Blob([new Uint8Array([1,2])]);
-    return b.size === 2;
-  } catch(e) {
-    return false;
-  }
-})();
-
-/**
- * Check if BlobBuilder is supported
- */
-
-var blobBuilderSupported = BlobBuilder
-  && BlobBuilder.prototype.append
-  && BlobBuilder.prototype.getBlob;
-
-/**
- * Helper function that maps ArrayBufferViews to ArrayBuffers
- * Used by BlobBuilder constructor and old browsers that didn't
- * support it in the Blob constructor.
- */
-
-function mapArrayBufferViews(ary) {
-  for (var i = 0; i < ary.length; i++) {
-    var chunk = ary[i];
-    if (chunk.buffer instanceof ArrayBuffer) {
-      var buf = chunk.buffer;
-
-      // if this is a subarray, make a copy so we only
-      // include the subarray region from the underlying buffer
-      if (chunk.byteLength !== buf.byteLength) {
-        var copy = new Uint8Array(chunk.byteLength);
-        copy.set(new Uint8Array(buf, chunk.byteOffset, chunk.byteLength));
-        buf = copy.buffer;
-      }
-
-      ary[i] = buf;
-    }
-  }
-}
-
-function BlobBuilderConstructor(ary, options) {
-  options = options || {};
-
-  var bb = new BlobBuilder();
-  mapArrayBufferViews(ary);
-
-  for (var i = 0; i < ary.length; i++) {
-    bb.append(ary[i]);
-  }
-
-  return (options.type) ? bb.getBlob(options.type) : bb.getBlob();
-};
-
-function BlobConstructor(ary, options) {
-  mapArrayBufferViews(ary);
-  return new Blob(ary, options || {});
-};
-
-module.exports = (function() {
-  if (blobSupported) {
-    return blobSupportsArrayBufferView ? global.Blob : BlobConstructor;
-  } else if (blobBuilderSupported) {
-    return BlobBuilderConstructor;
-  } else {
-    return undefined;
-  }
-})();
-
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-}).apply(this, arguments);
-
-},{}],204:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/node_modules/engine.io-parser/node_modules/wtf-8/wtf-8.js", module);
-(function(){
-(function (global){
-/*! https://mths.be/wtf8 v1.0.0 by @mathias */
-;(function(root) {
-
-	// Detect free variables `exports`
-	var freeExports = typeof exports == 'object' && exports;
-
-	// Detect free variable `module`
-	var freeModule = typeof module == 'object' && module &&
-		module.exports == freeExports && module;
-
-	// Detect free variable `global`, from Node.js or Browserified code,
-	// and use it as `root`
-	var freeGlobal = typeof global == 'object' && global;
-	if (freeGlobal.global === freeGlobal || freeGlobal.window === freeGlobal) {
-		root = freeGlobal;
-	}
-
-	/*--------------------------------------------------------------------------*/
-
-	var stringFromCharCode = String.fromCharCode;
-
-	// Taken from https://mths.be/punycode
-	function ucs2decode(string) {
-		var output = [];
-		var counter = 0;
-		var length = string.length;
-		var value;
-		var extra;
-		while (counter < length) {
-			value = string.charCodeAt(counter++);
-			if (value >= 0xD800 && value <= 0xDBFF && counter < length) {
-				// high surrogate, and there is a next character
-				extra = string.charCodeAt(counter++);
-				if ((extra & 0xFC00) == 0xDC00) { // low surrogate
-					output.push(((value & 0x3FF) << 10) + (extra & 0x3FF) + 0x10000);
-				} else {
-					// unmatched surrogate; only append this code unit, in case the next
-					// code unit is the high surrogate of a surrogate pair
-					output.push(value);
-					counter--;
-				}
-			} else {
-				output.push(value);
-			}
-		}
-		return output;
-	}
-
-	// Taken from https://mths.be/punycode
-	function ucs2encode(array) {
-		var length = array.length;
-		var index = -1;
-		var value;
-		var output = '';
-		while (++index < length) {
-			value = array[index];
-			if (value > 0xFFFF) {
-				value -= 0x10000;
-				output += stringFromCharCode(value >>> 10 & 0x3FF | 0xD800);
-				value = 0xDC00 | value & 0x3FF;
-			}
-			output += stringFromCharCode(value);
-		}
-		return output;
-	}
-
-	/*--------------------------------------------------------------------------*/
-
-	function createByte(codePoint, shift) {
-		return stringFromCharCode(((codePoint >> shift) & 0x3F) | 0x80);
-	}
-
-	function encodeCodePoint(codePoint) {
-		if ((codePoint & 0xFFFFFF80) == 0) { // 1-byte sequence
-			return stringFromCharCode(codePoint);
-		}
-		var symbol = '';
-		if ((codePoint & 0xFFFFF800) == 0) { // 2-byte sequence
-			symbol = stringFromCharCode(((codePoint >> 6) & 0x1F) | 0xC0);
-		}
-		else if ((codePoint & 0xFFFF0000) == 0) { // 3-byte sequence
-			symbol = stringFromCharCode(((codePoint >> 12) & 0x0F) | 0xE0);
-			symbol += createByte(codePoint, 6);
-		}
-		else if ((codePoint & 0xFFE00000) == 0) { // 4-byte sequence
-			symbol = stringFromCharCode(((codePoint >> 18) & 0x07) | 0xF0);
-			symbol += createByte(codePoint, 12);
-			symbol += createByte(codePoint, 6);
-		}
-		symbol += stringFromCharCode((codePoint & 0x3F) | 0x80);
-		return symbol;
-	}
-
-	function wtf8encode(string) {
-		var codePoints = ucs2decode(string);
-		var length = codePoints.length;
-		var index = -1;
-		var codePoint;
-		var byteString = '';
-		while (++index < length) {
-			codePoint = codePoints[index];
-			byteString += encodeCodePoint(codePoint);
-		}
-		return byteString;
-	}
-
-	/*--------------------------------------------------------------------------*/
-
-	function readContinuationByte() {
-		if (byteIndex >= byteCount) {
-			throw Error('Invalid byte index');
-		}
-
-		var continuationByte = byteArray[byteIndex] & 0xFF;
-		byteIndex++;
-
-		if ((continuationByte & 0xC0) == 0x80) {
-			return continuationByte & 0x3F;
-		}
-
-		// If we end up here, it’s not a continuation byte.
-		throw Error('Invalid continuation byte');
-	}
-
-	function decodeSymbol() {
-		var byte1;
-		var byte2;
-		var byte3;
-		var byte4;
-		var codePoint;
-
-		if (byteIndex > byteCount) {
-			throw Error('Invalid byte index');
-		}
-
-		if (byteIndex == byteCount) {
-			return false;
-		}
-
-		// Read the first byte.
-		byte1 = byteArray[byteIndex] & 0xFF;
-		byteIndex++;
-
-		// 1-byte sequence (no continuation bytes)
-		if ((byte1 & 0x80) == 0) {
-			return byte1;
-		}
-
-		// 2-byte sequence
-		if ((byte1 & 0xE0) == 0xC0) {
-			var byte2 = readContinuationByte();
-			codePoint = ((byte1 & 0x1F) << 6) | byte2;
-			if (codePoint >= 0x80) {
-				return codePoint;
-			} else {
-				throw Error('Invalid continuation byte');
-			}
-		}
-
-		// 3-byte sequence (may include unpaired surrogates)
-		if ((byte1 & 0xF0) == 0xE0) {
-			byte2 = readContinuationByte();
-			byte3 = readContinuationByte();
-			codePoint = ((byte1 & 0x0F) << 12) | (byte2 << 6) | byte3;
-			if (codePoint >= 0x0800) {
-				return codePoint;
-			} else {
-				throw Error('Invalid continuation byte');
-			}
-		}
-
-		// 4-byte sequence
-		if ((byte1 & 0xF8) == 0xF0) {
-			byte2 = readContinuationByte();
-			byte3 = readContinuationByte();
-			byte4 = readContinuationByte();
-			codePoint = ((byte1 & 0x0F) << 0x12) | (byte2 << 0x0C) |
-				(byte3 << 0x06) | byte4;
-			if (codePoint >= 0x010000 && codePoint <= 0x10FFFF) {
-				return codePoint;
-			}
-		}
-
-		throw Error('Invalid WTF-8 detected');
-	}
-
-	var byteArray;
-	var byteCount;
-	var byteIndex;
-	function wtf8decode(byteString) {
-		byteArray = ucs2decode(byteString);
-		byteCount = byteArray.length;
-		byteIndex = 0;
-		var codePoints = [];
-		var tmp;
-		while ((tmp = decodeSymbol()) !== false) {
-			codePoints.push(tmp);
-		}
-		return ucs2encode(codePoints);
-	}
-
-	/*--------------------------------------------------------------------------*/
-
-	var wtf8 = {
-		'version': '1.0.0',
-		'encode': wtf8encode,
-		'decode': wtf8decode
-	};
-
-	// Some AMD build optimizers, like r.js, check for specific condition patterns
-	// like the following:
-	if (
-		typeof define == 'function' &&
-		typeof define.amd == 'object' &&
-		define.amd
-	) {
-		define(function() {
-			return wtf8;
-		});
-	}	else if (freeExports && !freeExports.nodeType) {
-		if (freeModule) { // in Node.js or RingoJS v0.8.0+
-			freeModule.exports = wtf8;
-		} else { // in Narwhal or RingoJS v0.7.0-
-			var object = {};
-			var hasOwnProperty = object.hasOwnProperty;
-			for (var key in wtf8) {
-				hasOwnProperty.call(wtf8, key) && (freeExports[key] = wtf8[key]);
-			}
-		}
-	} else { // in Rhino or a web browser
-		root.wtf8 = wtf8;
-	}
-
-}(this));
-
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-}).apply(this, arguments);
-
-},{}],205:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/node_modules/has-cors/index.js", module);
-(function(){
-
-/**
- * Module exports.
- *
- * Logic borrowed from Modernizr:
- *
- *   - https://github.com/Modernizr/Modernizr/blob/master/feature-detects/cors.js
- */
-
-try {
-  module.exports = typeof XMLHttpRequest !== 'undefined' &&
-    'withCredentials' in new XMLHttpRequest();
-} catch (err) {
-  // if XMLHttp support is disabled in IE then it will throw
-  // when trying to create
-  module.exports = false;
-}
-
-}).apply(this, arguments);
-
-},{}],206:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/node_modules/parsejson/index.js", module);
-(function(){
-(function (global){
-/**
- * JSON parse.
- *
- * @see Based on jQuery#parseJSON (MIT) and JSON2
- * @api private
- */
-
-var rvalidchars = /^[\],:{}\s]*$/;
-var rvalidescape = /\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g;
-var rvalidtokens = /"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g;
-var rvalidbraces = /(?:^|:|,)(?:\s*\[)+/g;
-var rtrimLeft = /^\s+/;
-var rtrimRight = /\s+$/;
-
-module.exports = function parsejson(data) {
-  if ('string' != typeof data || !data) {
-    return null;
-  }
-
-  data = data.replace(rtrimLeft, '').replace(rtrimRight, '');
-
-  // Attempt to parse using the native JSON parser first
-  if (global.JSON && JSON.parse) {
-    return JSON.parse(data);
-  }
-
-  if (rvalidchars.test(data.replace(rvalidescape, '@')
-      .replace(rvalidtokens, ']')
-      .replace(rvalidbraces, ''))) {
-    return (new Function('return ' + data))();
-  }
-};
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-}).apply(this, arguments);
-
-},{}],207:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/node_modules/parseqs/index.js", module);
-(function(){
-/**
- * Compiles a querystring
- * Returns string representation of the object
- *
- * @param {Object}
- * @api private
- */
-
-exports.encode = function (obj) {
-  var str = '';
-
-  for (var i in obj) {
-    if (obj.hasOwnProperty(i)) {
-      if (str.length) str += '&';
-      str += encodeURIComponent(i) + '=' + encodeURIComponent(obj[i]);
-    }
-  }
-
-  return str;
-};
-
-/**
- * Parses a simple querystring into an object
- *
- * @param {String} qs
- * @api private
- */
-
-exports.decode = function(qs){
-  var qry = {};
-  var pairs = qs.split('&');
-  for (var i = 0, l = pairs.length; i < l; i++) {
-    var pair = pairs[i].split('=');
-    qry[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1]);
-  }
-  return qry;
-};
-
-}).apply(this, arguments);
-
-},{}],208:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/node_modules/yeast/index.js", module);
+},{}],55:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/event-emitter-es6/index.js", module);
 (function(){
 'use strict';
 
-var alphabet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_'.split('')
-  , length = 64
-  , map = {}
-  , seed = 0
-  , i = 0
-  , prev;
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var DEFAULT_VALUES = {
+    emitDelay: 10,
+    strictMode: false
+};
 
 /**
- * Return a string representing the specified number.
- *
- * @param {Number} num The number to convert.
- * @returns {String} The string representation of the number.
- * @api public
+ * @typedef {object} EventEmitterListenerFunc
+ * @property {boolean} once
+ * @property {function} fn
  */
-function encode(num) {
-  var encoded = '';
-
-  do {
-    encoded = alphabet[num % length] + encoded;
-    num = Math.floor(num / length);
-  } while (num > 0);
-
-  return encoded;
-}
 
 /**
- * Return the integer value specified by the given string.
+ * @class EventEmitter
  *
- * @param {String} str The string to convert.
- * @returns {Number} The integer value represented by the string.
- * @api public
+ * @private
+ * @property {Object.<string, EventEmitterListenerFunc[]>} _listeners
+ * @property {string[]} events
  */
-function decode(str) {
-  var decoded = 0;
 
-  for (i = 0; i < str.length; i++) {
-    decoded = decoded * length + map[str.charAt(i)];
-  }
+var EventEmitter = function () {
 
-  return decoded;
-}
+    /**
+     * @constructor
+     * @param {{}}      [opts]
+     * @param {number}  [opts.emitDelay = 10] - Number in ms. Specifies whether emit will be sync or async. By default - 10ms. If 0 - fires sync
+     * @param {boolean} [opts.strictMode = false] - is true, Emitter throws error on emit error with no listeners
+     */
 
-/**
- * Yeast: A tiny growing id generator.
- *
- * @returns {String} A unique id.
- * @api public
- */
-function yeast() {
-  var now = encode(+new Date());
+    function EventEmitter() {
+        var opts = arguments.length <= 0 || arguments[0] === undefined ? DEFAULT_VALUES : arguments[0];
 
-  if (now !== prev) return seed = 0, prev = now;
-  return now +'.'+ encode(seed++);
-}
+        _classCallCheck(this, EventEmitter);
 
-//
-// Map each character to its index.
-//
-for (; i < length; i++) map[alphabet[i]] = i;
+        var emitDelay = void 0,
+            strictMode = void 0;
 
-//
-// Expose the `yeast`, `encode` and `decode` functions.
-//
-yeast.encode = encode;
-yeast.decode = decode;
-module.exports = yeast;
+        if (opts.hasOwnProperty('emitDelay')) {
+            emitDelay = opts.emitDelay;
+        } else {
+            emitDelay = DEFAULT_VALUES.emitDelay;
+        }
+        this._emitDelay = emitDelay;
+
+        if (opts.hasOwnProperty('strictMode')) {
+            strictMode = opts.strictMode;
+        } else {
+            strictMode = DEFAULT_VALUES.strictMode;
+        }
+        this._strictMode = strictMode;
+
+        this._listeners = {};
+        this.events = [];
+    }
+
+    /**
+     * @protected
+     * @param {string} type
+     * @param {function} listener
+     * @param {boolean} [once = false]
+     */
+
+
+    _createClass(EventEmitter, [{
+        key: '_addListenner',
+        value: function _addListenner(type, listener, once) {
+            if (typeof listener !== 'function') {
+                throw TypeError('listener must be a function');
+            }
+
+            if (this.events.indexOf(type) === -1) {
+                this._listeners[type] = [{
+                    once: once,
+                    fn: listener
+                }];
+                this.events.push(type);
+            } else {
+                this._listeners[type].push({
+                    once: once,
+                    fn: listener
+                });
+            }
+        }
+
+        /**
+         * Subscribes on event type specified function
+         * @param {string} type
+         * @param {function} listener
+         */
+
+    }, {
+        key: 'on',
+        value: function on(type, listener) {
+            this._addListenner(type, listener, false);
+        }
+
+        /**
+         * Subscribes on event type specified function to fire only once
+         * @param {string} type
+         * @param {function} listener
+         */
+
+    }, {
+        key: 'once',
+        value: function once(type, listener) {
+            this._addListenner(type, listener, true);
+        }
+
+        /**
+         * Removes event with specified type. If specified listenerFunc - deletes only one listener of specified type
+         * @param {string} eventType
+         * @param {function} [listenerFunc]
+         */
+
+    }, {
+        key: 'off',
+        value: function off(eventType, listenerFunc) {
+            var _this = this;
+
+            var typeIndex = this.events.indexOf(eventType);
+            var hasType = eventType && typeIndex !== -1;
+
+            if (hasType) {
+                if (!listenerFunc) {
+                    delete this._listeners[eventType];
+                    this.events.splice(typeIndex, 1);
+                } else {
+                    (function () {
+                        var removedEvents = [];
+                        var typeListeners = _this._listeners[eventType];
+
+                        typeListeners.forEach(
+                        /**
+                         * @param {EventEmitterListenerFunc} fn
+                         * @param {number} idx
+                         */
+                        function (fn, idx) {
+                            if (fn.fn === listenerFunc) {
+                                removedEvents.unshift(idx);
+                            }
+                        });
+
+                        removedEvents.forEach(function (idx) {
+                            typeListeners.splice(idx, 1);
+                        });
+
+                        if (!typeListeners.length) {
+                            _this.events.splice(typeIndex, 1);
+                            delete _this._listeners[eventType];
+                        }
+                    })();
+                }
+            }
+        }
+
+        /**
+         * Applies arguments to specified event type
+         * @param {string} eventType
+         * @param {*[]} eventArguments
+         * @protected
+         */
+
+    }, {
+        key: '_applyEvents',
+        value: function _applyEvents(eventType, eventArguments) {
+            var typeListeners = this._listeners[eventType];
+
+            if (!typeListeners || !typeListeners.length) {
+                if (this._strictMode) {
+                    throw 'No listeners specified for event: ' + eventType;
+                } else {
+                    return;
+                }
+            }
+
+            var removableListeners = [];
+            typeListeners.forEach(function (eeListener, idx) {
+                eeListener.fn.apply(null, eventArguments);
+                if (eeListener.once) {
+                    removableListeners.unshift(idx);
+                }
+            });
+
+            removableListeners.forEach(function (idx) {
+                typeListeners.splice(idx, 1);
+            });
+        }
+
+        /**
+         * Emits event with specified type and params.
+         * @param {string} type
+         * @param eventArgs
+         */
+
+    }, {
+        key: 'emit',
+        value: function emit(type) {
+            var _this2 = this;
+
+            for (var _len = arguments.length, eventArgs = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+                eventArgs[_key - 1] = arguments[_key];
+            }
+
+            if (this._emitDelay) {
+                setTimeout(function () {
+                    _this2._applyEvents.call(_this2, type, eventArgs);
+                }, this._emitDelay);
+            } else {
+                this._applyEvents(type, eventArgs);
+            }
+        }
+
+        /**
+         * Emits event with specified type and params synchronously.
+         * @param {string} type
+         * @param eventArgs
+         */
+
+    }, {
+        key: 'emitSync',
+        value: function emitSync(type) {
+            for (var _len2 = arguments.length, eventArgs = Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
+                eventArgs[_key2 - 1] = arguments[_key2];
+            }
+
+            this._applyEvents(type, eventArgs);
+        }
+
+        /**
+         * Destroys EventEmitter
+         */
+
+    }, {
+        key: 'destroy',
+        value: function destroy() {
+            this._listeners = {};
+            this.events = [];
+        }
+    }]);
+
+    return EventEmitter;
+}();
+
+module.exports = EventEmitter;
 
 }).apply(this, arguments);
 
-},{}],209:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/has-binary/index.js", module);
+},{}],56:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/has-binary/index.js", module);
 (function(){
 (function (global){
 
@@ -12743,17 +6735,31 @@ function hasBinary(data) {
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 }).apply(this, arguments);
 
-},{"isarray":210}],210:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/has-binary/node_modules/isarray/index.js", module);
+},{"isarray":59}],57:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/has-cors/index.js", module);
 (function(){
-module.exports = Array.isArray || function (arr) {
-  return Object.prototype.toString.call(arr) == '[object Array]';
-};
+
+/**
+ * Module exports.
+ *
+ * Logic borrowed from Modernizr:
+ *
+ *   - https://github.com/Modernizr/Modernizr/blob/master/feature-detects/cors.js
+ */
+
+try {
+  module.exports = typeof XMLHttpRequest !== 'undefined' &&
+    'withCredentials' in new XMLHttpRequest();
+} catch (err) {
+  // if XMLHttp support is disabled in IE then it will throw
+  // when trying to create
+  module.exports = false;
+}
 
 }).apply(this, arguments);
 
-},{}],211:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/indexof/index.js", module);
+},{}],58:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/indexof/index.js", module);
 (function(){
 
 var indexOf = [].indexOf;
@@ -12767,1311 +6773,8 @@ module.exports = function(arr, obj){
 };
 }).apply(this, arguments);
 
-},{}],212:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/parseuri/index.js", module);
-(function(){
-/**
- * Parses an URI
- *
- * @author Steven Levithan <stevenlevithan.com> (MIT license)
- * @api private
- */
-
-var re = /^(?:(?![^:@]+:[^:@\/]*@)(http|https|ws|wss):\/\/)?((?:(([^:@]*)(?::([^:@]*))?)?@)?((?:[a-f0-9]{0,4}:){2,7}[a-f0-9]{0,4}|[^:\/?#]*)(?::(\d*))?)(((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[?#]|$)))*\/?)?([^?#\/]*))(?:\?([^#]*))?(?:#(.*))?)/;
-
-var parts = [
-    'source', 'protocol', 'authority', 'userInfo', 'user', 'password', 'host', 'port', 'relative', 'path', 'directory', 'file', 'query', 'anchor'
-];
-
-module.exports = function parseuri(str) {
-    var src = str,
-        b = str.indexOf('['),
-        e = str.indexOf(']');
-
-    if (b != -1 && e != -1) {
-        str = str.substring(0, b) + str.substring(b, e).replace(/:/g, ';') + str.substring(e, str.length);
-    }
-
-    var m = re.exec(str || ''),
-        uri = {},
-        i = 14;
-
-    while (i--) {
-        uri[parts[i]] = m[i] || '';
-    }
-
-    if (b != -1 && e != -1) {
-        uri.source = src;
-        uri.host = uri.host.substring(1, uri.host.length - 1).replace(/;/g, ':');
-        uri.authority = uri.authority.replace('[', '').replace(']', '').replace(/;/g, ':');
-        uri.ipv6uri = true;
-    }
-
-    return uri;
-};
-
-}).apply(this, arguments);
-
-},{}],213:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/socket.io-parser/binary.js", module);
-(function(){
-(function (global){
-/*global Blob,File*/
-
-/**
- * Module requirements
- */
-
-var isArray = require('isarray');
-var isBuf = require('./is-buffer');
-
-/**
- * Replaces every Buffer | ArrayBuffer in packet with a numbered placeholder.
- * Anything with blobs or files should be fed through removeBlobs before coming
- * here.
- *
- * @param {Object} packet - socket.io event packet
- * @return {Object} with deconstructed packet and list of buffers
- * @api public
- */
-
-exports.deconstructPacket = function(packet){
-  var buffers = [];
-  var packetData = packet.data;
-
-  function _deconstructPacket(data) {
-    if (!data) return data;
-
-    if (isBuf(data)) {
-      var placeholder = { _placeholder: true, num: buffers.length };
-      buffers.push(data);
-      return placeholder;
-    } else if (isArray(data)) {
-      var newData = new Array(data.length);
-      for (var i = 0; i < data.length; i++) {
-        newData[i] = _deconstructPacket(data[i]);
-      }
-      return newData;
-    } else if ('object' == typeof data && !(data instanceof Date)) {
-      var newData = {};
-      for (var key in data) {
-        newData[key] = _deconstructPacket(data[key]);
-      }
-      return newData;
-    }
-    return data;
-  }
-
-  var pack = packet;
-  pack.data = _deconstructPacket(packetData);
-  pack.attachments = buffers.length; // number of binary 'attachments'
-  return {packet: pack, buffers: buffers};
-};
-
-/**
- * Reconstructs a binary packet from its placeholder packet and buffers
- *
- * @param {Object} packet - event packet with placeholders
- * @param {Array} buffers - binary buffers to put in placeholder positions
- * @return {Object} reconstructed packet
- * @api public
- */
-
-exports.reconstructPacket = function(packet, buffers) {
-  var curPlaceHolder = 0;
-
-  function _reconstructPacket(data) {
-    if (data && data._placeholder) {
-      var buf = buffers[data.num]; // appropriate buffer (should be natural order anyway)
-      return buf;
-    } else if (isArray(data)) {
-      for (var i = 0; i < data.length; i++) {
-        data[i] = _reconstructPacket(data[i]);
-      }
-      return data;
-    } else if (data && 'object' == typeof data) {
-      for (var key in data) {
-        data[key] = _reconstructPacket(data[key]);
-      }
-      return data;
-    }
-    return data;
-  }
-
-  packet.data = _reconstructPacket(packet.data);
-  packet.attachments = undefined; // no longer useful
-  return packet;
-};
-
-/**
- * Asynchronously removes Blobs or Files from data via
- * FileReader's readAsArrayBuffer method. Used before encoding
- * data as msgpack. Calls callback with the blobless data.
- *
- * @param {Object} data
- * @param {Function} callback
- * @api private
- */
-
-exports.removeBlobs = function(data, callback) {
-  function _removeBlobs(obj, curKey, containingObject) {
-    if (!obj) return obj;
-
-    // convert any blob
-    if ((global.Blob && obj instanceof Blob) ||
-        (global.File && obj instanceof File)) {
-      pendingBlobs++;
-
-      // async filereader
-      var fileReader = new FileReader();
-      fileReader.onload = function() { // this.result == arraybuffer
-        if (containingObject) {
-          containingObject[curKey] = this.result;
-        }
-        else {
-          bloblessData = this.result;
-        }
-
-        // if nothing pending its callback time
-        if(! --pendingBlobs) {
-          callback(bloblessData);
-        }
-      };
-
-      fileReader.readAsArrayBuffer(obj); // blob -> arraybuffer
-    } else if (isArray(obj)) { // handle array
-      for (var i = 0; i < obj.length; i++) {
-        _removeBlobs(obj[i], i, obj);
-      }
-    } else if (obj && 'object' == typeof obj && !isBuf(obj)) { // and object
-      for (var key in obj) {
-        _removeBlobs(obj[key], key, obj);
-      }
-    }
-  }
-
-  var pendingBlobs = 0;
-  var bloblessData = data;
-  _removeBlobs(bloblessData);
-  if (!pendingBlobs) {
-    callback(bloblessData);
-  }
-};
-
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-}).apply(this, arguments);
-
-},{"./is-buffer":215,"isarray":220}],214:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/socket.io-parser/index.js", module);
-(function(){
-
-/**
- * Module dependencies.
- */
-
-var debug = require('debug')('socket.io-parser');
-var json = require('json3');
-var Emitter = require('component-emitter');
-var binary = require('./binary');
-var isBuf = require('./is-buffer');
-
-/**
- * Protocol version.
- *
- * @api public
- */
-
-exports.protocol = 4;
-
-/**
- * Packet types.
- *
- * @api public
- */
-
-exports.types = [
-  'CONNECT',
-  'DISCONNECT',
-  'EVENT',
-  'ACK',
-  'ERROR',
-  'BINARY_EVENT',
-  'BINARY_ACK'
-];
-
-/**
- * Packet type `connect`.
- *
- * @api public
- */
-
-exports.CONNECT = 0;
-
-/**
- * Packet type `disconnect`.
- *
- * @api public
- */
-
-exports.DISCONNECT = 1;
-
-/**
- * Packet type `event`.
- *
- * @api public
- */
-
-exports.EVENT = 2;
-
-/**
- * Packet type `ack`.
- *
- * @api public
- */
-
-exports.ACK = 3;
-
-/**
- * Packet type `error`.
- *
- * @api public
- */
-
-exports.ERROR = 4;
-
-/**
- * Packet type 'binary event'
- *
- * @api public
- */
-
-exports.BINARY_EVENT = 5;
-
-/**
- * Packet type `binary ack`. For acks with binary arguments.
- *
- * @api public
- */
-
-exports.BINARY_ACK = 6;
-
-/**
- * Encoder constructor.
- *
- * @api public
- */
-
-exports.Encoder = Encoder;
-
-/**
- * Decoder constructor.
- *
- * @api public
- */
-
-exports.Decoder = Decoder;
-
-/**
- * A socket.io Encoder instance
- *
- * @api public
- */
-
-function Encoder() {}
-
-/**
- * Encode a packet as a single string if non-binary, or as a
- * buffer sequence, depending on packet type.
- *
- * @param {Object} obj - packet object
- * @param {Function} callback - function to handle encodings (likely engine.write)
- * @return Calls callback with Array of encodings
- * @api public
- */
-
-Encoder.prototype.encode = function(obj, callback){
-  debug('encoding packet %j', obj);
-
-  if (exports.BINARY_EVENT == obj.type || exports.BINARY_ACK == obj.type) {
-    encodeAsBinary(obj, callback);
-  }
-  else {
-    var encoding = encodeAsString(obj);
-    callback([encoding]);
-  }
-};
-
-/**
- * Encode packet as string.
- *
- * @param {Object} packet
- * @return {String} encoded
- * @api private
- */
-
-function encodeAsString(obj) {
-  var str = '';
-  var nsp = false;
-
-  // first is type
-  str += obj.type;
-
-  // attachments if we have them
-  if (exports.BINARY_EVENT == obj.type || exports.BINARY_ACK == obj.type) {
-    str += obj.attachments;
-    str += '-';
-  }
-
-  // if we have a namespace other than `/`
-  // we append it followed by a comma `,`
-  if (obj.nsp && '/' != obj.nsp) {
-    nsp = true;
-    str += obj.nsp;
-  }
-
-  // immediately followed by the id
-  if (null != obj.id) {
-    if (nsp) {
-      str += ',';
-      nsp = false;
-    }
-    str += obj.id;
-  }
-
-  // json data
-  if (null != obj.data) {
-    if (nsp) str += ',';
-    str += json.stringify(obj.data);
-  }
-
-  debug('encoded %j as %s', obj, str);
-  return str;
-}
-
-/**
- * Encode packet as 'buffer sequence' by removing blobs, and
- * deconstructing packet into object with placeholders and
- * a list of buffers.
- *
- * @param {Object} packet
- * @return {Buffer} encoded
- * @api private
- */
-
-function encodeAsBinary(obj, callback) {
-
-  function writeEncoding(bloblessData) {
-    var deconstruction = binary.deconstructPacket(bloblessData);
-    var pack = encodeAsString(deconstruction.packet);
-    var buffers = deconstruction.buffers;
-
-    buffers.unshift(pack); // add packet info to beginning of data list
-    callback(buffers); // write all the buffers
-  }
-
-  binary.removeBlobs(obj, writeEncoding);
-}
-
-/**
- * A socket.io Decoder instance
- *
- * @return {Object} decoder
- * @api public
- */
-
-function Decoder() {
-  this.reconstructor = null;
-}
-
-/**
- * Mix in `Emitter` with Decoder.
- */
-
-Emitter(Decoder.prototype);
-
-/**
- * Decodes an ecoded packet string into packet JSON.
- *
- * @param {String} obj - encoded packet
- * @return {Object} packet
- * @api public
- */
-
-Decoder.prototype.add = function(obj) {
-  var packet;
-  if ('string' == typeof obj) {
-    packet = decodeString(obj);
-    if (exports.BINARY_EVENT == packet.type || exports.BINARY_ACK == packet.type) { // binary packet's json
-      this.reconstructor = new BinaryReconstructor(packet);
-
-      // no attachments, labeled binary but no binary data to follow
-      if (this.reconstructor.reconPack.attachments === 0) {
-        this.emit('decoded', packet);
-      }
-    } else { // non-binary full packet
-      this.emit('decoded', packet);
-    }
-  }
-  else if (isBuf(obj) || obj.base64) { // raw binary data
-    if (!this.reconstructor) {
-      throw new Error('got binary data when not reconstructing a packet');
-    } else {
-      packet = this.reconstructor.takeBinaryData(obj);
-      if (packet) { // received final buffer
-        this.reconstructor = null;
-        this.emit('decoded', packet);
-      }
-    }
-  }
-  else {
-    throw new Error('Unknown type: ' + obj);
-  }
-};
-
-/**
- * Decode a packet String (JSON data)
- *
- * @param {String} str
- * @return {Object} packet
- * @api private
- */
-
-function decodeString(str) {
-  var p = {};
-  var i = 0;
-
-  // look up type
-  p.type = Number(str.charAt(0));
-  if (null == exports.types[p.type]) return error();
-
-  // look up attachments if type binary
-  if (exports.BINARY_EVENT == p.type || exports.BINARY_ACK == p.type) {
-    var buf = '';
-    while (str.charAt(++i) != '-') {
-      buf += str.charAt(i);
-      if (i == str.length) break;
-    }
-    if (buf != Number(buf) || str.charAt(i) != '-') {
-      throw new Error('Illegal attachments');
-    }
-    p.attachments = Number(buf);
-  }
-
-  // look up namespace (if any)
-  if ('/' == str.charAt(i + 1)) {
-    p.nsp = '';
-    while (++i) {
-      var c = str.charAt(i);
-      if (',' == c) break;
-      p.nsp += c;
-      if (i == str.length) break;
-    }
-  } else {
-    p.nsp = '/';
-  }
-
-  // look up id
-  var next = str.charAt(i + 1);
-  if ('' !== next && Number(next) == next) {
-    p.id = '';
-    while (++i) {
-      var c = str.charAt(i);
-      if (null == c || Number(c) != c) {
-        --i;
-        break;
-      }
-      p.id += str.charAt(i);
-      if (i == str.length) break;
-    }
-    p.id = Number(p.id);
-  }
-
-  // look up json data
-  if (str.charAt(++i)) {
-    p = tryParse(p, str.substr(i));
-  }
-
-  debug('decoded %s as %j', str, p);
-  return p;
-}
-
-function tryParse(p, str) {
-  try {
-    p.data = json.parse(str);
-  } catch(e){
-    return error();
-  }
-  return p; 
-};
-
-/**
- * Deallocates a parser's resources
- *
- * @api public
- */
-
-Decoder.prototype.destroy = function() {
-  if (this.reconstructor) {
-    this.reconstructor.finishedReconstruction();
-  }
-};
-
-/**
- * A manager of a binary event's 'buffer sequence'. Should
- * be constructed whenever a packet of type BINARY_EVENT is
- * decoded.
- *
- * @param {Object} packet
- * @return {BinaryReconstructor} initialized reconstructor
- * @api private
- */
-
-function BinaryReconstructor(packet) {
-  this.reconPack = packet;
-  this.buffers = [];
-}
-
-/**
- * Method to be called when binary data received from connection
- * after a BINARY_EVENT packet.
- *
- * @param {Buffer | ArrayBuffer} binData - the raw binary data received
- * @return {null | Object} returns null if more binary data is expected or
- *   a reconstructed packet object if all buffers have been received.
- * @api private
- */
-
-BinaryReconstructor.prototype.takeBinaryData = function(binData) {
-  this.buffers.push(binData);
-  if (this.buffers.length == this.reconPack.attachments) { // done with buffer list
-    var packet = binary.reconstructPacket(this.reconPack, this.buffers);
-    this.finishedReconstruction();
-    return packet;
-  }
-  return null;
-};
-
-/**
- * Cleans up binary packet reconstruction variables.
- *
- * @api private
- */
-
-BinaryReconstructor.prototype.finishedReconstruction = function() {
-  this.reconPack = null;
-  this.buffers = [];
-};
-
-function error(data){
-  return {
-    type: exports.ERROR,
-    data: 'parser error'
-  };
-}
-
-}).apply(this, arguments);
-
-},{"./binary":213,"./is-buffer":215,"component-emitter":216,"debug":217,"json3":221}],215:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/socket.io-parser/is-buffer.js", module);
-(function(){
-(function (global){
-
-module.exports = isBuf;
-
-/**
- * Returns true if obj is a buffer or an arraybuffer.
- *
- * @api private
- */
-
-function isBuf(obj) {
-  return (global.Buffer && global.Buffer.isBuffer(obj)) ||
-         (global.ArrayBuffer && obj instanceof ArrayBuffer);
-}
-
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-}).apply(this, arguments);
-
-},{}],216:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/socket.io-parser/node_modules/component-emitter/index.js", module);
-(function(){
-
-/**
- * Expose `Emitter`.
- */
-
-module.exports = Emitter;
-
-/**
- * Initialize a new `Emitter`.
- *
- * @api public
- */
-
-function Emitter(obj) {
-  if (obj) return mixin(obj);
-};
-
-/**
- * Mixin the emitter properties.
- *
- * @param {Object} obj
- * @return {Object}
- * @api private
- */
-
-function mixin(obj) {
-  for (var key in Emitter.prototype) {
-    obj[key] = Emitter.prototype[key];
-  }
-  return obj;
-}
-
-/**
- * Listen on the given `event` with `fn`.
- *
- * @param {String} event
- * @param {Function} fn
- * @return {Emitter}
- * @api public
- */
-
-Emitter.prototype.on =
-Emitter.prototype.addEventListener = function(event, fn){
-  this._callbacks = this._callbacks || {};
-  (this._callbacks[event] = this._callbacks[event] || [])
-    .push(fn);
-  return this;
-};
-
-/**
- * Adds an `event` listener that will be invoked a single
- * time then automatically removed.
- *
- * @param {String} event
- * @param {Function} fn
- * @return {Emitter}
- * @api public
- */
-
-Emitter.prototype.once = function(event, fn){
-  var self = this;
-  this._callbacks = this._callbacks || {};
-
-  function on() {
-    self.off(event, on);
-    fn.apply(this, arguments);
-  }
-
-  on.fn = fn;
-  this.on(event, on);
-  return this;
-};
-
-/**
- * Remove the given callback for `event` or all
- * registered callbacks.
- *
- * @param {String} event
- * @param {Function} fn
- * @return {Emitter}
- * @api public
- */
-
-Emitter.prototype.off =
-Emitter.prototype.removeListener =
-Emitter.prototype.removeAllListeners =
-Emitter.prototype.removeEventListener = function(event, fn){
-  this._callbacks = this._callbacks || {};
-
-  // all
-  if (0 == arguments.length) {
-    this._callbacks = {};
-    return this;
-  }
-
-  // specific event
-  var callbacks = this._callbacks[event];
-  if (!callbacks) return this;
-
-  // remove all handlers
-  if (1 == arguments.length) {
-    delete this._callbacks[event];
-    return this;
-  }
-
-  // remove specific handler
-  var cb;
-  for (var i = 0; i < callbacks.length; i++) {
-    cb = callbacks[i];
-    if (cb === fn || cb.fn === fn) {
-      callbacks.splice(i, 1);
-      break;
-    }
-  }
-  return this;
-};
-
-/**
- * Emit `event` with the given args.
- *
- * @param {String} event
- * @param {Mixed} ...
- * @return {Emitter}
- */
-
-Emitter.prototype.emit = function(event){
-  this._callbacks = this._callbacks || {};
-  var args = [].slice.call(arguments, 1)
-    , callbacks = this._callbacks[event];
-
-  if (callbacks) {
-    callbacks = callbacks.slice(0);
-    for (var i = 0, len = callbacks.length; i < len; ++i) {
-      callbacks[i].apply(this, args);
-    }
-  }
-
-  return this;
-};
-
-/**
- * Return array of callbacks for `event`.
- *
- * @param {String} event
- * @return {Array}
- * @api public
- */
-
-Emitter.prototype.listeners = function(event){
-  this._callbacks = this._callbacks || {};
-  return this._callbacks[event] || [];
-};
-
-/**
- * Check if this emitter has `event` handlers.
- *
- * @param {String} event
- * @return {Boolean}
- * @api public
- */
-
-Emitter.prototype.hasListeners = function(event){
-  return !! this.listeners(event).length;
-};
-
-}).apply(this, arguments);
-
-},{}],217:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/socket.io-parser/node_modules/debug/browser.js", module);
-(function(){
-
-/**
- * This is the web browser implementation of `debug()`.
- *
- * Expose `debug()` as the module.
- */
-
-exports = module.exports = require('./debug');
-exports.log = log;
-exports.formatArgs = formatArgs;
-exports.save = save;
-exports.load = load;
-exports.useColors = useColors;
-exports.storage = 'undefined' != typeof chrome
-               && 'undefined' != typeof chrome.storage
-                  ? chrome.storage.local
-                  : localstorage();
-
-/**
- * Colors.
- */
-
-exports.colors = [
-  'lightseagreen',
-  'forestgreen',
-  'goldenrod',
-  'dodgerblue',
-  'darkorchid',
-  'crimson'
-];
-
-/**
- * Currently only WebKit-based Web Inspectors, Firefox >= v31,
- * and the Firebug extension (any Firefox version) are known
- * to support "%c" CSS customizations.
- *
- * TODO: add a `localStorage` variable to explicitly enable/disable colors
- */
-
-function useColors() {
-  // is webkit? http://stackoverflow.com/a/16459606/376773
-  return ('WebkitAppearance' in document.documentElement.style) ||
-    // is firebug? http://stackoverflow.com/a/398120/376773
-    (window.console && (console.firebug || (console.exception && console.table))) ||
-    // is firefox >= v31?
-    // https://developer.mozilla.org/en-US/docs/Tools/Web_Console#Styling_messages
-    (navigator.userAgent.toLowerCase().match(/firefox\/(\d+)/) && parseInt(RegExp.$1, 10) >= 31);
-}
-
-/**
- * Map %j to `JSON.stringify()`, since no Web Inspectors do that by default.
- */
-
-exports.formatters.j = function(v) {
-  return JSON.stringify(v);
-};
-
-
-/**
- * Colorize log arguments if enabled.
- *
- * @api public
- */
-
-function formatArgs() {
-  var args = arguments;
-  var useColors = this.useColors;
-
-  args[0] = (useColors ? '%c' : '')
-    + this.namespace
-    + (useColors ? ' %c' : ' ')
-    + args[0]
-    + (useColors ? '%c ' : ' ')
-    + '+' + exports.humanize(this.diff);
-
-  if (!useColors) return args;
-
-  var c = 'color: ' + this.color;
-  args = [args[0], c, 'color: inherit'].concat(Array.prototype.slice.call(args, 1));
-
-  // the final "%c" is somewhat tricky, because there could be other
-  // arguments passed either before or after the %c, so we need to
-  // figure out the correct index to insert the CSS into
-  var index = 0;
-  var lastC = 0;
-  args[0].replace(/%[a-z%]/g, function(match) {
-    if ('%%' === match) return;
-    index++;
-    if ('%c' === match) {
-      // we only are interested in the *last* %c
-      // (the user may have provided their own)
-      lastC = index;
-    }
-  });
-
-  args.splice(lastC, 0, c);
-  return args;
-}
-
-/**
- * Invokes `console.log()` when available.
- * No-op when `console.log` is not a "function".
- *
- * @api public
- */
-
-function log() {
-  // this hackery is required for IE8/9, where
-  // the `console.log` function doesn't have 'apply'
-  return 'object' === typeof console
-    && console.log
-    && Function.prototype.apply.call(console.log, console, arguments);
-}
-
-/**
- * Save `namespaces`.
- *
- * @param {String} namespaces
- * @api private
- */
-
-function save(namespaces) {
-  try {
-    if (null == namespaces) {
-      exports.storage.removeItem('debug');
-    } else {
-      exports.storage.debug = namespaces;
-    }
-  } catch(e) {}
-}
-
-/**
- * Load `namespaces`.
- *
- * @return {String} returns the previously persisted debug modes
- * @api private
- */
-
-function load() {
-  var r;
-  try {
-    r = exports.storage.debug;
-  } catch(e) {}
-  return r;
-}
-
-/**
- * Enable namespaces listed in `localStorage.debug` initially.
- */
-
-exports.enable(load());
-
-/**
- * Localstorage attempts to return the localstorage.
- *
- * This is necessary because safari throws
- * when a user disables cookies/localstorage
- * and you attempt to access it.
- *
- * @return {LocalStorage}
- * @api private
- */
-
-function localstorage(){
-  try {
-    return window.localStorage;
-  } catch (e) {}
-}
-
-}).apply(this, arguments);
-
-},{"./debug":218}],218:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/socket.io-parser/node_modules/debug/debug.js", module);
-(function(){
-
-/**
- * This is the common logic for both the Node.js and web browser
- * implementations of `debug()`.
- *
- * Expose `debug()` as the module.
- */
-
-exports = module.exports = debug;
-exports.coerce = coerce;
-exports.disable = disable;
-exports.enable = enable;
-exports.enabled = enabled;
-exports.humanize = require('ms');
-
-/**
- * The currently active debug mode names, and names to skip.
- */
-
-exports.names = [];
-exports.skips = [];
-
-/**
- * Map of special "%n" handling functions, for the debug "format" argument.
- *
- * Valid key names are a single, lowercased letter, i.e. "n".
- */
-
-exports.formatters = {};
-
-/**
- * Previously assigned color.
- */
-
-var prevColor = 0;
-
-/**
- * Previous log timestamp.
- */
-
-var prevTime;
-
-/**
- * Select a color.
- *
- * @return {Number}
- * @api private
- */
-
-function selectColor() {
-  return exports.colors[prevColor++ % exports.colors.length];
-}
-
-/**
- * Create a debugger with the given `namespace`.
- *
- * @param {String} namespace
- * @return {Function}
- * @api public
- */
-
-function debug(namespace) {
-
-  // define the `disabled` version
-  function disabled() {
-  }
-  disabled.enabled = false;
-
-  // define the `enabled` version
-  function enabled() {
-
-    var self = enabled;
-
-    // set `diff` timestamp
-    var curr = +new Date();
-    var ms = curr - (prevTime || curr);
-    self.diff = ms;
-    self.prev = prevTime;
-    self.curr = curr;
-    prevTime = curr;
-
-    // add the `color` if not set
-    if (null == self.useColors) self.useColors = exports.useColors();
-    if (null == self.color && self.useColors) self.color = selectColor();
-
-    var args = Array.prototype.slice.call(arguments);
-
-    args[0] = exports.coerce(args[0]);
-
-    if ('string' !== typeof args[0]) {
-      // anything else let's inspect with %o
-      args = ['%o'].concat(args);
-    }
-
-    // apply any `formatters` transformations
-    var index = 0;
-    args[0] = args[0].replace(/%([a-z%])/g, function(match, format) {
-      // if we encounter an escaped % then don't increase the array index
-      if (match === '%%') return match;
-      index++;
-      var formatter = exports.formatters[format];
-      if ('function' === typeof formatter) {
-        var val = args[index];
-        match = formatter.call(self, val);
-
-        // now we need to remove `args[index]` since it's inlined in the `format`
-        args.splice(index, 1);
-        index--;
-      }
-      return match;
-    });
-
-    if ('function' === typeof exports.formatArgs) {
-      args = exports.formatArgs.apply(self, args);
-    }
-    var logFn = enabled.log || exports.log || console.log.bind(console);
-    logFn.apply(self, args);
-  }
-  enabled.enabled = true;
-
-  var fn = exports.enabled(namespace) ? enabled : disabled;
-
-  fn.namespace = namespace;
-
-  return fn;
-}
-
-/**
- * Enables a debug mode by namespaces. This can include modes
- * separated by a colon and wildcards.
- *
- * @param {String} namespaces
- * @api public
- */
-
-function enable(namespaces) {
-  exports.save(namespaces);
-
-  var split = (namespaces || '').split(/[\s,]+/);
-  var len = split.length;
-
-  for (var i = 0; i < len; i++) {
-    if (!split[i]) continue; // ignore empty strings
-    namespaces = split[i].replace(/\*/g, '.*?');
-    if (namespaces[0] === '-') {
-      exports.skips.push(new RegExp('^' + namespaces.substr(1) + '$'));
-    } else {
-      exports.names.push(new RegExp('^' + namespaces + '$'));
-    }
-  }
-}
-
-/**
- * Disable debug output.
- *
- * @api public
- */
-
-function disable() {
-  exports.enable('');
-}
-
-/**
- * Returns true if the given mode name is enabled, false otherwise.
- *
- * @param {String} name
- * @return {Boolean}
- * @api public
- */
-
-function enabled(name) {
-  var i, len;
-  for (i = 0, len = exports.skips.length; i < len; i++) {
-    if (exports.skips[i].test(name)) {
-      return false;
-    }
-  }
-  for (i = 0, len = exports.names.length; i < len; i++) {
-    if (exports.names[i].test(name)) {
-      return true;
-    }
-  }
-  return false;
-}
-
-/**
- * Coerce `val`.
- *
- * @param {Mixed} val
- * @return {Mixed}
- * @api private
- */
-
-function coerce(val) {
-  if (val instanceof Error) return val.stack || val.message;
-  return val;
-}
-
-}).apply(this, arguments);
-
-},{"ms":219}],219:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/socket.io-parser/node_modules/debug/node_modules/ms/index.js", module);
-(function(){
-/**
- * Helpers.
- */
-
-var s = 1000;
-var m = s * 60;
-var h = m * 60;
-var d = h * 24;
-var y = d * 365.25;
-
-/**
- * Parse or format the given `val`.
- *
- * Options:
- *
- *  - `long` verbose formatting [false]
- *
- * @param {String|Number} val
- * @param {Object} options
- * @return {String|Number}
- * @api public
- */
-
-module.exports = function(val, options){
-  options = options || {};
-  if ('string' == typeof val) return parse(val);
-  return options.long
-    ? long(val)
-    : short(val);
-};
-
-/**
- * Parse the given `str` and return milliseconds.
- *
- * @param {String} str
- * @return {Number}
- * @api private
- */
-
-function parse(str) {
-  str = '' + str;
-  if (str.length > 10000) return;
-  var match = /^((?:\d+)?\.?\d+) *(milliseconds?|msecs?|ms|seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h|days?|d|years?|yrs?|y)?$/i.exec(str);
-  if (!match) return;
-  var n = parseFloat(match[1]);
-  var type = (match[2] || 'ms').toLowerCase();
-  switch (type) {
-    case 'years':
-    case 'year':
-    case 'yrs':
-    case 'yr':
-    case 'y':
-      return n * y;
-    case 'days':
-    case 'day':
-    case 'd':
-      return n * d;
-    case 'hours':
-    case 'hour':
-    case 'hrs':
-    case 'hr':
-    case 'h':
-      return n * h;
-    case 'minutes':
-    case 'minute':
-    case 'mins':
-    case 'min':
-    case 'm':
-      return n * m;
-    case 'seconds':
-    case 'second':
-    case 'secs':
-    case 'sec':
-    case 's':
-      return n * s;
-    case 'milliseconds':
-    case 'millisecond':
-    case 'msecs':
-    case 'msec':
-    case 'ms':
-      return n;
-  }
-}
-
-/**
- * Short format for `ms`.
- *
- * @param {Number} ms
- * @return {String}
- * @api private
- */
-
-function short(ms) {
-  if (ms >= d) return Math.round(ms / d) + 'd';
-  if (ms >= h) return Math.round(ms / h) + 'h';
-  if (ms >= m) return Math.round(ms / m) + 'm';
-  if (ms >= s) return Math.round(ms / s) + 's';
-  return ms + 'ms';
-}
-
-/**
- * Long format for `ms`.
- *
- * @param {Number} ms
- * @return {String}
- * @api private
- */
-
-function long(ms) {
-  return plural(ms, d, 'day')
-    || plural(ms, h, 'hour')
-    || plural(ms, m, 'minute')
-    || plural(ms, s, 'second')
-    || ms + ' ms';
-}
-
-/**
- * Pluralization helper.
- */
-
-function plural(ms, n, name) {
-  if (ms < n) return;
-  if (ms < n * 1.5) return Math.floor(ms / n) + ' ' + name;
-  return Math.ceil(ms / n) + ' ' + name + 's';
-}
-
-}).apply(this, arguments);
-
-},{}],220:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/socket.io-parser/node_modules/isarray/index.js", module);
+},{}],59:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/isarray/index.js", module);
 (function(){
 module.exports = Array.isArray || function (arr) {
   return Object.prototype.toString.call(arr) == '[object Array]';
@@ -14079,8 +6782,8 @@ module.exports = Array.isArray || function (arr) {
 
 }).apply(this, arguments);
 
-},{}],221:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/socket.io-parser/node_modules/json3/lib/json3.js", module);
+},{}],60:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/json3/lib/json3.js", module);
 (function(){
 (function (global){
 /*! JSON v3.3.2 | http://bestiejs.github.io/json3 | Copyright 2012-2014, Kit Cambridge | http://kit.mit-license.org */
@@ -14989,288 +7692,4934 @@ _hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/sock
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 }).apply(this, arguments);
 
-},{}],222:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/to-array/index.js", module);
+},{}],61:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_DataView.js", module);
 (function(){
-module.exports = toArray
+var getNative = require('./_getNative'),
+    root = require('./_root');
 
-function toArray(list, index) {
-    var array = []
+/* Built-in method references that are verified to be native. */
+var DataView = getNative(root, 'DataView');
 
-    index = index || 0
-
-    for (var i = index || 0; i < list.length; i++) {
-        array[i - index] = list[i]
-    }
-
-    return array
-}
+module.exports = DataView;
 
 }).apply(this, arguments);
 
-},{}],223:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/event-emitter-es6/index.js", module);
+},{"./_getNative":127,"./_root":164}],62:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_Hash.js", module);
 (function(){
-'use strict';
+var hashClear = require('./_hashClear'),
+    hashDelete = require('./_hashDelete'),
+    hashGet = require('./_hashGet'),
+    hashHas = require('./_hashHas'),
+    hashSet = require('./_hashSet');
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+/**
+ * Creates a hash object.
+ *
+ * @private
+ * @constructor
+ * @param {Array} [entries] The key-value pairs to cache.
+ */
+function Hash(entries) {
+  var index = -1,
+      length = entries == null ? 0 : entries.length;
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+  this.clear();
+  while (++index < length) {
+    var entry = entries[index];
+    this.set(entry[0], entry[1]);
+  }
+}
 
-var DEFAULT_VALUES = {
-    emitDelay: 10,
-    strictMode: false
+// Add methods to `Hash`.
+Hash.prototype.clear = hashClear;
+Hash.prototype['delete'] = hashDelete;
+Hash.prototype.get = hashGet;
+Hash.prototype.has = hashHas;
+Hash.prototype.set = hashSet;
+
+module.exports = Hash;
+
+}).apply(this, arguments);
+
+},{"./_hashClear":133,"./_hashDelete":134,"./_hashGet":135,"./_hashHas":136,"./_hashSet":137}],63:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_ListCache.js", module);
+(function(){
+var listCacheClear = require('./_listCacheClear'),
+    listCacheDelete = require('./_listCacheDelete'),
+    listCacheGet = require('./_listCacheGet'),
+    listCacheHas = require('./_listCacheHas'),
+    listCacheSet = require('./_listCacheSet');
+
+/**
+ * Creates an list cache object.
+ *
+ * @private
+ * @constructor
+ * @param {Array} [entries] The key-value pairs to cache.
+ */
+function ListCache(entries) {
+  var index = -1,
+      length = entries == null ? 0 : entries.length;
+
+  this.clear();
+  while (++index < length) {
+    var entry = entries[index];
+    this.set(entry[0], entry[1]);
+  }
+}
+
+// Add methods to `ListCache`.
+ListCache.prototype.clear = listCacheClear;
+ListCache.prototype['delete'] = listCacheDelete;
+ListCache.prototype.get = listCacheGet;
+ListCache.prototype.has = listCacheHas;
+ListCache.prototype.set = listCacheSet;
+
+module.exports = ListCache;
+
+}).apply(this, arguments);
+
+},{"./_listCacheClear":145,"./_listCacheDelete":146,"./_listCacheGet":147,"./_listCacheHas":148,"./_listCacheSet":149}],64:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_Map.js", module);
+(function(){
+var getNative = require('./_getNative'),
+    root = require('./_root');
+
+/* Built-in method references that are verified to be native. */
+var Map = getNative(root, 'Map');
+
+module.exports = Map;
+
+}).apply(this, arguments);
+
+},{"./_getNative":127,"./_root":164}],65:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_MapCache.js", module);
+(function(){
+var mapCacheClear = require('./_mapCacheClear'),
+    mapCacheDelete = require('./_mapCacheDelete'),
+    mapCacheGet = require('./_mapCacheGet'),
+    mapCacheHas = require('./_mapCacheHas'),
+    mapCacheSet = require('./_mapCacheSet');
+
+/**
+ * Creates a map cache object to store key-value pairs.
+ *
+ * @private
+ * @constructor
+ * @param {Array} [entries] The key-value pairs to cache.
+ */
+function MapCache(entries) {
+  var index = -1,
+      length = entries == null ? 0 : entries.length;
+
+  this.clear();
+  while (++index < length) {
+    var entry = entries[index];
+    this.set(entry[0], entry[1]);
+  }
+}
+
+// Add methods to `MapCache`.
+MapCache.prototype.clear = mapCacheClear;
+MapCache.prototype['delete'] = mapCacheDelete;
+MapCache.prototype.get = mapCacheGet;
+MapCache.prototype.has = mapCacheHas;
+MapCache.prototype.set = mapCacheSet;
+
+module.exports = MapCache;
+
+}).apply(this, arguments);
+
+},{"./_mapCacheClear":150,"./_mapCacheDelete":151,"./_mapCacheGet":152,"./_mapCacheHas":153,"./_mapCacheSet":154}],66:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_Promise.js", module);
+(function(){
+var getNative = require('./_getNative'),
+    root = require('./_root');
+
+/* Built-in method references that are verified to be native. */
+var Promise = getNative(root, 'Promise');
+
+module.exports = Promise;
+
+}).apply(this, arguments);
+
+},{"./_getNative":127,"./_root":164}],67:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_Set.js", module);
+(function(){
+var getNative = require('./_getNative'),
+    root = require('./_root');
+
+/* Built-in method references that are verified to be native. */
+var Set = getNative(root, 'Set');
+
+module.exports = Set;
+
+}).apply(this, arguments);
+
+},{"./_getNative":127,"./_root":164}],68:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_SetCache.js", module);
+(function(){
+var MapCache = require('./_MapCache'),
+    setCacheAdd = require('./_setCacheAdd'),
+    setCacheHas = require('./_setCacheHas');
+
+/**
+ *
+ * Creates an array cache object to store unique values.
+ *
+ * @private
+ * @constructor
+ * @param {Array} [values] The values to cache.
+ */
+function SetCache(values) {
+  var index = -1,
+      length = values == null ? 0 : values.length;
+
+  this.__data__ = new MapCache;
+  while (++index < length) {
+    this.add(values[index]);
+  }
+}
+
+// Add methods to `SetCache`.
+SetCache.prototype.add = SetCache.prototype.push = setCacheAdd;
+SetCache.prototype.has = setCacheHas;
+
+module.exports = SetCache;
+
+}).apply(this, arguments);
+
+},{"./_MapCache":65,"./_setCacheAdd":165,"./_setCacheHas":166}],69:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_Stack.js", module);
+(function(){
+var ListCache = require('./_ListCache'),
+    stackClear = require('./_stackClear'),
+    stackDelete = require('./_stackDelete'),
+    stackGet = require('./_stackGet'),
+    stackHas = require('./_stackHas'),
+    stackSet = require('./_stackSet');
+
+/**
+ * Creates a stack cache object to store key-value pairs.
+ *
+ * @private
+ * @constructor
+ * @param {Array} [entries] The key-value pairs to cache.
+ */
+function Stack(entries) {
+  var data = this.__data__ = new ListCache(entries);
+  this.size = data.size;
+}
+
+// Add methods to `Stack`.
+Stack.prototype.clear = stackClear;
+Stack.prototype['delete'] = stackDelete;
+Stack.prototype.get = stackGet;
+Stack.prototype.has = stackHas;
+Stack.prototype.set = stackSet;
+
+module.exports = Stack;
+
+}).apply(this, arguments);
+
+},{"./_ListCache":63,"./_stackClear":170,"./_stackDelete":171,"./_stackGet":172,"./_stackHas":173,"./_stackSet":174}],70:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_Symbol.js", module);
+(function(){
+var root = require('./_root');
+
+/** Built-in value references. */
+var Symbol = root.Symbol;
+
+module.exports = Symbol;
+
+}).apply(this, arguments);
+
+},{"./_root":164}],71:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_Uint8Array.js", module);
+(function(){
+var root = require('./_root');
+
+/** Built-in value references. */
+var Uint8Array = root.Uint8Array;
+
+module.exports = Uint8Array;
+
+}).apply(this, arguments);
+
+},{"./_root":164}],72:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_WeakMap.js", module);
+(function(){
+var getNative = require('./_getNative'),
+    root = require('./_root');
+
+/* Built-in method references that are verified to be native. */
+var WeakMap = getNative(root, 'WeakMap');
+
+module.exports = WeakMap;
+
+}).apply(this, arguments);
+
+},{"./_getNative":127,"./_root":164}],73:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_apply.js", module);
+(function(){
+/**
+ * A faster alternative to `Function#apply`, this function invokes `func`
+ * with the `this` binding of `thisArg` and the arguments of `args`.
+ *
+ * @private
+ * @param {Function} func The function to invoke.
+ * @param {*} thisArg The `this` binding of `func`.
+ * @param {Array} args The arguments to invoke `func` with.
+ * @returns {*} Returns the result of `func`.
+ */
+function apply(func, thisArg, args) {
+  switch (args.length) {
+    case 0: return func.call(thisArg);
+    case 1: return func.call(thisArg, args[0]);
+    case 2: return func.call(thisArg, args[0], args[1]);
+    case 3: return func.call(thisArg, args[0], args[1], args[2]);
+  }
+  return func.apply(thisArg, args);
+}
+
+module.exports = apply;
+
+}).apply(this, arguments);
+
+},{}],74:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_arrayEach.js", module);
+(function(){
+/**
+ * A specialized version of `_.forEach` for arrays without support for
+ * iteratee shorthands.
+ *
+ * @private
+ * @param {Array} [array] The array to iterate over.
+ * @param {Function} iteratee The function invoked per iteration.
+ * @returns {Array} Returns `array`.
+ */
+function arrayEach(array, iteratee) {
+  var index = -1,
+      length = array == null ? 0 : array.length;
+
+  while (++index < length) {
+    if (iteratee(array[index], index, array) === false) {
+      break;
+    }
+  }
+  return array;
+}
+
+module.exports = arrayEach;
+
+}).apply(this, arguments);
+
+},{}],75:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_arrayFilter.js", module);
+(function(){
+/**
+ * A specialized version of `_.filter` for arrays without support for
+ * iteratee shorthands.
+ *
+ * @private
+ * @param {Array} [array] The array to iterate over.
+ * @param {Function} predicate The function invoked per iteration.
+ * @returns {Array} Returns the new filtered array.
+ */
+function arrayFilter(array, predicate) {
+  var index = -1,
+      length = array == null ? 0 : array.length,
+      resIndex = 0,
+      result = [];
+
+  while (++index < length) {
+    var value = array[index];
+    if (predicate(value, index, array)) {
+      result[resIndex++] = value;
+    }
+  }
+  return result;
+}
+
+module.exports = arrayFilter;
+
+}).apply(this, arguments);
+
+},{}],76:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_arrayLikeKeys.js", module);
+(function(){
+var baseTimes = require('./_baseTimes'),
+    isArguments = require('./isArguments'),
+    isArray = require('./isArray'),
+    isBuffer = require('./isBuffer'),
+    isIndex = require('./_isIndex'),
+    isTypedArray = require('./isTypedArray');
+
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty = objectProto.hasOwnProperty;
+
+/**
+ * Creates an array of the enumerable property names of the array-like `value`.
+ *
+ * @private
+ * @param {*} value The value to query.
+ * @param {boolean} inherited Specify returning inherited property names.
+ * @returns {Array} Returns the array of property names.
+ */
+function arrayLikeKeys(value, inherited) {
+  var isArr = isArray(value),
+      isArg = !isArr && isArguments(value),
+      isBuff = !isArr && !isArg && isBuffer(value),
+      isType = !isArr && !isArg && !isBuff && isTypedArray(value),
+      skipIndexes = isArr || isArg || isBuff || isType,
+      result = skipIndexes ? baseTimes(value.length, String) : [],
+      length = result.length;
+
+  for (var key in value) {
+    if ((inherited || hasOwnProperty.call(value, key)) &&
+        !(skipIndexes && (
+           // Safari 9 has enumerable `arguments.length` in strict mode.
+           key == 'length' ||
+           // Node.js 0.10 has enumerable non-index properties on buffers.
+           (isBuff && (key == 'offset' || key == 'parent')) ||
+           // PhantomJS 2 has enumerable non-index properties on typed arrays.
+           (isType && (key == 'buffer' || key == 'byteLength' || key == 'byteOffset')) ||
+           // Skip index properties.
+           isIndex(key, length)
+        ))) {
+      result.push(key);
+    }
+  }
+  return result;
+}
+
+module.exports = arrayLikeKeys;
+
+}).apply(this, arguments);
+
+},{"./_baseTimes":107,"./_isIndex":138,"./isArguments":187,"./isArray":188,"./isBuffer":190,"./isTypedArray":196}],77:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_arrayMap.js", module);
+(function(){
+/**
+ * A specialized version of `_.map` for arrays without support for iteratee
+ * shorthands.
+ *
+ * @private
+ * @param {Array} [array] The array to iterate over.
+ * @param {Function} iteratee The function invoked per iteration.
+ * @returns {Array} Returns the new mapped array.
+ */
+function arrayMap(array, iteratee) {
+  var index = -1,
+      length = array == null ? 0 : array.length,
+      result = Array(length);
+
+  while (++index < length) {
+    result[index] = iteratee(array[index], index, array);
+  }
+  return result;
+}
+
+module.exports = arrayMap;
+
+}).apply(this, arguments);
+
+},{}],78:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_arrayPush.js", module);
+(function(){
+/**
+ * Appends the elements of `values` to `array`.
+ *
+ * @private
+ * @param {Array} array The array to modify.
+ * @param {Array} values The values to append.
+ * @returns {Array} Returns `array`.
+ */
+function arrayPush(array, values) {
+  var index = -1,
+      length = values.length,
+      offset = array.length;
+
+  while (++index < length) {
+    array[offset + index] = values[index];
+  }
+  return array;
+}
+
+module.exports = arrayPush;
+
+}).apply(this, arguments);
+
+},{}],79:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_arraySome.js", module);
+(function(){
+/**
+ * A specialized version of `_.some` for arrays without support for iteratee
+ * shorthands.
+ *
+ * @private
+ * @param {Array} [array] The array to iterate over.
+ * @param {Function} predicate The function invoked per iteration.
+ * @returns {boolean} Returns `true` if any element passes the predicate check,
+ *  else `false`.
+ */
+function arraySome(array, predicate) {
+  var index = -1,
+      length = array == null ? 0 : array.length;
+
+  while (++index < length) {
+    if (predicate(array[index], index, array)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+module.exports = arraySome;
+
+}).apply(this, arguments);
+
+},{}],80:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_assignValue.js", module);
+(function(){
+var baseAssignValue = require('./_baseAssignValue'),
+    eq = require('./eq');
+
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty = objectProto.hasOwnProperty;
+
+/**
+ * Assigns `value` to `key` of `object` if the existing value is not equivalent
+ * using [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
+ * for equality comparisons.
+ *
+ * @private
+ * @param {Object} object The object to modify.
+ * @param {string} key The key of the property to assign.
+ * @param {*} value The value to assign.
+ */
+function assignValue(object, key, value) {
+  var objValue = object[key];
+  if (!(hasOwnProperty.call(object, key) && eq(objValue, value)) ||
+      (value === undefined && !(key in object))) {
+    baseAssignValue(object, key, value);
+  }
+}
+
+module.exports = assignValue;
+
+}).apply(this, arguments);
+
+},{"./_baseAssignValue":82,"./eq":180}],81:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_assocIndexOf.js", module);
+(function(){
+var eq = require('./eq');
+
+/**
+ * Gets the index at which the `key` is found in `array` of key-value pairs.
+ *
+ * @private
+ * @param {Array} array The array to inspect.
+ * @param {*} key The key to search for.
+ * @returns {number} Returns the index of the matched value, else `-1`.
+ */
+function assocIndexOf(array, key) {
+  var length = array.length;
+  while (length--) {
+    if (eq(array[length][0], key)) {
+      return length;
+    }
+  }
+  return -1;
+}
+
+module.exports = assocIndexOf;
+
+}).apply(this, arguments);
+
+},{"./eq":180}],82:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_baseAssignValue.js", module);
+(function(){
+var defineProperty = require('./_defineProperty');
+
+/**
+ * The base implementation of `assignValue` and `assignMergeValue` without
+ * value checks.
+ *
+ * @private
+ * @param {Object} object The object to modify.
+ * @param {string} key The key of the property to assign.
+ * @param {*} value The value to assign.
+ */
+function baseAssignValue(object, key, value) {
+  if (key == '__proto__' && defineProperty) {
+    defineProperty(object, key, {
+      'configurable': true,
+      'enumerable': true,
+      'value': value,
+      'writable': true
+    });
+  } else {
+    object[key] = value;
+  }
+}
+
+module.exports = baseAssignValue;
+
+}).apply(this, arguments);
+
+},{"./_defineProperty":119}],83:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_baseEach.js", module);
+(function(){
+var baseForOwn = require('./_baseForOwn'),
+    createBaseEach = require('./_createBaseEach');
+
+/**
+ * The base implementation of `_.forEach` without support for iteratee shorthands.
+ *
+ * @private
+ * @param {Array|Object} collection The collection to iterate over.
+ * @param {Function} iteratee The function invoked per iteration.
+ * @returns {Array|Object} Returns `collection`.
+ */
+var baseEach = createBaseEach(baseForOwn);
+
+module.exports = baseEach;
+
+}).apply(this, arguments);
+
+},{"./_baseForOwn":86,"./_createBaseEach":117}],84:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_baseFilter.js", module);
+(function(){
+var baseEach = require('./_baseEach');
+
+/**
+ * The base implementation of `_.filter` without support for iteratee shorthands.
+ *
+ * @private
+ * @param {Array|Object} collection The collection to iterate over.
+ * @param {Function} predicate The function invoked per iteration.
+ * @returns {Array} Returns the new filtered array.
+ */
+function baseFilter(collection, predicate) {
+  var result = [];
+  baseEach(collection, function(value, index, collection) {
+    if (predicate(value, index, collection)) {
+      result.push(value);
+    }
+  });
+  return result;
+}
+
+module.exports = baseFilter;
+
+}).apply(this, arguments);
+
+},{"./_baseEach":83}],85:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_baseFor.js", module);
+(function(){
+var createBaseFor = require('./_createBaseFor');
+
+/**
+ * The base implementation of `baseForOwn` which iterates over `object`
+ * properties returned by `keysFunc` and invokes `iteratee` for each property.
+ * Iteratee functions may exit iteration early by explicitly returning `false`.
+ *
+ * @private
+ * @param {Object} object The object to iterate over.
+ * @param {Function} iteratee The function invoked per iteration.
+ * @param {Function} keysFunc The function to get the keys of `object`.
+ * @returns {Object} Returns `object`.
+ */
+var baseFor = createBaseFor();
+
+module.exports = baseFor;
+
+}).apply(this, arguments);
+
+},{"./_createBaseFor":118}],86:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_baseForOwn.js", module);
+(function(){
+var baseFor = require('./_baseFor'),
+    keys = require('./keys');
+
+/**
+ * The base implementation of `_.forOwn` without support for iteratee shorthands.
+ *
+ * @private
+ * @param {Object} object The object to iterate over.
+ * @param {Function} iteratee The function invoked per iteration.
+ * @returns {Object} Returns `object`.
+ */
+function baseForOwn(object, iteratee) {
+  return object && baseFor(object, iteratee, keys);
+}
+
+module.exports = baseForOwn;
+
+}).apply(this, arguments);
+
+},{"./_baseFor":85,"./keys":197}],87:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_baseGet.js", module);
+(function(){
+var castPath = require('./_castPath'),
+    toKey = require('./_toKey');
+
+/**
+ * The base implementation of `_.get` without support for default values.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @param {Array|string} path The path of the property to get.
+ * @returns {*} Returns the resolved value.
+ */
+function baseGet(object, path) {
+  path = castPath(path, object);
+
+  var index = 0,
+      length = path.length;
+
+  while (object != null && index < length) {
+    object = object[toKey(path[index++])];
+  }
+  return (index && index == length) ? object : undefined;
+}
+
+module.exports = baseGet;
+
+}).apply(this, arguments);
+
+},{"./_castPath":113,"./_toKey":176}],88:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_baseGetAllKeys.js", module);
+(function(){
+var arrayPush = require('./_arrayPush'),
+    isArray = require('./isArray');
+
+/**
+ * The base implementation of `getAllKeys` and `getAllKeysIn` which uses
+ * `keysFunc` and `symbolsFunc` to get the enumerable property names and
+ * symbols of `object`.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @param {Function} keysFunc The function to get the keys of `object`.
+ * @param {Function} symbolsFunc The function to get the symbols of `object`.
+ * @returns {Array} Returns the array of property names and symbols.
+ */
+function baseGetAllKeys(object, keysFunc, symbolsFunc) {
+  var result = keysFunc(object);
+  return isArray(object) ? result : arrayPush(result, symbolsFunc(object));
+}
+
+module.exports = baseGetAllKeys;
+
+}).apply(this, arguments);
+
+},{"./_arrayPush":78,"./isArray":188}],89:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_baseGetTag.js", module);
+(function(){
+var Symbol = require('./_Symbol'),
+    getRawTag = require('./_getRawTag'),
+    objectToString = require('./_objectToString');
+
+/** `Object#toString` result references. */
+var nullTag = '[object Null]',
+    undefinedTag = '[object Undefined]';
+
+/** Built-in value references. */
+var symToStringTag = Symbol ? Symbol.toStringTag : undefined;
+
+/**
+ * The base implementation of `getTag` without fallbacks for buggy environments.
+ *
+ * @private
+ * @param {*} value The value to query.
+ * @returns {string} Returns the `toStringTag`.
+ */
+function baseGetTag(value) {
+  if (value == null) {
+    return value === undefined ? undefinedTag : nullTag;
+  }
+  return (symToStringTag && symToStringTag in Object(value))
+    ? getRawTag(value)
+    : objectToString(value);
+}
+
+module.exports = baseGetTag;
+
+}).apply(this, arguments);
+
+},{"./_Symbol":70,"./_getRawTag":128,"./_objectToString":161}],90:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_baseHasIn.js", module);
+(function(){
+/**
+ * The base implementation of `_.hasIn` without support for deep paths.
+ *
+ * @private
+ * @param {Object} [object] The object to query.
+ * @param {Array|string} key The key to check.
+ * @returns {boolean} Returns `true` if `key` exists, else `false`.
+ */
+function baseHasIn(object, key) {
+  return object != null && key in Object(object);
+}
+
+module.exports = baseHasIn;
+
+}).apply(this, arguments);
+
+},{}],91:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_baseIsArguments.js", module);
+(function(){
+var baseGetTag = require('./_baseGetTag'),
+    isObjectLike = require('./isObjectLike');
+
+/** `Object#toString` result references. */
+var argsTag = '[object Arguments]';
+
+/**
+ * The base implementation of `_.isArguments`.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is an `arguments` object,
+ */
+function baseIsArguments(value) {
+  return isObjectLike(value) && baseGetTag(value) == argsTag;
+}
+
+module.exports = baseIsArguments;
+
+}).apply(this, arguments);
+
+},{"./_baseGetTag":89,"./isObjectLike":194}],92:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_baseIsEqual.js", module);
+(function(){
+var baseIsEqualDeep = require('./_baseIsEqualDeep'),
+    isObjectLike = require('./isObjectLike');
+
+/**
+ * The base implementation of `_.isEqual` which supports partial comparisons
+ * and tracks traversed objects.
+ *
+ * @private
+ * @param {*} value The value to compare.
+ * @param {*} other The other value to compare.
+ * @param {boolean} bitmask The bitmask flags.
+ *  1 - Unordered comparison
+ *  2 - Partial comparison
+ * @param {Function} [customizer] The function to customize comparisons.
+ * @param {Object} [stack] Tracks traversed `value` and `other` objects.
+ * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
+ */
+function baseIsEqual(value, other, bitmask, customizer, stack) {
+  if (value === other) {
+    return true;
+  }
+  if (value == null || other == null || (!isObjectLike(value) && !isObjectLike(other))) {
+    return value !== value && other !== other;
+  }
+  return baseIsEqualDeep(value, other, bitmask, customizer, baseIsEqual, stack);
+}
+
+module.exports = baseIsEqual;
+
+}).apply(this, arguments);
+
+},{"./_baseIsEqualDeep":93,"./isObjectLike":194}],93:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_baseIsEqualDeep.js", module);
+(function(){
+var Stack = require('./_Stack'),
+    equalArrays = require('./_equalArrays'),
+    equalByTag = require('./_equalByTag'),
+    equalObjects = require('./_equalObjects'),
+    getTag = require('./_getTag'),
+    isArray = require('./isArray'),
+    isBuffer = require('./isBuffer'),
+    isTypedArray = require('./isTypedArray');
+
+/** Used to compose bitmasks for value comparisons. */
+var COMPARE_PARTIAL_FLAG = 1;
+
+/** `Object#toString` result references. */
+var argsTag = '[object Arguments]',
+    arrayTag = '[object Array]',
+    objectTag = '[object Object]';
+
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty = objectProto.hasOwnProperty;
+
+/**
+ * A specialized version of `baseIsEqual` for arrays and objects which performs
+ * deep comparisons and tracks traversed objects enabling objects with circular
+ * references to be compared.
+ *
+ * @private
+ * @param {Object} object The object to compare.
+ * @param {Object} other The other object to compare.
+ * @param {number} bitmask The bitmask flags. See `baseIsEqual` for more details.
+ * @param {Function} customizer The function to customize comparisons.
+ * @param {Function} equalFunc The function to determine equivalents of values.
+ * @param {Object} [stack] Tracks traversed `object` and `other` objects.
+ * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
+ */
+function baseIsEqualDeep(object, other, bitmask, customizer, equalFunc, stack) {
+  var objIsArr = isArray(object),
+      othIsArr = isArray(other),
+      objTag = objIsArr ? arrayTag : getTag(object),
+      othTag = othIsArr ? arrayTag : getTag(other);
+
+  objTag = objTag == argsTag ? objectTag : objTag;
+  othTag = othTag == argsTag ? objectTag : othTag;
+
+  var objIsObj = objTag == objectTag,
+      othIsObj = othTag == objectTag,
+      isSameTag = objTag == othTag;
+
+  if (isSameTag && isBuffer(object)) {
+    if (!isBuffer(other)) {
+      return false;
+    }
+    objIsArr = true;
+    objIsObj = false;
+  }
+  if (isSameTag && !objIsObj) {
+    stack || (stack = new Stack);
+    return (objIsArr || isTypedArray(object))
+      ? equalArrays(object, other, bitmask, customizer, equalFunc, stack)
+      : equalByTag(object, other, objTag, bitmask, customizer, equalFunc, stack);
+  }
+  if (!(bitmask & COMPARE_PARTIAL_FLAG)) {
+    var objIsWrapped = objIsObj && hasOwnProperty.call(object, '__wrapped__'),
+        othIsWrapped = othIsObj && hasOwnProperty.call(other, '__wrapped__');
+
+    if (objIsWrapped || othIsWrapped) {
+      var objUnwrapped = objIsWrapped ? object.value() : object,
+          othUnwrapped = othIsWrapped ? other.value() : other;
+
+      stack || (stack = new Stack);
+      return equalFunc(objUnwrapped, othUnwrapped, bitmask, customizer, stack);
+    }
+  }
+  if (!isSameTag) {
+    return false;
+  }
+  stack || (stack = new Stack);
+  return equalObjects(object, other, bitmask, customizer, equalFunc, stack);
+}
+
+module.exports = baseIsEqualDeep;
+
+}).apply(this, arguments);
+
+},{"./_Stack":69,"./_equalArrays":120,"./_equalByTag":121,"./_equalObjects":122,"./_getTag":130,"./isArray":188,"./isBuffer":190,"./isTypedArray":196}],94:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_baseIsMatch.js", module);
+(function(){
+var Stack = require('./_Stack'),
+    baseIsEqual = require('./_baseIsEqual');
+
+/** Used to compose bitmasks for value comparisons. */
+var COMPARE_PARTIAL_FLAG = 1,
+    COMPARE_UNORDERED_FLAG = 2;
+
+/**
+ * The base implementation of `_.isMatch` without support for iteratee shorthands.
+ *
+ * @private
+ * @param {Object} object The object to inspect.
+ * @param {Object} source The object of property values to match.
+ * @param {Array} matchData The property names, values, and compare flags to match.
+ * @param {Function} [customizer] The function to customize comparisons.
+ * @returns {boolean} Returns `true` if `object` is a match, else `false`.
+ */
+function baseIsMatch(object, source, matchData, customizer) {
+  var index = matchData.length,
+      length = index,
+      noCustomizer = !customizer;
+
+  if (object == null) {
+    return !length;
+  }
+  object = Object(object);
+  while (index--) {
+    var data = matchData[index];
+    if ((noCustomizer && data[2])
+          ? data[1] !== object[data[0]]
+          : !(data[0] in object)
+        ) {
+      return false;
+    }
+  }
+  while (++index < length) {
+    data = matchData[index];
+    var key = data[0],
+        objValue = object[key],
+        srcValue = data[1];
+
+    if (noCustomizer && data[2]) {
+      if (objValue === undefined && !(key in object)) {
+        return false;
+      }
+    } else {
+      var stack = new Stack;
+      if (customizer) {
+        var result = customizer(objValue, srcValue, key, object, source, stack);
+      }
+      if (!(result === undefined
+            ? baseIsEqual(srcValue, objValue, COMPARE_PARTIAL_FLAG | COMPARE_UNORDERED_FLAG, customizer, stack)
+            : result
+          )) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
+module.exports = baseIsMatch;
+
+}).apply(this, arguments);
+
+},{"./_Stack":69,"./_baseIsEqual":92}],95:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_baseIsNative.js", module);
+(function(){
+var isFunction = require('./isFunction'),
+    isMasked = require('./_isMasked'),
+    isObject = require('./isObject'),
+    toSource = require('./_toSource');
+
+/**
+ * Used to match `RegExp`
+ * [syntax characters](http://ecma-international.org/ecma-262/7.0/#sec-patterns).
+ */
+var reRegExpChar = /[\\^$.*+?()[\]{}|]/g;
+
+/** Used to detect host constructors (Safari). */
+var reIsHostCtor = /^\[object .+?Constructor\]$/;
+
+/** Used for built-in method references. */
+var funcProto = Function.prototype,
+    objectProto = Object.prototype;
+
+/** Used to resolve the decompiled source of functions. */
+var funcToString = funcProto.toString;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty = objectProto.hasOwnProperty;
+
+/** Used to detect if a method is native. */
+var reIsNative = RegExp('^' +
+  funcToString.call(hasOwnProperty).replace(reRegExpChar, '\\$&')
+  .replace(/hasOwnProperty|(function).*?(?=\\\()| for .+?(?=\\\])/g, '$1.*?') + '$'
+);
+
+/**
+ * The base implementation of `_.isNative` without bad shim checks.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a native function,
+ *  else `false`.
+ */
+function baseIsNative(value) {
+  if (!isObject(value) || isMasked(value)) {
+    return false;
+  }
+  var pattern = isFunction(value) ? reIsNative : reIsHostCtor;
+  return pattern.test(toSource(value));
+}
+
+module.exports = baseIsNative;
+
+}).apply(this, arguments);
+
+},{"./_isMasked":142,"./_toSource":177,"./isFunction":191,"./isObject":193}],96:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_baseIsTypedArray.js", module);
+(function(){
+var baseGetTag = require('./_baseGetTag'),
+    isLength = require('./isLength'),
+    isObjectLike = require('./isObjectLike');
+
+/** `Object#toString` result references. */
+var argsTag = '[object Arguments]',
+    arrayTag = '[object Array]',
+    boolTag = '[object Boolean]',
+    dateTag = '[object Date]',
+    errorTag = '[object Error]',
+    funcTag = '[object Function]',
+    mapTag = '[object Map]',
+    numberTag = '[object Number]',
+    objectTag = '[object Object]',
+    regexpTag = '[object RegExp]',
+    setTag = '[object Set]',
+    stringTag = '[object String]',
+    weakMapTag = '[object WeakMap]';
+
+var arrayBufferTag = '[object ArrayBuffer]',
+    dataViewTag = '[object DataView]',
+    float32Tag = '[object Float32Array]',
+    float64Tag = '[object Float64Array]',
+    int8Tag = '[object Int8Array]',
+    int16Tag = '[object Int16Array]',
+    int32Tag = '[object Int32Array]',
+    uint8Tag = '[object Uint8Array]',
+    uint8ClampedTag = '[object Uint8ClampedArray]',
+    uint16Tag = '[object Uint16Array]',
+    uint32Tag = '[object Uint32Array]';
+
+/** Used to identify `toStringTag` values of typed arrays. */
+var typedArrayTags = {};
+typedArrayTags[float32Tag] = typedArrayTags[float64Tag] =
+typedArrayTags[int8Tag] = typedArrayTags[int16Tag] =
+typedArrayTags[int32Tag] = typedArrayTags[uint8Tag] =
+typedArrayTags[uint8ClampedTag] = typedArrayTags[uint16Tag] =
+typedArrayTags[uint32Tag] = true;
+typedArrayTags[argsTag] = typedArrayTags[arrayTag] =
+typedArrayTags[arrayBufferTag] = typedArrayTags[boolTag] =
+typedArrayTags[dataViewTag] = typedArrayTags[dateTag] =
+typedArrayTags[errorTag] = typedArrayTags[funcTag] =
+typedArrayTags[mapTag] = typedArrayTags[numberTag] =
+typedArrayTags[objectTag] = typedArrayTags[regexpTag] =
+typedArrayTags[setTag] = typedArrayTags[stringTag] =
+typedArrayTags[weakMapTag] = false;
+
+/**
+ * The base implementation of `_.isTypedArray` without Node.js optimizations.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a typed array, else `false`.
+ */
+function baseIsTypedArray(value) {
+  return isObjectLike(value) &&
+    isLength(value.length) && !!typedArrayTags[baseGetTag(value)];
+}
+
+module.exports = baseIsTypedArray;
+
+}).apply(this, arguments);
+
+},{"./_baseGetTag":89,"./isLength":192,"./isObjectLike":194}],97:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_baseIteratee.js", module);
+(function(){
+var baseMatches = require('./_baseMatches'),
+    baseMatchesProperty = require('./_baseMatchesProperty'),
+    identity = require('./identity'),
+    isArray = require('./isArray'),
+    property = require('./property');
+
+/**
+ * The base implementation of `_.iteratee`.
+ *
+ * @private
+ * @param {*} [value=_.identity] The value to convert to an iteratee.
+ * @returns {Function} Returns the iteratee.
+ */
+function baseIteratee(value) {
+  // Don't store the `typeof` result in a variable to avoid a JIT bug in Safari 9.
+  // See https://bugs.webkit.org/show_bug.cgi?id=156034 for more details.
+  if (typeof value == 'function') {
+    return value;
+  }
+  if (value == null) {
+    return identity;
+  }
+  if (typeof value == 'object') {
+    return isArray(value)
+      ? baseMatchesProperty(value[0], value[1])
+      : baseMatches(value);
+  }
+  return property(value);
+}
+
+module.exports = baseIteratee;
+
+}).apply(this, arguments);
+
+},{"./_baseMatches":100,"./_baseMatchesProperty":101,"./identity":186,"./isArray":188,"./property":201}],98:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_baseKeys.js", module);
+(function(){
+var isPrototype = require('./_isPrototype'),
+    nativeKeys = require('./_nativeKeys');
+
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty = objectProto.hasOwnProperty;
+
+/**
+ * The base implementation of `_.keys` which doesn't treat sparse arrays as dense.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @returns {Array} Returns the array of property names.
+ */
+function baseKeys(object) {
+  if (!isPrototype(object)) {
+    return nativeKeys(object);
+  }
+  var result = [];
+  for (var key in Object(object)) {
+    if (hasOwnProperty.call(object, key) && key != 'constructor') {
+      result.push(key);
+    }
+  }
+  return result;
+}
+
+module.exports = baseKeys;
+
+}).apply(this, arguments);
+
+},{"./_isPrototype":143,"./_nativeKeys":159}],99:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_baseMap.js", module);
+(function(){
+var baseEach = require('./_baseEach'),
+    isArrayLike = require('./isArrayLike');
+
+/**
+ * The base implementation of `_.map` without support for iteratee shorthands.
+ *
+ * @private
+ * @param {Array|Object} collection The collection to iterate over.
+ * @param {Function} iteratee The function invoked per iteration.
+ * @returns {Array} Returns the new mapped array.
+ */
+function baseMap(collection, iteratee) {
+  var index = -1,
+      result = isArrayLike(collection) ? Array(collection.length) : [];
+
+  baseEach(collection, function(value, key, collection) {
+    result[++index] = iteratee(value, key, collection);
+  });
+  return result;
+}
+
+module.exports = baseMap;
+
+}).apply(this, arguments);
+
+},{"./_baseEach":83,"./isArrayLike":189}],100:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_baseMatches.js", module);
+(function(){
+var baseIsMatch = require('./_baseIsMatch'),
+    getMatchData = require('./_getMatchData'),
+    matchesStrictComparable = require('./_matchesStrictComparable');
+
+/**
+ * The base implementation of `_.matches` which doesn't clone `source`.
+ *
+ * @private
+ * @param {Object} source The object of property values to match.
+ * @returns {Function} Returns the new spec function.
+ */
+function baseMatches(source) {
+  var matchData = getMatchData(source);
+  if (matchData.length == 1 && matchData[0][2]) {
+    return matchesStrictComparable(matchData[0][0], matchData[0][1]);
+  }
+  return function(object) {
+    return object === source || baseIsMatch(object, source, matchData);
+  };
+}
+
+module.exports = baseMatches;
+
+}).apply(this, arguments);
+
+},{"./_baseIsMatch":94,"./_getMatchData":126,"./_matchesStrictComparable":156}],101:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_baseMatchesProperty.js", module);
+(function(){
+var baseIsEqual = require('./_baseIsEqual'),
+    get = require('./get'),
+    hasIn = require('./hasIn'),
+    isKey = require('./_isKey'),
+    isStrictComparable = require('./_isStrictComparable'),
+    matchesStrictComparable = require('./_matchesStrictComparable'),
+    toKey = require('./_toKey');
+
+/** Used to compose bitmasks for value comparisons. */
+var COMPARE_PARTIAL_FLAG = 1,
+    COMPARE_UNORDERED_FLAG = 2;
+
+/**
+ * The base implementation of `_.matchesProperty` which doesn't clone `srcValue`.
+ *
+ * @private
+ * @param {string} path The path of the property to get.
+ * @param {*} srcValue The value to match.
+ * @returns {Function} Returns the new spec function.
+ */
+function baseMatchesProperty(path, srcValue) {
+  if (isKey(path) && isStrictComparable(srcValue)) {
+    return matchesStrictComparable(toKey(path), srcValue);
+  }
+  return function(object) {
+    var objValue = get(object, path);
+    return (objValue === undefined && objValue === srcValue)
+      ? hasIn(object, path)
+      : baseIsEqual(srcValue, objValue, COMPARE_PARTIAL_FLAG | COMPARE_UNORDERED_FLAG);
+  };
+}
+
+module.exports = baseMatchesProperty;
+
+}).apply(this, arguments);
+
+},{"./_baseIsEqual":92,"./_isKey":140,"./_isStrictComparable":144,"./_matchesStrictComparable":156,"./_toKey":176,"./get":184,"./hasIn":185}],102:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_baseProperty.js", module);
+(function(){
+/**
+ * The base implementation of `_.property` without support for deep paths.
+ *
+ * @private
+ * @param {string} key The key of the property to get.
+ * @returns {Function} Returns the new accessor function.
+ */
+function baseProperty(key) {
+  return function(object) {
+    return object == null ? undefined : object[key];
+  };
+}
+
+module.exports = baseProperty;
+
+}).apply(this, arguments);
+
+},{}],103:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_basePropertyDeep.js", module);
+(function(){
+var baseGet = require('./_baseGet');
+
+/**
+ * A specialized version of `baseProperty` which supports deep paths.
+ *
+ * @private
+ * @param {Array|string} path The path of the property to get.
+ * @returns {Function} Returns the new accessor function.
+ */
+function basePropertyDeep(path) {
+  return function(object) {
+    return baseGet(object, path);
+  };
+}
+
+module.exports = basePropertyDeep;
+
+}).apply(this, arguments);
+
+},{"./_baseGet":87}],104:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_baseRest.js", module);
+(function(){
+var identity = require('./identity'),
+    overRest = require('./_overRest'),
+    setToString = require('./_setToString');
+
+/**
+ * The base implementation of `_.rest` which doesn't validate or coerce arguments.
+ *
+ * @private
+ * @param {Function} func The function to apply a rest parameter to.
+ * @param {number} [start=func.length-1] The start position of the rest parameter.
+ * @returns {Function} Returns the new function.
+ */
+function baseRest(func, start) {
+  return setToString(overRest(func, start, identity), func + '');
+}
+
+module.exports = baseRest;
+
+}).apply(this, arguments);
+
+},{"./_overRest":163,"./_setToString":168,"./identity":186}],105:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_baseSetToString.js", module);
+(function(){
+var constant = require('./constant'),
+    defineProperty = require('./_defineProperty'),
+    identity = require('./identity');
+
+/**
+ * The base implementation of `setToString` without support for hot loop shorting.
+ *
+ * @private
+ * @param {Function} func The function to modify.
+ * @param {Function} string The `toString` result.
+ * @returns {Function} Returns `func`.
+ */
+var baseSetToString = !defineProperty ? identity : function(func, string) {
+  return defineProperty(func, 'toString', {
+    'configurable': true,
+    'enumerable': false,
+    'value': constant(string),
+    'writable': true
+  });
+};
+
+module.exports = baseSetToString;
+
+}).apply(this, arguments);
+
+},{"./_defineProperty":119,"./constant":179,"./identity":186}],106:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_baseSome.js", module);
+(function(){
+var baseEach = require('./_baseEach');
+
+/**
+ * The base implementation of `_.some` without support for iteratee shorthands.
+ *
+ * @private
+ * @param {Array|Object} collection The collection to iterate over.
+ * @param {Function} predicate The function invoked per iteration.
+ * @returns {boolean} Returns `true` if any element passes the predicate check,
+ *  else `false`.
+ */
+function baseSome(collection, predicate) {
+  var result;
+
+  baseEach(collection, function(value, index, collection) {
+    result = predicate(value, index, collection);
+    return !result;
+  });
+  return !!result;
+}
+
+module.exports = baseSome;
+
+}).apply(this, arguments);
+
+},{"./_baseEach":83}],107:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_baseTimes.js", module);
+(function(){
+/**
+ * The base implementation of `_.times` without support for iteratee shorthands
+ * or max array length checks.
+ *
+ * @private
+ * @param {number} n The number of times to invoke `iteratee`.
+ * @param {Function} iteratee The function invoked per iteration.
+ * @returns {Array} Returns the array of results.
+ */
+function baseTimes(n, iteratee) {
+  var index = -1,
+      result = Array(n);
+
+  while (++index < n) {
+    result[index] = iteratee(index);
+  }
+  return result;
+}
+
+module.exports = baseTimes;
+
+}).apply(this, arguments);
+
+},{}],108:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_baseToString.js", module);
+(function(){
+var Symbol = require('./_Symbol'),
+    arrayMap = require('./_arrayMap'),
+    isArray = require('./isArray'),
+    isSymbol = require('./isSymbol');
+
+/** Used as references for various `Number` constants. */
+var INFINITY = 1 / 0;
+
+/** Used to convert symbols to primitives and strings. */
+var symbolProto = Symbol ? Symbol.prototype : undefined,
+    symbolToString = symbolProto ? symbolProto.toString : undefined;
+
+/**
+ * The base implementation of `_.toString` which doesn't convert nullish
+ * values to empty strings.
+ *
+ * @private
+ * @param {*} value The value to process.
+ * @returns {string} Returns the string.
+ */
+function baseToString(value) {
+  // Exit early for strings to avoid a performance hit in some environments.
+  if (typeof value == 'string') {
+    return value;
+  }
+  if (isArray(value)) {
+    // Recursively convert values (susceptible to call stack limits).
+    return arrayMap(value, baseToString) + '';
+  }
+  if (isSymbol(value)) {
+    return symbolToString ? symbolToString.call(value) : '';
+  }
+  var result = (value + '');
+  return (result == '0' && (1 / value) == -INFINITY) ? '-0' : result;
+}
+
+module.exports = baseToString;
+
+}).apply(this, arguments);
+
+},{"./_Symbol":70,"./_arrayMap":77,"./isArray":188,"./isSymbol":195}],109:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_baseUnary.js", module);
+(function(){
+/**
+ * The base implementation of `_.unary` without support for storing metadata.
+ *
+ * @private
+ * @param {Function} func The function to cap arguments for.
+ * @returns {Function} Returns the new capped function.
+ */
+function baseUnary(func) {
+  return function(value) {
+    return func(value);
+  };
+}
+
+module.exports = baseUnary;
+
+}).apply(this, arguments);
+
+},{}],110:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_baseZipObject.js", module);
+(function(){
+/**
+ * This base implementation of `_.zipObject` which assigns values using `assignFunc`.
+ *
+ * @private
+ * @param {Array} props The property identifiers.
+ * @param {Array} values The property values.
+ * @param {Function} assignFunc The function to assign values.
+ * @returns {Object} Returns the new object.
+ */
+function baseZipObject(props, values, assignFunc) {
+  var index = -1,
+      length = props.length,
+      valsLength = values.length,
+      result = {};
+
+  while (++index < length) {
+    var value = index < valsLength ? values[index] : undefined;
+    assignFunc(result, props[index], value);
+  }
+  return result;
+}
+
+module.exports = baseZipObject;
+
+}).apply(this, arguments);
+
+},{}],111:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_cacheHas.js", module);
+(function(){
+/**
+ * Checks if a `cache` value for `key` exists.
+ *
+ * @private
+ * @param {Object} cache The cache to query.
+ * @param {string} key The key of the entry to check.
+ * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+ */
+function cacheHas(cache, key) {
+  return cache.has(key);
+}
+
+module.exports = cacheHas;
+
+}).apply(this, arguments);
+
+},{}],112:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_castFunction.js", module);
+(function(){
+var identity = require('./identity');
+
+/**
+ * Casts `value` to `identity` if it's not a function.
+ *
+ * @private
+ * @param {*} value The value to inspect.
+ * @returns {Function} Returns cast function.
+ */
+function castFunction(value) {
+  return typeof value == 'function' ? value : identity;
+}
+
+module.exports = castFunction;
+
+}).apply(this, arguments);
+
+},{"./identity":186}],113:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_castPath.js", module);
+(function(){
+var isArray = require('./isArray'),
+    isKey = require('./_isKey'),
+    stringToPath = require('./_stringToPath'),
+    toString = require('./toString');
+
+/**
+ * Casts `value` to a path array if it's not one.
+ *
+ * @private
+ * @param {*} value The value to inspect.
+ * @param {Object} [object] The object to query keys on.
+ * @returns {Array} Returns the cast property path array.
+ */
+function castPath(value, object) {
+  if (isArray(value)) {
+    return value;
+  }
+  return isKey(value, object) ? [value] : stringToPath(toString(value));
+}
+
+module.exports = castPath;
+
+}).apply(this, arguments);
+
+},{"./_isKey":140,"./_stringToPath":175,"./isArray":188,"./toString":205}],114:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_copyObject.js", module);
+(function(){
+var assignValue = require('./_assignValue'),
+    baseAssignValue = require('./_baseAssignValue');
+
+/**
+ * Copies properties of `source` to `object`.
+ *
+ * @private
+ * @param {Object} source The object to copy properties from.
+ * @param {Array} props The property identifiers to copy.
+ * @param {Object} [object={}] The object to copy properties to.
+ * @param {Function} [customizer] The function to customize copied values.
+ * @returns {Object} Returns `object`.
+ */
+function copyObject(source, props, object, customizer) {
+  var isNew = !object;
+  object || (object = {});
+
+  var index = -1,
+      length = props.length;
+
+  while (++index < length) {
+    var key = props[index];
+
+    var newValue = customizer
+      ? customizer(object[key], source[key], key, object, source)
+      : undefined;
+
+    if (newValue === undefined) {
+      newValue = source[key];
+    }
+    if (isNew) {
+      baseAssignValue(object, key, newValue);
+    } else {
+      assignValue(object, key, newValue);
+    }
+  }
+  return object;
+}
+
+module.exports = copyObject;
+
+}).apply(this, arguments);
+
+},{"./_assignValue":80,"./_baseAssignValue":82}],115:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_coreJsData.js", module);
+(function(){
+var root = require('./_root');
+
+/** Used to detect overreaching core-js shims. */
+var coreJsData = root['__core-js_shared__'];
+
+module.exports = coreJsData;
+
+}).apply(this, arguments);
+
+},{"./_root":164}],116:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_createAssigner.js", module);
+(function(){
+var baseRest = require('./_baseRest'),
+    isIterateeCall = require('./_isIterateeCall');
+
+/**
+ * Creates a function like `_.assign`.
+ *
+ * @private
+ * @param {Function} assigner The function to assign values.
+ * @returns {Function} Returns the new assigner function.
+ */
+function createAssigner(assigner) {
+  return baseRest(function(object, sources) {
+    var index = -1,
+        length = sources.length,
+        customizer = length > 1 ? sources[length - 1] : undefined,
+        guard = length > 2 ? sources[2] : undefined;
+
+    customizer = (assigner.length > 3 && typeof customizer == 'function')
+      ? (length--, customizer)
+      : undefined;
+
+    if (guard && isIterateeCall(sources[0], sources[1], guard)) {
+      customizer = length < 3 ? undefined : customizer;
+      length = 1;
+    }
+    object = Object(object);
+    while (++index < length) {
+      var source = sources[index];
+      if (source) {
+        assigner(object, source, index, customizer);
+      }
+    }
+    return object;
+  });
+}
+
+module.exports = createAssigner;
+
+}).apply(this, arguments);
+
+},{"./_baseRest":104,"./_isIterateeCall":139}],117:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_createBaseEach.js", module);
+(function(){
+var isArrayLike = require('./isArrayLike');
+
+/**
+ * Creates a `baseEach` or `baseEachRight` function.
+ *
+ * @private
+ * @param {Function} eachFunc The function to iterate over a collection.
+ * @param {boolean} [fromRight] Specify iterating from right to left.
+ * @returns {Function} Returns the new base function.
+ */
+function createBaseEach(eachFunc, fromRight) {
+  return function(collection, iteratee) {
+    if (collection == null) {
+      return collection;
+    }
+    if (!isArrayLike(collection)) {
+      return eachFunc(collection, iteratee);
+    }
+    var length = collection.length,
+        index = fromRight ? length : -1,
+        iterable = Object(collection);
+
+    while ((fromRight ? index-- : ++index < length)) {
+      if (iteratee(iterable[index], index, iterable) === false) {
+        break;
+      }
+    }
+    return collection;
+  };
+}
+
+module.exports = createBaseEach;
+
+}).apply(this, arguments);
+
+},{"./isArrayLike":189}],118:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_createBaseFor.js", module);
+(function(){
+/**
+ * Creates a base function for methods like `_.forIn` and `_.forOwn`.
+ *
+ * @private
+ * @param {boolean} [fromRight] Specify iterating from right to left.
+ * @returns {Function} Returns the new base function.
+ */
+function createBaseFor(fromRight) {
+  return function(object, iteratee, keysFunc) {
+    var index = -1,
+        iterable = Object(object),
+        props = keysFunc(object),
+        length = props.length;
+
+    while (length--) {
+      var key = props[fromRight ? length : ++index];
+      if (iteratee(iterable[key], key, iterable) === false) {
+        break;
+      }
+    }
+    return object;
+  };
+}
+
+module.exports = createBaseFor;
+
+}).apply(this, arguments);
+
+},{}],119:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_defineProperty.js", module);
+(function(){
+var getNative = require('./_getNative');
+
+var defineProperty = (function() {
+  try {
+    var func = getNative(Object, 'defineProperty');
+    func({}, '', {});
+    return func;
+  } catch (e) {}
+}());
+
+module.exports = defineProperty;
+
+}).apply(this, arguments);
+
+},{"./_getNative":127}],120:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_equalArrays.js", module);
+(function(){
+var SetCache = require('./_SetCache'),
+    arraySome = require('./_arraySome'),
+    cacheHas = require('./_cacheHas');
+
+/** Used to compose bitmasks for value comparisons. */
+var COMPARE_PARTIAL_FLAG = 1,
+    COMPARE_UNORDERED_FLAG = 2;
+
+/**
+ * A specialized version of `baseIsEqualDeep` for arrays with support for
+ * partial deep comparisons.
+ *
+ * @private
+ * @param {Array} array The array to compare.
+ * @param {Array} other The other array to compare.
+ * @param {number} bitmask The bitmask flags. See `baseIsEqual` for more details.
+ * @param {Function} customizer The function to customize comparisons.
+ * @param {Function} equalFunc The function to determine equivalents of values.
+ * @param {Object} stack Tracks traversed `array` and `other` objects.
+ * @returns {boolean} Returns `true` if the arrays are equivalent, else `false`.
+ */
+function equalArrays(array, other, bitmask, customizer, equalFunc, stack) {
+  var isPartial = bitmask & COMPARE_PARTIAL_FLAG,
+      arrLength = array.length,
+      othLength = other.length;
+
+  if (arrLength != othLength && !(isPartial && othLength > arrLength)) {
+    return false;
+  }
+  // Assume cyclic values are equal.
+  var stacked = stack.get(array);
+  if (stacked && stack.get(other)) {
+    return stacked == other;
+  }
+  var index = -1,
+      result = true,
+      seen = (bitmask & COMPARE_UNORDERED_FLAG) ? new SetCache : undefined;
+
+  stack.set(array, other);
+  stack.set(other, array);
+
+  // Ignore non-index properties.
+  while (++index < arrLength) {
+    var arrValue = array[index],
+        othValue = other[index];
+
+    if (customizer) {
+      var compared = isPartial
+        ? customizer(othValue, arrValue, index, other, array, stack)
+        : customizer(arrValue, othValue, index, array, other, stack);
+    }
+    if (compared !== undefined) {
+      if (compared) {
+        continue;
+      }
+      result = false;
+      break;
+    }
+    // Recursively compare arrays (susceptible to call stack limits).
+    if (seen) {
+      if (!arraySome(other, function(othValue, othIndex) {
+            if (!cacheHas(seen, othIndex) &&
+                (arrValue === othValue || equalFunc(arrValue, othValue, bitmask, customizer, stack))) {
+              return seen.push(othIndex);
+            }
+          })) {
+        result = false;
+        break;
+      }
+    } else if (!(
+          arrValue === othValue ||
+            equalFunc(arrValue, othValue, bitmask, customizer, stack)
+        )) {
+      result = false;
+      break;
+    }
+  }
+  stack['delete'](array);
+  stack['delete'](other);
+  return result;
+}
+
+module.exports = equalArrays;
+
+}).apply(this, arguments);
+
+},{"./_SetCache":68,"./_arraySome":79,"./_cacheHas":111}],121:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_equalByTag.js", module);
+(function(){
+var Symbol = require('./_Symbol'),
+    Uint8Array = require('./_Uint8Array'),
+    eq = require('./eq'),
+    equalArrays = require('./_equalArrays'),
+    mapToArray = require('./_mapToArray'),
+    setToArray = require('./_setToArray');
+
+/** Used to compose bitmasks for value comparisons. */
+var COMPARE_PARTIAL_FLAG = 1,
+    COMPARE_UNORDERED_FLAG = 2;
+
+/** `Object#toString` result references. */
+var boolTag = '[object Boolean]',
+    dateTag = '[object Date]',
+    errorTag = '[object Error]',
+    mapTag = '[object Map]',
+    numberTag = '[object Number]',
+    regexpTag = '[object RegExp]',
+    setTag = '[object Set]',
+    stringTag = '[object String]',
+    symbolTag = '[object Symbol]';
+
+var arrayBufferTag = '[object ArrayBuffer]',
+    dataViewTag = '[object DataView]';
+
+/** Used to convert symbols to primitives and strings. */
+var symbolProto = Symbol ? Symbol.prototype : undefined,
+    symbolValueOf = symbolProto ? symbolProto.valueOf : undefined;
+
+/**
+ * A specialized version of `baseIsEqualDeep` for comparing objects of
+ * the same `toStringTag`.
+ *
+ * **Note:** This function only supports comparing values with tags of
+ * `Boolean`, `Date`, `Error`, `Number`, `RegExp`, or `String`.
+ *
+ * @private
+ * @param {Object} object The object to compare.
+ * @param {Object} other The other object to compare.
+ * @param {string} tag The `toStringTag` of the objects to compare.
+ * @param {number} bitmask The bitmask flags. See `baseIsEqual` for more details.
+ * @param {Function} customizer The function to customize comparisons.
+ * @param {Function} equalFunc The function to determine equivalents of values.
+ * @param {Object} stack Tracks traversed `object` and `other` objects.
+ * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
+ */
+function equalByTag(object, other, tag, bitmask, customizer, equalFunc, stack) {
+  switch (tag) {
+    case dataViewTag:
+      if ((object.byteLength != other.byteLength) ||
+          (object.byteOffset != other.byteOffset)) {
+        return false;
+      }
+      object = object.buffer;
+      other = other.buffer;
+
+    case arrayBufferTag:
+      if ((object.byteLength != other.byteLength) ||
+          !equalFunc(new Uint8Array(object), new Uint8Array(other))) {
+        return false;
+      }
+      return true;
+
+    case boolTag:
+    case dateTag:
+    case numberTag:
+      // Coerce booleans to `1` or `0` and dates to milliseconds.
+      // Invalid dates are coerced to `NaN`.
+      return eq(+object, +other);
+
+    case errorTag:
+      return object.name == other.name && object.message == other.message;
+
+    case regexpTag:
+    case stringTag:
+      // Coerce regexes to strings and treat strings, primitives and objects,
+      // as equal. See http://www.ecma-international.org/ecma-262/7.0/#sec-regexp.prototype.tostring
+      // for more details.
+      return object == (other + '');
+
+    case mapTag:
+      var convert = mapToArray;
+
+    case setTag:
+      var isPartial = bitmask & COMPARE_PARTIAL_FLAG;
+      convert || (convert = setToArray);
+
+      if (object.size != other.size && !isPartial) {
+        return false;
+      }
+      // Assume cyclic values are equal.
+      var stacked = stack.get(object);
+      if (stacked) {
+        return stacked == other;
+      }
+      bitmask |= COMPARE_UNORDERED_FLAG;
+
+      // Recursively compare objects (susceptible to call stack limits).
+      stack.set(object, other);
+      var result = equalArrays(convert(object), convert(other), bitmask, customizer, equalFunc, stack);
+      stack['delete'](object);
+      return result;
+
+    case symbolTag:
+      if (symbolValueOf) {
+        return symbolValueOf.call(object) == symbolValueOf.call(other);
+      }
+  }
+  return false;
+}
+
+module.exports = equalByTag;
+
+}).apply(this, arguments);
+
+},{"./_Symbol":70,"./_Uint8Array":71,"./_equalArrays":120,"./_mapToArray":155,"./_setToArray":167,"./eq":180}],122:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_equalObjects.js", module);
+(function(){
+var getAllKeys = require('./_getAllKeys');
+
+/** Used to compose bitmasks for value comparisons. */
+var COMPARE_PARTIAL_FLAG = 1;
+
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty = objectProto.hasOwnProperty;
+
+/**
+ * A specialized version of `baseIsEqualDeep` for objects with support for
+ * partial deep comparisons.
+ *
+ * @private
+ * @param {Object} object The object to compare.
+ * @param {Object} other The other object to compare.
+ * @param {number} bitmask The bitmask flags. See `baseIsEqual` for more details.
+ * @param {Function} customizer The function to customize comparisons.
+ * @param {Function} equalFunc The function to determine equivalents of values.
+ * @param {Object} stack Tracks traversed `object` and `other` objects.
+ * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
+ */
+function equalObjects(object, other, bitmask, customizer, equalFunc, stack) {
+  var isPartial = bitmask & COMPARE_PARTIAL_FLAG,
+      objProps = getAllKeys(object),
+      objLength = objProps.length,
+      othProps = getAllKeys(other),
+      othLength = othProps.length;
+
+  if (objLength != othLength && !isPartial) {
+    return false;
+  }
+  var index = objLength;
+  while (index--) {
+    var key = objProps[index];
+    if (!(isPartial ? key in other : hasOwnProperty.call(other, key))) {
+      return false;
+    }
+  }
+  // Assume cyclic values are equal.
+  var stacked = stack.get(object);
+  if (stacked && stack.get(other)) {
+    return stacked == other;
+  }
+  var result = true;
+  stack.set(object, other);
+  stack.set(other, object);
+
+  var skipCtor = isPartial;
+  while (++index < objLength) {
+    key = objProps[index];
+    var objValue = object[key],
+        othValue = other[key];
+
+    if (customizer) {
+      var compared = isPartial
+        ? customizer(othValue, objValue, key, other, object, stack)
+        : customizer(objValue, othValue, key, object, other, stack);
+    }
+    // Recursively compare objects (susceptible to call stack limits).
+    if (!(compared === undefined
+          ? (objValue === othValue || equalFunc(objValue, othValue, bitmask, customizer, stack))
+          : compared
+        )) {
+      result = false;
+      break;
+    }
+    skipCtor || (skipCtor = key == 'constructor');
+  }
+  if (result && !skipCtor) {
+    var objCtor = object.constructor,
+        othCtor = other.constructor;
+
+    // Non `Object` object instances with different constructors are not equal.
+    if (objCtor != othCtor &&
+        ('constructor' in object && 'constructor' in other) &&
+        !(typeof objCtor == 'function' && objCtor instanceof objCtor &&
+          typeof othCtor == 'function' && othCtor instanceof othCtor)) {
+      result = false;
+    }
+  }
+  stack['delete'](object);
+  stack['delete'](other);
+  return result;
+}
+
+module.exports = equalObjects;
+
+}).apply(this, arguments);
+
+},{"./_getAllKeys":124}],123:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_freeGlobal.js", module);
+(function(){
+(function (global){
+/** Detect free variable `global` from Node.js. */
+var freeGlobal = typeof global == 'object' && global && global.Object === Object && global;
+
+module.exports = freeGlobal;
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+}).apply(this, arguments);
+
+},{}],124:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_getAllKeys.js", module);
+(function(){
+var baseGetAllKeys = require('./_baseGetAllKeys'),
+    getSymbols = require('./_getSymbols'),
+    keys = require('./keys');
+
+/**
+ * Creates an array of own enumerable property names and symbols of `object`.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @returns {Array} Returns the array of property names and symbols.
+ */
+function getAllKeys(object) {
+  return baseGetAllKeys(object, keys, getSymbols);
+}
+
+module.exports = getAllKeys;
+
+}).apply(this, arguments);
+
+},{"./_baseGetAllKeys":88,"./_getSymbols":129,"./keys":197}],125:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_getMapData.js", module);
+(function(){
+var isKeyable = require('./_isKeyable');
+
+/**
+ * Gets the data for `map`.
+ *
+ * @private
+ * @param {Object} map The map to query.
+ * @param {string} key The reference key.
+ * @returns {*} Returns the map data.
+ */
+function getMapData(map, key) {
+  var data = map.__data__;
+  return isKeyable(key)
+    ? data[typeof key == 'string' ? 'string' : 'hash']
+    : data.map;
+}
+
+module.exports = getMapData;
+
+}).apply(this, arguments);
+
+},{"./_isKeyable":141}],126:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_getMatchData.js", module);
+(function(){
+var isStrictComparable = require('./_isStrictComparable'),
+    keys = require('./keys');
+
+/**
+ * Gets the property names, values, and compare flags of `object`.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @returns {Array} Returns the match data of `object`.
+ */
+function getMatchData(object) {
+  var result = keys(object),
+      length = result.length;
+
+  while (length--) {
+    var key = result[length],
+        value = object[key];
+
+    result[length] = [key, value, isStrictComparable(value)];
+  }
+  return result;
+}
+
+module.exports = getMatchData;
+
+}).apply(this, arguments);
+
+},{"./_isStrictComparable":144,"./keys":197}],127:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_getNative.js", module);
+(function(){
+var baseIsNative = require('./_baseIsNative'),
+    getValue = require('./_getValue');
+
+/**
+ * Gets the native function at `key` of `object`.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @param {string} key The key of the method to get.
+ * @returns {*} Returns the function if it's native, else `undefined`.
+ */
+function getNative(object, key) {
+  var value = getValue(object, key);
+  return baseIsNative(value) ? value : undefined;
+}
+
+module.exports = getNative;
+
+}).apply(this, arguments);
+
+},{"./_baseIsNative":95,"./_getValue":131}],128:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_getRawTag.js", module);
+(function(){
+var Symbol = require('./_Symbol');
+
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty = objectProto.hasOwnProperty;
+
+/**
+ * Used to resolve the
+ * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
+ * of values.
+ */
+var nativeObjectToString = objectProto.toString;
+
+/** Built-in value references. */
+var symToStringTag = Symbol ? Symbol.toStringTag : undefined;
+
+/**
+ * A specialized version of `baseGetTag` which ignores `Symbol.toStringTag` values.
+ *
+ * @private
+ * @param {*} value The value to query.
+ * @returns {string} Returns the raw `toStringTag`.
+ */
+function getRawTag(value) {
+  var isOwn = hasOwnProperty.call(value, symToStringTag),
+      tag = value[symToStringTag];
+
+  try {
+    value[symToStringTag] = undefined;
+    var unmasked = true;
+  } catch (e) {}
+
+  var result = nativeObjectToString.call(value);
+  if (unmasked) {
+    if (isOwn) {
+      value[symToStringTag] = tag;
+    } else {
+      delete value[symToStringTag];
+    }
+  }
+  return result;
+}
+
+module.exports = getRawTag;
+
+}).apply(this, arguments);
+
+},{"./_Symbol":70}],129:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_getSymbols.js", module);
+(function(){
+var arrayFilter = require('./_arrayFilter'),
+    stubArray = require('./stubArray');
+
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/** Built-in value references. */
+var propertyIsEnumerable = objectProto.propertyIsEnumerable;
+
+/* Built-in method references for those with the same name as other `lodash` methods. */
+var nativeGetSymbols = Object.getOwnPropertySymbols;
+
+/**
+ * Creates an array of the own enumerable symbols of `object`.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @returns {Array} Returns the array of symbols.
+ */
+var getSymbols = !nativeGetSymbols ? stubArray : function(object) {
+  if (object == null) {
+    return [];
+  }
+  object = Object(object);
+  return arrayFilter(nativeGetSymbols(object), function(symbol) {
+    return propertyIsEnumerable.call(object, symbol);
+  });
+};
+
+module.exports = getSymbols;
+
+}).apply(this, arguments);
+
+},{"./_arrayFilter":75,"./stubArray":203}],130:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_getTag.js", module);
+(function(){
+var DataView = require('./_DataView'),
+    Map = require('./_Map'),
+    Promise = require('./_Promise'),
+    Set = require('./_Set'),
+    WeakMap = require('./_WeakMap'),
+    baseGetTag = require('./_baseGetTag'),
+    toSource = require('./_toSource');
+
+/** `Object#toString` result references. */
+var mapTag = '[object Map]',
+    objectTag = '[object Object]',
+    promiseTag = '[object Promise]',
+    setTag = '[object Set]',
+    weakMapTag = '[object WeakMap]';
+
+var dataViewTag = '[object DataView]';
+
+/** Used to detect maps, sets, and weakmaps. */
+var dataViewCtorString = toSource(DataView),
+    mapCtorString = toSource(Map),
+    promiseCtorString = toSource(Promise),
+    setCtorString = toSource(Set),
+    weakMapCtorString = toSource(WeakMap);
+
+/**
+ * Gets the `toStringTag` of `value`.
+ *
+ * @private
+ * @param {*} value The value to query.
+ * @returns {string} Returns the `toStringTag`.
+ */
+var getTag = baseGetTag;
+
+// Fallback for data views, maps, sets, and weak maps in IE 11 and promises in Node.js < 6.
+if ((DataView && getTag(new DataView(new ArrayBuffer(1))) != dataViewTag) ||
+    (Map && getTag(new Map) != mapTag) ||
+    (Promise && getTag(Promise.resolve()) != promiseTag) ||
+    (Set && getTag(new Set) != setTag) ||
+    (WeakMap && getTag(new WeakMap) != weakMapTag)) {
+  getTag = function(value) {
+    var result = baseGetTag(value),
+        Ctor = result == objectTag ? value.constructor : undefined,
+        ctorString = Ctor ? toSource(Ctor) : '';
+
+    if (ctorString) {
+      switch (ctorString) {
+        case dataViewCtorString: return dataViewTag;
+        case mapCtorString: return mapTag;
+        case promiseCtorString: return promiseTag;
+        case setCtorString: return setTag;
+        case weakMapCtorString: return weakMapTag;
+      }
+    }
+    return result;
+  };
+}
+
+module.exports = getTag;
+
+}).apply(this, arguments);
+
+},{"./_DataView":61,"./_Map":64,"./_Promise":66,"./_Set":67,"./_WeakMap":72,"./_baseGetTag":89,"./_toSource":177}],131:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_getValue.js", module);
+(function(){
+/**
+ * Gets the value at `key` of `object`.
+ *
+ * @private
+ * @param {Object} [object] The object to query.
+ * @param {string} key The key of the property to get.
+ * @returns {*} Returns the property value.
+ */
+function getValue(object, key) {
+  return object == null ? undefined : object[key];
+}
+
+module.exports = getValue;
+
+}).apply(this, arguments);
+
+},{}],132:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_hasPath.js", module);
+(function(){
+var castPath = require('./_castPath'),
+    isArguments = require('./isArguments'),
+    isArray = require('./isArray'),
+    isIndex = require('./_isIndex'),
+    isLength = require('./isLength'),
+    toKey = require('./_toKey');
+
+/**
+ * Checks if `path` exists on `object`.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @param {Array|string} path The path to check.
+ * @param {Function} hasFunc The function to check properties.
+ * @returns {boolean} Returns `true` if `path` exists, else `false`.
+ */
+function hasPath(object, path, hasFunc) {
+  path = castPath(path, object);
+
+  var index = -1,
+      length = path.length,
+      result = false;
+
+  while (++index < length) {
+    var key = toKey(path[index]);
+    if (!(result = object != null && hasFunc(object, key))) {
+      break;
+    }
+    object = object[key];
+  }
+  if (result || ++index != length) {
+    return result;
+  }
+  length = object == null ? 0 : object.length;
+  return !!length && isLength(length) && isIndex(key, length) &&
+    (isArray(object) || isArguments(object));
+}
+
+module.exports = hasPath;
+
+}).apply(this, arguments);
+
+},{"./_castPath":113,"./_isIndex":138,"./_toKey":176,"./isArguments":187,"./isArray":188,"./isLength":192}],133:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_hashClear.js", module);
+(function(){
+var nativeCreate = require('./_nativeCreate');
+
+/**
+ * Removes all key-value entries from the hash.
+ *
+ * @private
+ * @name clear
+ * @memberOf Hash
+ */
+function hashClear() {
+  this.__data__ = nativeCreate ? nativeCreate(null) : {};
+  this.size = 0;
+}
+
+module.exports = hashClear;
+
+}).apply(this, arguments);
+
+},{"./_nativeCreate":158}],134:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_hashDelete.js", module);
+(function(){
+/**
+ * Removes `key` and its value from the hash.
+ *
+ * @private
+ * @name delete
+ * @memberOf Hash
+ * @param {Object} hash The hash to modify.
+ * @param {string} key The key of the value to remove.
+ * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+ */
+function hashDelete(key) {
+  var result = this.has(key) && delete this.__data__[key];
+  this.size -= result ? 1 : 0;
+  return result;
+}
+
+module.exports = hashDelete;
+
+}).apply(this, arguments);
+
+},{}],135:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_hashGet.js", module);
+(function(){
+var nativeCreate = require('./_nativeCreate');
+
+/** Used to stand-in for `undefined` hash values. */
+var HASH_UNDEFINED = '__lodash_hash_undefined__';
+
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty = objectProto.hasOwnProperty;
+
+/**
+ * Gets the hash value for `key`.
+ *
+ * @private
+ * @name get
+ * @memberOf Hash
+ * @param {string} key The key of the value to get.
+ * @returns {*} Returns the entry value.
+ */
+function hashGet(key) {
+  var data = this.__data__;
+  if (nativeCreate) {
+    var result = data[key];
+    return result === HASH_UNDEFINED ? undefined : result;
+  }
+  return hasOwnProperty.call(data, key) ? data[key] : undefined;
+}
+
+module.exports = hashGet;
+
+}).apply(this, arguments);
+
+},{"./_nativeCreate":158}],136:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_hashHas.js", module);
+(function(){
+var nativeCreate = require('./_nativeCreate');
+
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty = objectProto.hasOwnProperty;
+
+/**
+ * Checks if a hash value for `key` exists.
+ *
+ * @private
+ * @name has
+ * @memberOf Hash
+ * @param {string} key The key of the entry to check.
+ * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+ */
+function hashHas(key) {
+  var data = this.__data__;
+  return nativeCreate ? (data[key] !== undefined) : hasOwnProperty.call(data, key);
+}
+
+module.exports = hashHas;
+
+}).apply(this, arguments);
+
+},{"./_nativeCreate":158}],137:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_hashSet.js", module);
+(function(){
+var nativeCreate = require('./_nativeCreate');
+
+/** Used to stand-in for `undefined` hash values. */
+var HASH_UNDEFINED = '__lodash_hash_undefined__';
+
+/**
+ * Sets the hash `key` to `value`.
+ *
+ * @private
+ * @name set
+ * @memberOf Hash
+ * @param {string} key The key of the value to set.
+ * @param {*} value The value to set.
+ * @returns {Object} Returns the hash instance.
+ */
+function hashSet(key, value) {
+  var data = this.__data__;
+  this.size += this.has(key) ? 0 : 1;
+  data[key] = (nativeCreate && value === undefined) ? HASH_UNDEFINED : value;
+  return this;
+}
+
+module.exports = hashSet;
+
+}).apply(this, arguments);
+
+},{"./_nativeCreate":158}],138:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_isIndex.js", module);
+(function(){
+/** Used as references for various `Number` constants. */
+var MAX_SAFE_INTEGER = 9007199254740991;
+
+/** Used to detect unsigned integer values. */
+var reIsUint = /^(?:0|[1-9]\d*)$/;
+
+/**
+ * Checks if `value` is a valid array-like index.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @param {number} [length=MAX_SAFE_INTEGER] The upper bounds of a valid index.
+ * @returns {boolean} Returns `true` if `value` is a valid index, else `false`.
+ */
+function isIndex(value, length) {
+  length = length == null ? MAX_SAFE_INTEGER : length;
+  return !!length &&
+    (typeof value == 'number' || reIsUint.test(value)) &&
+    (value > -1 && value % 1 == 0 && value < length);
+}
+
+module.exports = isIndex;
+
+}).apply(this, arguments);
+
+},{}],139:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_isIterateeCall.js", module);
+(function(){
+var eq = require('./eq'),
+    isArrayLike = require('./isArrayLike'),
+    isIndex = require('./_isIndex'),
+    isObject = require('./isObject');
+
+/**
+ * Checks if the given arguments are from an iteratee call.
+ *
+ * @private
+ * @param {*} value The potential iteratee value argument.
+ * @param {*} index The potential iteratee index or key argument.
+ * @param {*} object The potential iteratee object argument.
+ * @returns {boolean} Returns `true` if the arguments are from an iteratee call,
+ *  else `false`.
+ */
+function isIterateeCall(value, index, object) {
+  if (!isObject(object)) {
+    return false;
+  }
+  var type = typeof index;
+  if (type == 'number'
+        ? (isArrayLike(object) && isIndex(index, object.length))
+        : (type == 'string' && index in object)
+      ) {
+    return eq(object[index], value);
+  }
+  return false;
+}
+
+module.exports = isIterateeCall;
+
+}).apply(this, arguments);
+
+},{"./_isIndex":138,"./eq":180,"./isArrayLike":189,"./isObject":193}],140:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_isKey.js", module);
+(function(){
+var isArray = require('./isArray'),
+    isSymbol = require('./isSymbol');
+
+/** Used to match property names within property paths. */
+var reIsDeepProp = /\.|\[(?:[^[\]]*|(["'])(?:(?!\1)[^\\]|\\.)*?\1)\]/,
+    reIsPlainProp = /^\w*$/;
+
+/**
+ * Checks if `value` is a property name and not a property path.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @param {Object} [object] The object to query keys on.
+ * @returns {boolean} Returns `true` if `value` is a property name, else `false`.
+ */
+function isKey(value, object) {
+  if (isArray(value)) {
+    return false;
+  }
+  var type = typeof value;
+  if (type == 'number' || type == 'symbol' || type == 'boolean' ||
+      value == null || isSymbol(value)) {
+    return true;
+  }
+  return reIsPlainProp.test(value) || !reIsDeepProp.test(value) ||
+    (object != null && value in Object(object));
+}
+
+module.exports = isKey;
+
+}).apply(this, arguments);
+
+},{"./isArray":188,"./isSymbol":195}],141:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_isKeyable.js", module);
+(function(){
+/**
+ * Checks if `value` is suitable for use as unique object key.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is suitable, else `false`.
+ */
+function isKeyable(value) {
+  var type = typeof value;
+  return (type == 'string' || type == 'number' || type == 'symbol' || type == 'boolean')
+    ? (value !== '__proto__')
+    : (value === null);
+}
+
+module.exports = isKeyable;
+
+}).apply(this, arguments);
+
+},{}],142:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_isMasked.js", module);
+(function(){
+var coreJsData = require('./_coreJsData');
+
+/** Used to detect methods masquerading as native. */
+var maskSrcKey = (function() {
+  var uid = /[^.]+$/.exec(coreJsData && coreJsData.keys && coreJsData.keys.IE_PROTO || '');
+  return uid ? ('Symbol(src)_1.' + uid) : '';
+}());
+
+/**
+ * Checks if `func` has its source masked.
+ *
+ * @private
+ * @param {Function} func The function to check.
+ * @returns {boolean} Returns `true` if `func` is masked, else `false`.
+ */
+function isMasked(func) {
+  return !!maskSrcKey && (maskSrcKey in func);
+}
+
+module.exports = isMasked;
+
+}).apply(this, arguments);
+
+},{"./_coreJsData":115}],143:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_isPrototype.js", module);
+(function(){
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/**
+ * Checks if `value` is likely a prototype object.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a prototype, else `false`.
+ */
+function isPrototype(value) {
+  var Ctor = value && value.constructor,
+      proto = (typeof Ctor == 'function' && Ctor.prototype) || objectProto;
+
+  return value === proto;
+}
+
+module.exports = isPrototype;
+
+}).apply(this, arguments);
+
+},{}],144:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_isStrictComparable.js", module);
+(function(){
+var isObject = require('./isObject');
+
+/**
+ * Checks if `value` is suitable for strict equality comparisons, i.e. `===`.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` if suitable for strict
+ *  equality comparisons, else `false`.
+ */
+function isStrictComparable(value) {
+  return value === value && !isObject(value);
+}
+
+module.exports = isStrictComparable;
+
+}).apply(this, arguments);
+
+},{"./isObject":193}],145:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_listCacheClear.js", module);
+(function(){
+/**
+ * Removes all key-value entries from the list cache.
+ *
+ * @private
+ * @name clear
+ * @memberOf ListCache
+ */
+function listCacheClear() {
+  this.__data__ = [];
+  this.size = 0;
+}
+
+module.exports = listCacheClear;
+
+}).apply(this, arguments);
+
+},{}],146:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_listCacheDelete.js", module);
+(function(){
+var assocIndexOf = require('./_assocIndexOf');
+
+/** Used for built-in method references. */
+var arrayProto = Array.prototype;
+
+/** Built-in value references. */
+var splice = arrayProto.splice;
+
+/**
+ * Removes `key` and its value from the list cache.
+ *
+ * @private
+ * @name delete
+ * @memberOf ListCache
+ * @param {string} key The key of the value to remove.
+ * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+ */
+function listCacheDelete(key) {
+  var data = this.__data__,
+      index = assocIndexOf(data, key);
+
+  if (index < 0) {
+    return false;
+  }
+  var lastIndex = data.length - 1;
+  if (index == lastIndex) {
+    data.pop();
+  } else {
+    splice.call(data, index, 1);
+  }
+  --this.size;
+  return true;
+}
+
+module.exports = listCacheDelete;
+
+}).apply(this, arguments);
+
+},{"./_assocIndexOf":81}],147:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_listCacheGet.js", module);
+(function(){
+var assocIndexOf = require('./_assocIndexOf');
+
+/**
+ * Gets the list cache value for `key`.
+ *
+ * @private
+ * @name get
+ * @memberOf ListCache
+ * @param {string} key The key of the value to get.
+ * @returns {*} Returns the entry value.
+ */
+function listCacheGet(key) {
+  var data = this.__data__,
+      index = assocIndexOf(data, key);
+
+  return index < 0 ? undefined : data[index][1];
+}
+
+module.exports = listCacheGet;
+
+}).apply(this, arguments);
+
+},{"./_assocIndexOf":81}],148:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_listCacheHas.js", module);
+(function(){
+var assocIndexOf = require('./_assocIndexOf');
+
+/**
+ * Checks if a list cache value for `key` exists.
+ *
+ * @private
+ * @name has
+ * @memberOf ListCache
+ * @param {string} key The key of the entry to check.
+ * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+ */
+function listCacheHas(key) {
+  return assocIndexOf(this.__data__, key) > -1;
+}
+
+module.exports = listCacheHas;
+
+}).apply(this, arguments);
+
+},{"./_assocIndexOf":81}],149:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_listCacheSet.js", module);
+(function(){
+var assocIndexOf = require('./_assocIndexOf');
+
+/**
+ * Sets the list cache `key` to `value`.
+ *
+ * @private
+ * @name set
+ * @memberOf ListCache
+ * @param {string} key The key of the value to set.
+ * @param {*} value The value to set.
+ * @returns {Object} Returns the list cache instance.
+ */
+function listCacheSet(key, value) {
+  var data = this.__data__,
+      index = assocIndexOf(data, key);
+
+  if (index < 0) {
+    ++this.size;
+    data.push([key, value]);
+  } else {
+    data[index][1] = value;
+  }
+  return this;
+}
+
+module.exports = listCacheSet;
+
+}).apply(this, arguments);
+
+},{"./_assocIndexOf":81}],150:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_mapCacheClear.js", module);
+(function(){
+var Hash = require('./_Hash'),
+    ListCache = require('./_ListCache'),
+    Map = require('./_Map');
+
+/**
+ * Removes all key-value entries from the map.
+ *
+ * @private
+ * @name clear
+ * @memberOf MapCache
+ */
+function mapCacheClear() {
+  this.size = 0;
+  this.__data__ = {
+    'hash': new Hash,
+    'map': new (Map || ListCache),
+    'string': new Hash
+  };
+}
+
+module.exports = mapCacheClear;
+
+}).apply(this, arguments);
+
+},{"./_Hash":62,"./_ListCache":63,"./_Map":64}],151:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_mapCacheDelete.js", module);
+(function(){
+var getMapData = require('./_getMapData');
+
+/**
+ * Removes `key` and its value from the map.
+ *
+ * @private
+ * @name delete
+ * @memberOf MapCache
+ * @param {string} key The key of the value to remove.
+ * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+ */
+function mapCacheDelete(key) {
+  var result = getMapData(this, key)['delete'](key);
+  this.size -= result ? 1 : 0;
+  return result;
+}
+
+module.exports = mapCacheDelete;
+
+}).apply(this, arguments);
+
+},{"./_getMapData":125}],152:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_mapCacheGet.js", module);
+(function(){
+var getMapData = require('./_getMapData');
+
+/**
+ * Gets the map value for `key`.
+ *
+ * @private
+ * @name get
+ * @memberOf MapCache
+ * @param {string} key The key of the value to get.
+ * @returns {*} Returns the entry value.
+ */
+function mapCacheGet(key) {
+  return getMapData(this, key).get(key);
+}
+
+module.exports = mapCacheGet;
+
+}).apply(this, arguments);
+
+},{"./_getMapData":125}],153:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_mapCacheHas.js", module);
+(function(){
+var getMapData = require('./_getMapData');
+
+/**
+ * Checks if a map value for `key` exists.
+ *
+ * @private
+ * @name has
+ * @memberOf MapCache
+ * @param {string} key The key of the entry to check.
+ * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+ */
+function mapCacheHas(key) {
+  return getMapData(this, key).has(key);
+}
+
+module.exports = mapCacheHas;
+
+}).apply(this, arguments);
+
+},{"./_getMapData":125}],154:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_mapCacheSet.js", module);
+(function(){
+var getMapData = require('./_getMapData');
+
+/**
+ * Sets the map `key` to `value`.
+ *
+ * @private
+ * @name set
+ * @memberOf MapCache
+ * @param {string} key The key of the value to set.
+ * @param {*} value The value to set.
+ * @returns {Object} Returns the map cache instance.
+ */
+function mapCacheSet(key, value) {
+  var data = getMapData(this, key),
+      size = data.size;
+
+  data.set(key, value);
+  this.size += data.size == size ? 0 : 1;
+  return this;
+}
+
+module.exports = mapCacheSet;
+
+}).apply(this, arguments);
+
+},{"./_getMapData":125}],155:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_mapToArray.js", module);
+(function(){
+/**
+ * Converts `map` to its key-value pairs.
+ *
+ * @private
+ * @param {Object} map The map to convert.
+ * @returns {Array} Returns the key-value pairs.
+ */
+function mapToArray(map) {
+  var index = -1,
+      result = Array(map.size);
+
+  map.forEach(function(value, key) {
+    result[++index] = [key, value];
+  });
+  return result;
+}
+
+module.exports = mapToArray;
+
+}).apply(this, arguments);
+
+},{}],156:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_matchesStrictComparable.js", module);
+(function(){
+/**
+ * A specialized version of `matchesProperty` for source values suitable
+ * for strict equality comparisons, i.e. `===`.
+ *
+ * @private
+ * @param {string} key The key of the property to get.
+ * @param {*} srcValue The value to match.
+ * @returns {Function} Returns the new spec function.
+ */
+function matchesStrictComparable(key, srcValue) {
+  return function(object) {
+    if (object == null) {
+      return false;
+    }
+    return object[key] === srcValue &&
+      (srcValue !== undefined || (key in Object(object)));
+  };
+}
+
+module.exports = matchesStrictComparable;
+
+}).apply(this, arguments);
+
+},{}],157:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_memoizeCapped.js", module);
+(function(){
+var memoize = require('./memoize');
+
+/** Used as the maximum memoize cache size. */
+var MAX_MEMOIZE_SIZE = 500;
+
+/**
+ * A specialized version of `_.memoize` which clears the memoized function's
+ * cache when it exceeds `MAX_MEMOIZE_SIZE`.
+ *
+ * @private
+ * @param {Function} func The function to have its output memoized.
+ * @returns {Function} Returns the new memoized function.
+ */
+function memoizeCapped(func) {
+  var result = memoize(func, function(key) {
+    if (cache.size === MAX_MEMOIZE_SIZE) {
+      cache.clear();
+    }
+    return key;
+  });
+
+  var cache = result.cache;
+  return result;
+}
+
+module.exports = memoizeCapped;
+
+}).apply(this, arguments);
+
+},{"./memoize":200}],158:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_nativeCreate.js", module);
+(function(){
+var getNative = require('./_getNative');
+
+/* Built-in method references that are verified to be native. */
+var nativeCreate = getNative(Object, 'create');
+
+module.exports = nativeCreate;
+
+}).apply(this, arguments);
+
+},{"./_getNative":127}],159:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_nativeKeys.js", module);
+(function(){
+var overArg = require('./_overArg');
+
+/* Built-in method references for those with the same name as other `lodash` methods. */
+var nativeKeys = overArg(Object.keys, Object);
+
+module.exports = nativeKeys;
+
+}).apply(this, arguments);
+
+},{"./_overArg":162}],160:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_nodeUtil.js", module);
+(function(){
+var freeGlobal = require('./_freeGlobal');
+
+/** Detect free variable `exports`. */
+var freeExports = typeof exports == 'object' && exports && !exports.nodeType && exports;
+
+/** Detect free variable `module`. */
+var freeModule = freeExports && typeof module == 'object' && module && !module.nodeType && module;
+
+/** Detect the popular CommonJS extension `module.exports`. */
+var moduleExports = freeModule && freeModule.exports === freeExports;
+
+/** Detect free variable `process` from Node.js. */
+var freeProcess = moduleExports && freeGlobal.process;
+
+/** Used to access faster Node.js helpers. */
+var nodeUtil = (function() {
+  try {
+    return freeProcess && freeProcess.binding && freeProcess.binding('util');
+  } catch (e) {}
+}());
+
+module.exports = nodeUtil;
+
+}).apply(this, arguments);
+
+},{"./_freeGlobal":123}],161:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_objectToString.js", module);
+(function(){
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/**
+ * Used to resolve the
+ * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
+ * of values.
+ */
+var nativeObjectToString = objectProto.toString;
+
+/**
+ * Converts `value` to a string using `Object.prototype.toString`.
+ *
+ * @private
+ * @param {*} value The value to convert.
+ * @returns {string} Returns the converted string.
+ */
+function objectToString(value) {
+  return nativeObjectToString.call(value);
+}
+
+module.exports = objectToString;
+
+}).apply(this, arguments);
+
+},{}],162:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_overArg.js", module);
+(function(){
+/**
+ * Creates a unary function that invokes `func` with its argument transformed.
+ *
+ * @private
+ * @param {Function} func The function to wrap.
+ * @param {Function} transform The argument transform.
+ * @returns {Function} Returns the new function.
+ */
+function overArg(func, transform) {
+  return function(arg) {
+    return func(transform(arg));
+  };
+}
+
+module.exports = overArg;
+
+}).apply(this, arguments);
+
+},{}],163:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_overRest.js", module);
+(function(){
+var apply = require('./_apply');
+
+/* Built-in method references for those with the same name as other `lodash` methods. */
+var nativeMax = Math.max;
+
+/**
+ * A specialized version of `baseRest` which transforms the rest array.
+ *
+ * @private
+ * @param {Function} func The function to apply a rest parameter to.
+ * @param {number} [start=func.length-1] The start position of the rest parameter.
+ * @param {Function} transform The rest array transform.
+ * @returns {Function} Returns the new function.
+ */
+function overRest(func, start, transform) {
+  start = nativeMax(start === undefined ? (func.length - 1) : start, 0);
+  return function() {
+    var args = arguments,
+        index = -1,
+        length = nativeMax(args.length - start, 0),
+        array = Array(length);
+
+    while (++index < length) {
+      array[index] = args[start + index];
+    }
+    index = -1;
+    var otherArgs = Array(start + 1);
+    while (++index < start) {
+      otherArgs[index] = args[index];
+    }
+    otherArgs[start] = transform(array);
+    return apply(func, this, otherArgs);
+  };
+}
+
+module.exports = overRest;
+
+}).apply(this, arguments);
+
+},{"./_apply":73}],164:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_root.js", module);
+(function(){
+var freeGlobal = require('./_freeGlobal');
+
+/** Detect free variable `self`. */
+var freeSelf = typeof self == 'object' && self && self.Object === Object && self;
+
+/** Used as a reference to the global object. */
+var root = freeGlobal || freeSelf || Function('return this')();
+
+module.exports = root;
+
+}).apply(this, arguments);
+
+},{"./_freeGlobal":123}],165:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_setCacheAdd.js", module);
+(function(){
+/** Used to stand-in for `undefined` hash values. */
+var HASH_UNDEFINED = '__lodash_hash_undefined__';
+
+/**
+ * Adds `value` to the array cache.
+ *
+ * @private
+ * @name add
+ * @memberOf SetCache
+ * @alias push
+ * @param {*} value The value to cache.
+ * @returns {Object} Returns the cache instance.
+ */
+function setCacheAdd(value) {
+  this.__data__.set(value, HASH_UNDEFINED);
+  return this;
+}
+
+module.exports = setCacheAdd;
+
+}).apply(this, arguments);
+
+},{}],166:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_setCacheHas.js", module);
+(function(){
+/**
+ * Checks if `value` is in the array cache.
+ *
+ * @private
+ * @name has
+ * @memberOf SetCache
+ * @param {*} value The value to search for.
+ * @returns {number} Returns `true` if `value` is found, else `false`.
+ */
+function setCacheHas(value) {
+  return this.__data__.has(value);
+}
+
+module.exports = setCacheHas;
+
+}).apply(this, arguments);
+
+},{}],167:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_setToArray.js", module);
+(function(){
+/**
+ * Converts `set` to an array of its values.
+ *
+ * @private
+ * @param {Object} set The set to convert.
+ * @returns {Array} Returns the values.
+ */
+function setToArray(set) {
+  var index = -1,
+      result = Array(set.size);
+
+  set.forEach(function(value) {
+    result[++index] = value;
+  });
+  return result;
+}
+
+module.exports = setToArray;
+
+}).apply(this, arguments);
+
+},{}],168:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_setToString.js", module);
+(function(){
+var baseSetToString = require('./_baseSetToString'),
+    shortOut = require('./_shortOut');
+
+/**
+ * Sets the `toString` method of `func` to return `string`.
+ *
+ * @private
+ * @param {Function} func The function to modify.
+ * @param {Function} string The `toString` result.
+ * @returns {Function} Returns `func`.
+ */
+var setToString = shortOut(baseSetToString);
+
+module.exports = setToString;
+
+}).apply(this, arguments);
+
+},{"./_baseSetToString":105,"./_shortOut":169}],169:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_shortOut.js", module);
+(function(){
+/** Used to detect hot functions by number of calls within a span of milliseconds. */
+var HOT_COUNT = 800,
+    HOT_SPAN = 16;
+
+/* Built-in method references for those with the same name as other `lodash` methods. */
+var nativeNow = Date.now;
+
+/**
+ * Creates a function that'll short out and invoke `identity` instead
+ * of `func` when it's called `HOT_COUNT` or more times in `HOT_SPAN`
+ * milliseconds.
+ *
+ * @private
+ * @param {Function} func The function to restrict.
+ * @returns {Function} Returns the new shortable function.
+ */
+function shortOut(func) {
+  var count = 0,
+      lastCalled = 0;
+
+  return function() {
+    var stamp = nativeNow(),
+        remaining = HOT_SPAN - (stamp - lastCalled);
+
+    lastCalled = stamp;
+    if (remaining > 0) {
+      if (++count >= HOT_COUNT) {
+        return arguments[0];
+      }
+    } else {
+      count = 0;
+    }
+    return func.apply(undefined, arguments);
+  };
+}
+
+module.exports = shortOut;
+
+}).apply(this, arguments);
+
+},{}],170:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_stackClear.js", module);
+(function(){
+var ListCache = require('./_ListCache');
+
+/**
+ * Removes all key-value entries from the stack.
+ *
+ * @private
+ * @name clear
+ * @memberOf Stack
+ */
+function stackClear() {
+  this.__data__ = new ListCache;
+  this.size = 0;
+}
+
+module.exports = stackClear;
+
+}).apply(this, arguments);
+
+},{"./_ListCache":63}],171:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_stackDelete.js", module);
+(function(){
+/**
+ * Removes `key` and its value from the stack.
+ *
+ * @private
+ * @name delete
+ * @memberOf Stack
+ * @param {string} key The key of the value to remove.
+ * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+ */
+function stackDelete(key) {
+  var data = this.__data__,
+      result = data['delete'](key);
+
+  this.size = data.size;
+  return result;
+}
+
+module.exports = stackDelete;
+
+}).apply(this, arguments);
+
+},{}],172:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_stackGet.js", module);
+(function(){
+/**
+ * Gets the stack value for `key`.
+ *
+ * @private
+ * @name get
+ * @memberOf Stack
+ * @param {string} key The key of the value to get.
+ * @returns {*} Returns the entry value.
+ */
+function stackGet(key) {
+  return this.__data__.get(key);
+}
+
+module.exports = stackGet;
+
+}).apply(this, arguments);
+
+},{}],173:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_stackHas.js", module);
+(function(){
+/**
+ * Checks if a stack value for `key` exists.
+ *
+ * @private
+ * @name has
+ * @memberOf Stack
+ * @param {string} key The key of the entry to check.
+ * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+ */
+function stackHas(key) {
+  return this.__data__.has(key);
+}
+
+module.exports = stackHas;
+
+}).apply(this, arguments);
+
+},{}],174:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_stackSet.js", module);
+(function(){
+var ListCache = require('./_ListCache'),
+    Map = require('./_Map'),
+    MapCache = require('./_MapCache');
+
+/** Used as the size to enable large array optimizations. */
+var LARGE_ARRAY_SIZE = 200;
+
+/**
+ * Sets the stack `key` to `value`.
+ *
+ * @private
+ * @name set
+ * @memberOf Stack
+ * @param {string} key The key of the value to set.
+ * @param {*} value The value to set.
+ * @returns {Object} Returns the stack cache instance.
+ */
+function stackSet(key, value) {
+  var data = this.__data__;
+  if (data instanceof ListCache) {
+    var pairs = data.__data__;
+    if (!Map || (pairs.length < LARGE_ARRAY_SIZE - 1)) {
+      pairs.push([key, value]);
+      this.size = ++data.size;
+      return this;
+    }
+    data = this.__data__ = new MapCache(pairs);
+  }
+  data.set(key, value);
+  this.size = data.size;
+  return this;
+}
+
+module.exports = stackSet;
+
+}).apply(this, arguments);
+
+},{"./_ListCache":63,"./_Map":64,"./_MapCache":65}],175:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_stringToPath.js", module);
+(function(){
+var memoizeCapped = require('./_memoizeCapped');
+
+/** Used to match property names within property paths. */
+var reLeadingDot = /^\./,
+    rePropName = /[^.[\]]+|\[(?:(-?\d+(?:\.\d+)?)|(["'])((?:(?!\2)[^\\]|\\.)*?)\2)\]|(?=(?:\.|\[\])(?:\.|\[\]|$))/g;
+
+/** Used to match backslashes in property paths. */
+var reEscapeChar = /\\(\\)?/g;
+
+/**
+ * Converts `string` to a property path array.
+ *
+ * @private
+ * @param {string} string The string to convert.
+ * @returns {Array} Returns the property path array.
+ */
+var stringToPath = memoizeCapped(function(string) {
+  var result = [];
+  if (reLeadingDot.test(string)) {
+    result.push('');
+  }
+  string.replace(rePropName, function(match, number, quote, string) {
+    result.push(quote ? string.replace(reEscapeChar, '$1') : (number || match));
+  });
+  return result;
+});
+
+module.exports = stringToPath;
+
+}).apply(this, arguments);
+
+},{"./_memoizeCapped":157}],176:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_toKey.js", module);
+(function(){
+var isSymbol = require('./isSymbol');
+
+/** Used as references for various `Number` constants. */
+var INFINITY = 1 / 0;
+
+/**
+ * Converts `value` to a string key if it's not a string or symbol.
+ *
+ * @private
+ * @param {*} value The value to inspect.
+ * @returns {string|symbol} Returns the key.
+ */
+function toKey(value) {
+  if (typeof value == 'string' || isSymbol(value)) {
+    return value;
+  }
+  var result = (value + '');
+  return (result == '0' && (1 / value) == -INFINITY) ? '-0' : result;
+}
+
+module.exports = toKey;
+
+}).apply(this, arguments);
+
+},{"./isSymbol":195}],177:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/_toSource.js", module);
+(function(){
+/** Used for built-in method references. */
+var funcProto = Function.prototype;
+
+/** Used to resolve the decompiled source of functions. */
+var funcToString = funcProto.toString;
+
+/**
+ * Converts `func` to its source code.
+ *
+ * @private
+ * @param {Function} func The function to convert.
+ * @returns {string} Returns the source code.
+ */
+function toSource(func) {
+  if (func != null) {
+    try {
+      return funcToString.call(func);
+    } catch (e) {}
+    try {
+      return (func + '');
+    } catch (e) {}
+  }
+  return '';
+}
+
+module.exports = toSource;
+
+}).apply(this, arguments);
+
+},{}],178:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/assign.js", module);
+(function(){
+var assignValue = require('./_assignValue'),
+    copyObject = require('./_copyObject'),
+    createAssigner = require('./_createAssigner'),
+    isArrayLike = require('./isArrayLike'),
+    isPrototype = require('./_isPrototype'),
+    keys = require('./keys');
+
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty = objectProto.hasOwnProperty;
+
+/**
+ * Assigns own enumerable string keyed properties of source objects to the
+ * destination object. Source objects are applied from left to right.
+ * Subsequent sources overwrite property assignments of previous sources.
+ *
+ * **Note:** This method mutates `object` and is loosely based on
+ * [`Object.assign`](https://mdn.io/Object/assign).
+ *
+ * @static
+ * @memberOf _
+ * @since 0.10.0
+ * @category Object
+ * @param {Object} object The destination object.
+ * @param {...Object} [sources] The source objects.
+ * @returns {Object} Returns `object`.
+ * @see _.assignIn
+ * @example
+ *
+ * function Foo() {
+ *   this.a = 1;
+ * }
+ *
+ * function Bar() {
+ *   this.c = 3;
+ * }
+ *
+ * Foo.prototype.b = 2;
+ * Bar.prototype.d = 4;
+ *
+ * _.assign({ 'a': 0 }, new Foo, new Bar);
+ * // => { 'a': 1, 'c': 3 }
+ */
+var assign = createAssigner(function(object, source) {
+  if (isPrototype(source) || isArrayLike(source)) {
+    copyObject(source, keys(source), object);
+    return;
+  }
+  for (var key in source) {
+    if (hasOwnProperty.call(source, key)) {
+      assignValue(object, key, source[key]);
+    }
+  }
+});
+
+module.exports = assign;
+
+}).apply(this, arguments);
+
+},{"./_assignValue":80,"./_copyObject":114,"./_createAssigner":116,"./_isPrototype":143,"./isArrayLike":189,"./keys":197}],179:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/constant.js", module);
+(function(){
+/**
+ * Creates a function that returns `value`.
+ *
+ * @static
+ * @memberOf _
+ * @since 2.4.0
+ * @category Util
+ * @param {*} value The value to return from the new function.
+ * @returns {Function} Returns the new constant function.
+ * @example
+ *
+ * var objects = _.times(2, _.constant({ 'a': 1 }));
+ *
+ * console.log(objects);
+ * // => [{ 'a': 1 }, { 'a': 1 }]
+ *
+ * console.log(objects[0] === objects[1]);
+ * // => true
+ */
+function constant(value) {
+  return function() {
+    return value;
+  };
+}
+
+module.exports = constant;
+
+}).apply(this, arguments);
+
+},{}],180:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/eq.js", module);
+(function(){
+/**
+ * Performs a
+ * [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
+ * comparison between two values to determine if they are equivalent.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to compare.
+ * @param {*} other The other value to compare.
+ * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
+ * @example
+ *
+ * var object = { 'a': 1 };
+ * var other = { 'a': 1 };
+ *
+ * _.eq(object, object);
+ * // => true
+ *
+ * _.eq(object, other);
+ * // => false
+ *
+ * _.eq('a', 'a');
+ * // => true
+ *
+ * _.eq('a', Object('a'));
+ * // => false
+ *
+ * _.eq(NaN, NaN);
+ * // => true
+ */
+function eq(value, other) {
+  return value === other || (value !== value && other !== other);
+}
+
+module.exports = eq;
+
+}).apply(this, arguments);
+
+},{}],181:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/filter.js", module);
+(function(){
+var arrayFilter = require('./_arrayFilter'),
+    baseFilter = require('./_baseFilter'),
+    baseIteratee = require('./_baseIteratee'),
+    isArray = require('./isArray');
+
+/**
+ * Iterates over elements of `collection`, returning an array of all elements
+ * `predicate` returns truthy for. The predicate is invoked with three
+ * arguments: (value, index|key, collection).
+ *
+ * **Note:** Unlike `_.remove`, this method returns a new array.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Collection
+ * @param {Array|Object} collection The collection to iterate over.
+ * @param {Function} [predicate=_.identity] The function invoked per iteration.
+ * @returns {Array} Returns the new filtered array.
+ * @see _.reject
+ * @example
+ *
+ * var users = [
+ *   { 'user': 'barney', 'age': 36, 'active': true },
+ *   { 'user': 'fred',   'age': 40, 'active': false }
+ * ];
+ *
+ * _.filter(users, function(o) { return !o.active; });
+ * // => objects for ['fred']
+ *
+ * // The `_.matches` iteratee shorthand.
+ * _.filter(users, { 'age': 36, 'active': true });
+ * // => objects for ['barney']
+ *
+ * // The `_.matchesProperty` iteratee shorthand.
+ * _.filter(users, ['active', false]);
+ * // => objects for ['fred']
+ *
+ * // The `_.property` iteratee shorthand.
+ * _.filter(users, 'active');
+ * // => objects for ['barney']
+ */
+function filter(collection, predicate) {
+  var func = isArray(collection) ? arrayFilter : baseFilter;
+  return func(collection, baseIteratee(predicate, 3));
+}
+
+module.exports = filter;
+
+}).apply(this, arguments);
+
+},{"./_arrayFilter":75,"./_baseFilter":84,"./_baseIteratee":97,"./isArray":188}],182:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/forEach.js", module);
+(function(){
+var arrayEach = require('./_arrayEach'),
+    baseEach = require('./_baseEach'),
+    castFunction = require('./_castFunction'),
+    isArray = require('./isArray');
+
+/**
+ * Iterates over elements of `collection` and invokes `iteratee` for each element.
+ * The iteratee is invoked with three arguments: (value, index|key, collection).
+ * Iteratee functions may exit iteration early by explicitly returning `false`.
+ *
+ * **Note:** As with other "Collections" methods, objects with a "length"
+ * property are iterated like arrays. To avoid this behavior use `_.forIn`
+ * or `_.forOwn` for object iteration.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @alias each
+ * @category Collection
+ * @param {Array|Object} collection The collection to iterate over.
+ * @param {Function} [iteratee=_.identity] The function invoked per iteration.
+ * @returns {Array|Object} Returns `collection`.
+ * @see _.forEachRight
+ * @example
+ *
+ * _.forEach([1, 2], function(value) {
+ *   console.log(value);
+ * });
+ * // => Logs `1` then `2`.
+ *
+ * _.forEach({ 'a': 1, 'b': 2 }, function(value, key) {
+ *   console.log(key);
+ * });
+ * // => Logs 'a' then 'b' (iteration order is not guaranteed).
+ */
+function forEach(collection, iteratee) {
+  var func = isArray(collection) ? arrayEach : baseEach;
+  return func(collection, castFunction(iteratee));
+}
+
+module.exports = forEach;
+
+}).apply(this, arguments);
+
+},{"./_arrayEach":74,"./_baseEach":83,"./_castFunction":112,"./isArray":188}],183:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/forOwn.js", module);
+(function(){
+var baseForOwn = require('./_baseForOwn'),
+    castFunction = require('./_castFunction');
+
+/**
+ * Iterates over own enumerable string keyed properties of an object and
+ * invokes `iteratee` for each property. The iteratee is invoked with three
+ * arguments: (value, key, object). Iteratee functions may exit iteration
+ * early by explicitly returning `false`.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.3.0
+ * @category Object
+ * @param {Object} object The object to iterate over.
+ * @param {Function} [iteratee=_.identity] The function invoked per iteration.
+ * @returns {Object} Returns `object`.
+ * @see _.forOwnRight
+ * @example
+ *
+ * function Foo() {
+ *   this.a = 1;
+ *   this.b = 2;
+ * }
+ *
+ * Foo.prototype.c = 3;
+ *
+ * _.forOwn(new Foo, function(value, key) {
+ *   console.log(key);
+ * });
+ * // => Logs 'a' then 'b' (iteration order is not guaranteed).
+ */
+function forOwn(object, iteratee) {
+  return object && baseForOwn(object, castFunction(iteratee));
+}
+
+module.exports = forOwn;
+
+}).apply(this, arguments);
+
+},{"./_baseForOwn":86,"./_castFunction":112}],184:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/get.js", module);
+(function(){
+var baseGet = require('./_baseGet');
+
+/**
+ * Gets the value at `path` of `object`. If the resolved value is
+ * `undefined`, the `defaultValue` is returned in its place.
+ *
+ * @static
+ * @memberOf _
+ * @since 3.7.0
+ * @category Object
+ * @param {Object} object The object to query.
+ * @param {Array|string} path The path of the property to get.
+ * @param {*} [defaultValue] The value returned for `undefined` resolved values.
+ * @returns {*} Returns the resolved value.
+ * @example
+ *
+ * var object = { 'a': [{ 'b': { 'c': 3 } }] };
+ *
+ * _.get(object, 'a[0].b.c');
+ * // => 3
+ *
+ * _.get(object, ['a', '0', 'b', 'c']);
+ * // => 3
+ *
+ * _.get(object, 'a.b.c', 'default');
+ * // => 'default'
+ */
+function get(object, path, defaultValue) {
+  var result = object == null ? undefined : baseGet(object, path);
+  return result === undefined ? defaultValue : result;
+}
+
+module.exports = get;
+
+}).apply(this, arguments);
+
+},{"./_baseGet":87}],185:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/hasIn.js", module);
+(function(){
+var baseHasIn = require('./_baseHasIn'),
+    hasPath = require('./_hasPath');
+
+/**
+ * Checks if `path` is a direct or inherited property of `object`.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Object
+ * @param {Object} object The object to query.
+ * @param {Array|string} path The path to check.
+ * @returns {boolean} Returns `true` if `path` exists, else `false`.
+ * @example
+ *
+ * var object = _.create({ 'a': _.create({ 'b': 2 }) });
+ *
+ * _.hasIn(object, 'a');
+ * // => true
+ *
+ * _.hasIn(object, 'a.b');
+ * // => true
+ *
+ * _.hasIn(object, ['a', 'b']);
+ * // => true
+ *
+ * _.hasIn(object, 'b');
+ * // => false
+ */
+function hasIn(object, path) {
+  return object != null && hasPath(object, path, baseHasIn);
+}
+
+module.exports = hasIn;
+
+}).apply(this, arguments);
+
+},{"./_baseHasIn":90,"./_hasPath":132}],186:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/identity.js", module);
+(function(){
+/**
+ * This method returns the first argument it receives.
+ *
+ * @static
+ * @since 0.1.0
+ * @memberOf _
+ * @category Util
+ * @param {*} value Any value.
+ * @returns {*} Returns `value`.
+ * @example
+ *
+ * var object = { 'a': 1 };
+ *
+ * console.log(_.identity(object) === object);
+ * // => true
+ */
+function identity(value) {
+  return value;
+}
+
+module.exports = identity;
+
+}).apply(this, arguments);
+
+},{}],187:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/isArguments.js", module);
+(function(){
+var baseIsArguments = require('./_baseIsArguments'),
+    isObjectLike = require('./isObjectLike');
+
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty = objectProto.hasOwnProperty;
+
+/** Built-in value references. */
+var propertyIsEnumerable = objectProto.propertyIsEnumerable;
+
+/**
+ * Checks if `value` is likely an `arguments` object.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is an `arguments` object,
+ *  else `false`.
+ * @example
+ *
+ * _.isArguments(function() { return arguments; }());
+ * // => true
+ *
+ * _.isArguments([1, 2, 3]);
+ * // => false
+ */
+var isArguments = baseIsArguments(function() { return arguments; }()) ? baseIsArguments : function(value) {
+  return isObjectLike(value) && hasOwnProperty.call(value, 'callee') &&
+    !propertyIsEnumerable.call(value, 'callee');
+};
+
+module.exports = isArguments;
+
+}).apply(this, arguments);
+
+},{"./_baseIsArguments":91,"./isObjectLike":194}],188:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/isArray.js", module);
+(function(){
+/**
+ * Checks if `value` is classified as an `Array` object.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is an array, else `false`.
+ * @example
+ *
+ * _.isArray([1, 2, 3]);
+ * // => true
+ *
+ * _.isArray(document.body.children);
+ * // => false
+ *
+ * _.isArray('abc');
+ * // => false
+ *
+ * _.isArray(_.noop);
+ * // => false
+ */
+var isArray = Array.isArray;
+
+module.exports = isArray;
+
+}).apply(this, arguments);
+
+},{}],189:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/isArrayLike.js", module);
+(function(){
+var isFunction = require('./isFunction'),
+    isLength = require('./isLength');
+
+/**
+ * Checks if `value` is array-like. A value is considered array-like if it's
+ * not a function and has a `value.length` that's an integer greater than or
+ * equal to `0` and less than or equal to `Number.MAX_SAFE_INTEGER`.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is array-like, else `false`.
+ * @example
+ *
+ * _.isArrayLike([1, 2, 3]);
+ * // => true
+ *
+ * _.isArrayLike(document.body.children);
+ * // => true
+ *
+ * _.isArrayLike('abc');
+ * // => true
+ *
+ * _.isArrayLike(_.noop);
+ * // => false
+ */
+function isArrayLike(value) {
+  return value != null && isLength(value.length) && !isFunction(value);
+}
+
+module.exports = isArrayLike;
+
+}).apply(this, arguments);
+
+},{"./isFunction":191,"./isLength":192}],190:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/isBuffer.js", module);
+(function(){
+var root = require('./_root'),
+    stubFalse = require('./stubFalse');
+
+/** Detect free variable `exports`. */
+var freeExports = typeof exports == 'object' && exports && !exports.nodeType && exports;
+
+/** Detect free variable `module`. */
+var freeModule = freeExports && typeof module == 'object' && module && !module.nodeType && module;
+
+/** Detect the popular CommonJS extension `module.exports`. */
+var moduleExports = freeModule && freeModule.exports === freeExports;
+
+/** Built-in value references. */
+var Buffer = moduleExports ? root.Buffer : undefined;
+
+/* Built-in method references for those with the same name as other `lodash` methods. */
+var nativeIsBuffer = Buffer ? Buffer.isBuffer : undefined;
+
+/**
+ * Checks if `value` is a buffer.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.3.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a buffer, else `false`.
+ * @example
+ *
+ * _.isBuffer(new Buffer(2));
+ * // => true
+ *
+ * _.isBuffer(new Uint8Array(2));
+ * // => false
+ */
+var isBuffer = nativeIsBuffer || stubFalse;
+
+module.exports = isBuffer;
+
+}).apply(this, arguments);
+
+},{"./_root":164,"./stubFalse":204}],191:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/isFunction.js", module);
+(function(){
+var baseGetTag = require('./_baseGetTag'),
+    isObject = require('./isObject');
+
+/** `Object#toString` result references. */
+var asyncTag = '[object AsyncFunction]',
+    funcTag = '[object Function]',
+    genTag = '[object GeneratorFunction]',
+    proxyTag = '[object Proxy]';
+
+/**
+ * Checks if `value` is classified as a `Function` object.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a function, else `false`.
+ * @example
+ *
+ * _.isFunction(_);
+ * // => true
+ *
+ * _.isFunction(/abc/);
+ * // => false
+ */
+function isFunction(value) {
+  if (!isObject(value)) {
+    return false;
+  }
+  // The use of `Object#toString` avoids issues with the `typeof` operator
+  // in Safari 9 which returns 'object' for typed arrays and other constructors.
+  var tag = baseGetTag(value);
+  return tag == funcTag || tag == genTag || tag == asyncTag || tag == proxyTag;
+}
+
+module.exports = isFunction;
+
+}).apply(this, arguments);
+
+},{"./_baseGetTag":89,"./isObject":193}],192:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/isLength.js", module);
+(function(){
+/** Used as references for various `Number` constants. */
+var MAX_SAFE_INTEGER = 9007199254740991;
+
+/**
+ * Checks if `value` is a valid array-like length.
+ *
+ * **Note:** This method is loosely based on
+ * [`ToLength`](http://ecma-international.org/ecma-262/7.0/#sec-tolength).
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a valid length, else `false`.
+ * @example
+ *
+ * _.isLength(3);
+ * // => true
+ *
+ * _.isLength(Number.MIN_VALUE);
+ * // => false
+ *
+ * _.isLength(Infinity);
+ * // => false
+ *
+ * _.isLength('3');
+ * // => false
+ */
+function isLength(value) {
+  return typeof value == 'number' &&
+    value > -1 && value % 1 == 0 && value <= MAX_SAFE_INTEGER;
+}
+
+module.exports = isLength;
+
+}).apply(this, arguments);
+
+},{}],193:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/isObject.js", module);
+(function(){
+/**
+ * Checks if `value` is the
+ * [language type](http://www.ecma-international.org/ecma-262/7.0/#sec-ecmascript-language-types)
+ * of `Object`. (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is an object, else `false`.
+ * @example
+ *
+ * _.isObject({});
+ * // => true
+ *
+ * _.isObject([1, 2, 3]);
+ * // => true
+ *
+ * _.isObject(_.noop);
+ * // => true
+ *
+ * _.isObject(null);
+ * // => false
+ */
+function isObject(value) {
+  var type = typeof value;
+  return value != null && (type == 'object' || type == 'function');
+}
+
+module.exports = isObject;
+
+}).apply(this, arguments);
+
+},{}],194:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/isObjectLike.js", module);
+(function(){
+/**
+ * Checks if `value` is object-like. A value is object-like if it's not `null`
+ * and has a `typeof` result of "object".
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
+ * @example
+ *
+ * _.isObjectLike({});
+ * // => true
+ *
+ * _.isObjectLike([1, 2, 3]);
+ * // => true
+ *
+ * _.isObjectLike(_.noop);
+ * // => false
+ *
+ * _.isObjectLike(null);
+ * // => false
+ */
+function isObjectLike(value) {
+  return value != null && typeof value == 'object';
+}
+
+module.exports = isObjectLike;
+
+}).apply(this, arguments);
+
+},{}],195:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/isSymbol.js", module);
+(function(){
+var baseGetTag = require('./_baseGetTag'),
+    isObjectLike = require('./isObjectLike');
+
+/** `Object#toString` result references. */
+var symbolTag = '[object Symbol]';
+
+/**
+ * Checks if `value` is classified as a `Symbol` primitive or object.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a symbol, else `false`.
+ * @example
+ *
+ * _.isSymbol(Symbol.iterator);
+ * // => true
+ *
+ * _.isSymbol('abc');
+ * // => false
+ */
+function isSymbol(value) {
+  return typeof value == 'symbol' ||
+    (isObjectLike(value) && baseGetTag(value) == symbolTag);
+}
+
+module.exports = isSymbol;
+
+}).apply(this, arguments);
+
+},{"./_baseGetTag":89,"./isObjectLike":194}],196:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/isTypedArray.js", module);
+(function(){
+var baseIsTypedArray = require('./_baseIsTypedArray'),
+    baseUnary = require('./_baseUnary'),
+    nodeUtil = require('./_nodeUtil');
+
+/* Node.js helper references. */
+var nodeIsTypedArray = nodeUtil && nodeUtil.isTypedArray;
+
+/**
+ * Checks if `value` is classified as a typed array.
+ *
+ * @static
+ * @memberOf _
+ * @since 3.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a typed array, else `false`.
+ * @example
+ *
+ * _.isTypedArray(new Uint8Array);
+ * // => true
+ *
+ * _.isTypedArray([]);
+ * // => false
+ */
+var isTypedArray = nodeIsTypedArray ? baseUnary(nodeIsTypedArray) : baseIsTypedArray;
+
+module.exports = isTypedArray;
+
+}).apply(this, arguments);
+
+},{"./_baseIsTypedArray":96,"./_baseUnary":109,"./_nodeUtil":160}],197:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/keys.js", module);
+(function(){
+var arrayLikeKeys = require('./_arrayLikeKeys'),
+    baseKeys = require('./_baseKeys'),
+    isArrayLike = require('./isArrayLike');
+
+/**
+ * Creates an array of the own enumerable property names of `object`.
+ *
+ * **Note:** Non-object values are coerced to objects. See the
+ * [ES spec](http://ecma-international.org/ecma-262/7.0/#sec-object.keys)
+ * for more details.
+ *
+ * @static
+ * @since 0.1.0
+ * @memberOf _
+ * @category Object
+ * @param {Object} object The object to query.
+ * @returns {Array} Returns the array of property names.
+ * @example
+ *
+ * function Foo() {
+ *   this.a = 1;
+ *   this.b = 2;
+ * }
+ *
+ * Foo.prototype.c = 3;
+ *
+ * _.keys(new Foo);
+ * // => ['a', 'b'] (iteration order is not guaranteed)
+ *
+ * _.keys('hi');
+ * // => ['0', '1']
+ */
+function keys(object) {
+  return isArrayLike(object) ? arrayLikeKeys(object) : baseKeys(object);
+}
+
+module.exports = keys;
+
+}).apply(this, arguments);
+
+},{"./_arrayLikeKeys":76,"./_baseKeys":98,"./isArrayLike":189}],198:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/map.js", module);
+(function(){
+var arrayMap = require('./_arrayMap'),
+    baseIteratee = require('./_baseIteratee'),
+    baseMap = require('./_baseMap'),
+    isArray = require('./isArray');
+
+/**
+ * Creates an array of values by running each element in `collection` thru
+ * `iteratee`. The iteratee is invoked with three arguments:
+ * (value, index|key, collection).
+ *
+ * Many lodash methods are guarded to work as iteratees for methods like
+ * `_.every`, `_.filter`, `_.map`, `_.mapValues`, `_.reject`, and `_.some`.
+ *
+ * The guarded methods are:
+ * `ary`, `chunk`, `curry`, `curryRight`, `drop`, `dropRight`, `every`,
+ * `fill`, `invert`, `parseInt`, `random`, `range`, `rangeRight`, `repeat`,
+ * `sampleSize`, `slice`, `some`, `sortBy`, `split`, `take`, `takeRight`,
+ * `template`, `trim`, `trimEnd`, `trimStart`, and `words`
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Collection
+ * @param {Array|Object} collection The collection to iterate over.
+ * @param {Function} [iteratee=_.identity] The function invoked per iteration.
+ * @returns {Array} Returns the new mapped array.
+ * @example
+ *
+ * function square(n) {
+ *   return n * n;
+ * }
+ *
+ * _.map([4, 8], square);
+ * // => [16, 64]
+ *
+ * _.map({ 'a': 4, 'b': 8 }, square);
+ * // => [16, 64] (iteration order is not guaranteed)
+ *
+ * var users = [
+ *   { 'user': 'barney' },
+ *   { 'user': 'fred' }
+ * ];
+ *
+ * // The `_.property` iteratee shorthand.
+ * _.map(users, 'user');
+ * // => ['barney', 'fred']
+ */
+function map(collection, iteratee) {
+  var func = isArray(collection) ? arrayMap : baseMap;
+  return func(collection, baseIteratee(iteratee, 3));
+}
+
+module.exports = map;
+
+}).apply(this, arguments);
+
+},{"./_arrayMap":77,"./_baseIteratee":97,"./_baseMap":99,"./isArray":188}],199:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/mapValues.js", module);
+(function(){
+var baseAssignValue = require('./_baseAssignValue'),
+    baseForOwn = require('./_baseForOwn'),
+    baseIteratee = require('./_baseIteratee');
+
+/**
+ * Creates an object with the same keys as `object` and values generated
+ * by running each own enumerable string keyed property of `object` thru
+ * `iteratee`. The iteratee is invoked with three arguments:
+ * (value, key, object).
+ *
+ * @static
+ * @memberOf _
+ * @since 2.4.0
+ * @category Object
+ * @param {Object} object The object to iterate over.
+ * @param {Function} [iteratee=_.identity] The function invoked per iteration.
+ * @returns {Object} Returns the new mapped object.
+ * @see _.mapKeys
+ * @example
+ *
+ * var users = {
+ *   'fred':    { 'user': 'fred',    'age': 40 },
+ *   'pebbles': { 'user': 'pebbles', 'age': 1 }
+ * };
+ *
+ * _.mapValues(users, function(o) { return o.age; });
+ * // => { 'fred': 40, 'pebbles': 1 } (iteration order is not guaranteed)
+ *
+ * // The `_.property` iteratee shorthand.
+ * _.mapValues(users, 'age');
+ * // => { 'fred': 40, 'pebbles': 1 } (iteration order is not guaranteed)
+ */
+function mapValues(object, iteratee) {
+  var result = {};
+  iteratee = baseIteratee(iteratee, 3);
+
+  baseForOwn(object, function(value, key, object) {
+    baseAssignValue(result, key, iteratee(value, key, object));
+  });
+  return result;
+}
+
+module.exports = mapValues;
+
+}).apply(this, arguments);
+
+},{"./_baseAssignValue":82,"./_baseForOwn":86,"./_baseIteratee":97}],200:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/memoize.js", module);
+(function(){
+var MapCache = require('./_MapCache');
+
+/** Error message constants. */
+var FUNC_ERROR_TEXT = 'Expected a function';
+
+/**
+ * Creates a function that memoizes the result of `func`. If `resolver` is
+ * provided, it determines the cache key for storing the result based on the
+ * arguments provided to the memoized function. By default, the first argument
+ * provided to the memoized function is used as the map cache key. The `func`
+ * is invoked with the `this` binding of the memoized function.
+ *
+ * **Note:** The cache is exposed as the `cache` property on the memoized
+ * function. Its creation may be customized by replacing the `_.memoize.Cache`
+ * constructor with one whose instances implement the
+ * [`Map`](http://ecma-international.org/ecma-262/7.0/#sec-properties-of-the-map-prototype-object)
+ * method interface of `clear`, `delete`, `get`, `has`, and `set`.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Function
+ * @param {Function} func The function to have its output memoized.
+ * @param {Function} [resolver] The function to resolve the cache key.
+ * @returns {Function} Returns the new memoized function.
+ * @example
+ *
+ * var object = { 'a': 1, 'b': 2 };
+ * var other = { 'c': 3, 'd': 4 };
+ *
+ * var values = _.memoize(_.values);
+ * values(object);
+ * // => [1, 2]
+ *
+ * values(other);
+ * // => [3, 4]
+ *
+ * object.a = 2;
+ * values(object);
+ * // => [1, 2]
+ *
+ * // Modify the result cache.
+ * values.cache.set(object, ['a', 'b']);
+ * values(object);
+ * // => ['a', 'b']
+ *
+ * // Replace `_.memoize.Cache`.
+ * _.memoize.Cache = WeakMap;
+ */
+function memoize(func, resolver) {
+  if (typeof func != 'function' || (resolver != null && typeof resolver != 'function')) {
+    throw new TypeError(FUNC_ERROR_TEXT);
+  }
+  var memoized = function() {
+    var args = arguments,
+        key = resolver ? resolver.apply(this, args) : args[0],
+        cache = memoized.cache;
+
+    if (cache.has(key)) {
+      return cache.get(key);
+    }
+    var result = func.apply(this, args);
+    memoized.cache = cache.set(key, result) || cache;
+    return result;
+  };
+  memoized.cache = new (memoize.Cache || MapCache);
+  return memoized;
+}
+
+// Expose `MapCache`.
+memoize.Cache = MapCache;
+
+module.exports = memoize;
+
+}).apply(this, arguments);
+
+},{"./_MapCache":65}],201:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/property.js", module);
+(function(){
+var baseProperty = require('./_baseProperty'),
+    basePropertyDeep = require('./_basePropertyDeep'),
+    isKey = require('./_isKey'),
+    toKey = require('./_toKey');
+
+/**
+ * Creates a function that returns the value at `path` of a given object.
+ *
+ * @static
+ * @memberOf _
+ * @since 2.4.0
+ * @category Util
+ * @param {Array|string} path The path of the property to get.
+ * @returns {Function} Returns the new accessor function.
+ * @example
+ *
+ * var objects = [
+ *   { 'a': { 'b': 2 } },
+ *   { 'a': { 'b': 1 } }
+ * ];
+ *
+ * _.map(objects, _.property('a.b'));
+ * // => [2, 1]
+ *
+ * _.map(_.sortBy(objects, _.property(['a', 'b'])), 'a.b');
+ * // => [1, 2]
+ */
+function property(path) {
+  return isKey(path) ? baseProperty(toKey(path)) : basePropertyDeep(path);
+}
+
+module.exports = property;
+
+}).apply(this, arguments);
+
+},{"./_baseProperty":102,"./_basePropertyDeep":103,"./_isKey":140,"./_toKey":176}],202:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/some.js", module);
+(function(){
+var arraySome = require('./_arraySome'),
+    baseIteratee = require('./_baseIteratee'),
+    baseSome = require('./_baseSome'),
+    isArray = require('./isArray'),
+    isIterateeCall = require('./_isIterateeCall');
+
+/**
+ * Checks if `predicate` returns truthy for **any** element of `collection`.
+ * Iteration is stopped once `predicate` returns truthy. The predicate is
+ * invoked with three arguments: (value, index|key, collection).
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Collection
+ * @param {Array|Object} collection The collection to iterate over.
+ * @param {Function} [predicate=_.identity] The function invoked per iteration.
+ * @param- {Object} [guard] Enables use as an iteratee for methods like `_.map`.
+ * @returns {boolean} Returns `true` if any element passes the predicate check,
+ *  else `false`.
+ * @example
+ *
+ * _.some([null, 0, 'yes', false], Boolean);
+ * // => true
+ *
+ * var users = [
+ *   { 'user': 'barney', 'active': true },
+ *   { 'user': 'fred',   'active': false }
+ * ];
+ *
+ * // The `_.matches` iteratee shorthand.
+ * _.some(users, { 'user': 'barney', 'active': false });
+ * // => false
+ *
+ * // The `_.matchesProperty` iteratee shorthand.
+ * _.some(users, ['active', false]);
+ * // => true
+ *
+ * // The `_.property` iteratee shorthand.
+ * _.some(users, 'active');
+ * // => true
+ */
+function some(collection, predicate, guard) {
+  var func = isArray(collection) ? arraySome : baseSome;
+  if (guard && isIterateeCall(collection, predicate, guard)) {
+    predicate = undefined;
+  }
+  return func(collection, baseIteratee(predicate, 3));
+}
+
+module.exports = some;
+
+}).apply(this, arguments);
+
+},{"./_arraySome":79,"./_baseIteratee":97,"./_baseSome":106,"./_isIterateeCall":139,"./isArray":188}],203:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/stubArray.js", module);
+(function(){
+/**
+ * This method returns a new empty array.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.13.0
+ * @category Util
+ * @returns {Array} Returns the new empty array.
+ * @example
+ *
+ * var arrays = _.times(2, _.stubArray);
+ *
+ * console.log(arrays);
+ * // => [[], []]
+ *
+ * console.log(arrays[0] === arrays[1]);
+ * // => false
+ */
+function stubArray() {
+  return [];
+}
+
+module.exports = stubArray;
+
+}).apply(this, arguments);
+
+},{}],204:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/stubFalse.js", module);
+(function(){
+/**
+ * This method returns `false`.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.13.0
+ * @category Util
+ * @returns {boolean} Returns `false`.
+ * @example
+ *
+ * _.times(2, _.stubFalse);
+ * // => [false, false]
+ */
+function stubFalse() {
+  return false;
+}
+
+module.exports = stubFalse;
+
+}).apply(this, arguments);
+
+},{}],205:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/toString.js", module);
+(function(){
+var baseToString = require('./_baseToString');
+
+/**
+ * Converts `value` to a string. An empty string is returned for `null`
+ * and `undefined` values. The sign of `-0` is preserved.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to convert.
+ * @returns {string} Returns the converted string.
+ * @example
+ *
+ * _.toString(null);
+ * // => ''
+ *
+ * _.toString(-0);
+ * // => '-0'
+ *
+ * _.toString([1, 2, 3]);
+ * // => '1,2,3'
+ */
+function toString(value) {
+  return value == null ? '' : baseToString(value);
+}
+
+module.exports = toString;
+
+}).apply(this, arguments);
+
+},{"./_baseToString":108}],206:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/lodash/zipObject.js", module);
+(function(){
+var assignValue = require('./_assignValue'),
+    baseZipObject = require('./_baseZipObject');
+
+/**
+ * This method is like `_.fromPairs` except that it accepts two arrays,
+ * one of property identifiers and one of corresponding values.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.4.0
+ * @category Array
+ * @param {Array} [props=[]] The property identifiers.
+ * @param {Array} [values=[]] The property values.
+ * @returns {Object} Returns the new object.
+ * @example
+ *
+ * _.zipObject(['a', 'b'], [1, 2]);
+ * // => { 'a': 1, 'b': 2 }
+ */
+function zipObject(props, values) {
+  return baseZipObject(props || [], values || [], assignValue);
+}
+
+module.exports = zipObject;
+
+}).apply(this, arguments);
+
+},{"./_assignValue":80,"./_baseZipObject":110}],207:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/parsejson/index.js", module);
+(function(){
+(function (global){
+/**
+ * JSON parse.
+ *
+ * @see Based on jQuery#parseJSON (MIT) and JSON2
+ * @api private
+ */
+
+var rvalidchars = /^[\],:{}\s]*$/;
+var rvalidescape = /\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g;
+var rvalidtokens = /"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g;
+var rvalidbraces = /(?:^|:|,)(?:\s*\[)+/g;
+var rtrimLeft = /^\s+/;
+var rtrimRight = /\s+$/;
+
+module.exports = function parsejson(data) {
+  if ('string' != typeof data || !data) {
+    return null;
+  }
+
+  data = data.replace(rtrimLeft, '').replace(rtrimRight, '');
+
+  // Attempt to parse using the native JSON parser first
+  if (global.JSON && JSON.parse) {
+    return JSON.parse(data);
+  }
+
+  if (rvalidchars.test(data.replace(rvalidescape, '@')
+      .replace(rvalidtokens, ']')
+      .replace(rvalidbraces, ''))) {
+    return (new Function('return ' + data))();
+  }
+};
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+}).apply(this, arguments);
+
+},{}],208:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/parseqs/index.js", module);
+(function(){
+/**
+ * Compiles a querystring
+ * Returns string representation of the object
+ *
+ * @param {Object}
+ * @api private
+ */
+
+exports.encode = function (obj) {
+  var str = '';
+
+  for (var i in obj) {
+    if (obj.hasOwnProperty(i)) {
+      if (str.length) str += '&';
+      str += encodeURIComponent(i) + '=' + encodeURIComponent(obj[i]);
+    }
+  }
+
+  return str;
 };
 
 /**
- * @typedef {object} EventEmitterListenerFunc
- * @property {boolean} once
- * @property {function} fn
- */
-
-/**
- * @class EventEmitter
+ * Parses a simple querystring into an object
  *
- * @private
- * @property {Object.<string, EventEmitterListenerFunc[]>} _listeners
- * @property {string[]} events
+ * @param {String} qs
+ * @api private
  */
 
-var EventEmitter = function () {
+exports.decode = function(qs){
+  var qry = {};
+  var pairs = qs.split('&');
+  for (var i = 0, l = pairs.length; i < l; i++) {
+    var pair = pairs[i].split('=');
+    qry[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1]);
+  }
+  return qry;
+};
 
-    /**
-     * @constructor
-     * @param {{}}      [opts]
-     * @param {number}  [opts.emitDelay = 10] - Number in ms. Specifies whether emit will be sync or async. By default - 10ms. If 0 - fires sync
-     * @param {boolean} [opts.strictMode = false] - is true, Emitter throws error on emit error with no listeners
-     */
+}).apply(this, arguments);
 
-    function EventEmitter() {
-        var opts = arguments.length <= 0 || arguments[0] === undefined ? DEFAULT_VALUES : arguments[0];
+},{}],209:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/parseuri/index.js", module);
+(function(){
+/**
+ * Parses an URI
+ *
+ * @author Steven Levithan <stevenlevithan.com> (MIT license)
+ * @api private
+ */
 
-        _classCallCheck(this, EventEmitter);
+var re = /^(?:(?![^:@]+:[^:@\/]*@)(http|https|ws|wss):\/\/)?((?:(([^:@]*)(?::([^:@]*))?)?@)?((?:[a-f0-9]{0,4}:){2,7}[a-f0-9]{0,4}|[^:\/?#]*)(?::(\d*))?)(((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[?#]|$)))*\/?)?([^?#\/]*))(?:\?([^#]*))?(?:#(.*))?)/;
 
-        var emitDelay = void 0,
-            strictMode = void 0;
+var parts = [
+    'source', 'protocol', 'authority', 'userInfo', 'user', 'password', 'host', 'port', 'relative', 'path', 'directory', 'file', 'query', 'anchor'
+];
 
-        if (opts.hasOwnProperty('emitDelay')) {
-            emitDelay = opts.emitDelay;
-        } else {
-            emitDelay = DEFAULT_VALUES.emitDelay;
-        }
-        this._emitDelay = emitDelay;
+module.exports = function parseuri(str) {
+    var src = str,
+        b = str.indexOf('['),
+        e = str.indexOf(']');
 
-        if (opts.hasOwnProperty('strictMode')) {
-            strictMode = opts.strictMode;
-        } else {
-            strictMode = DEFAULT_VALUES.strictMode;
-        }
-        this._strictMode = strictMode;
-
-        this._listeners = {};
-        this.events = [];
+    if (b != -1 && e != -1) {
+        str = str.substring(0, b) + str.substring(b, e).replace(/:/g, ';') + str.substring(e, str.length);
     }
 
-    /**
-     * @protected
-     * @param {string} type
-     * @param {function} listener
-     * @param {boolean} [once = false]
-     */
+    var m = re.exec(str || ''),
+        uri = {},
+        i = 14;
 
+    while (i--) {
+        uri[parts[i]] = m[i] || '';
+    }
 
-    _createClass(EventEmitter, [{
-        key: '_addListenner',
-        value: function _addListenner(type, listener, once) {
-            if (typeof listener !== 'function') {
-                throw TypeError('listener must be a function');
-            }
+    if (b != -1 && e != -1) {
+        uri.source = src;
+        uri.host = uri.host.substring(1, uri.host.length - 1).replace(/;/g, ':');
+        uri.authority = uri.authority.replace('[', '').replace(']', '').replace(/;/g, ':');
+        uri.ipv6uri = true;
+    }
 
-            if (this.events.indexOf(type) === -1) {
-                this._listeners[type] = [{
-                    once: once,
-                    fn: listener
-                }];
-                this.events.push(type);
-            } else {
-                this._listeners[type].push({
-                    once: once,
-                    fn: listener
-                });
-            }
-        }
-
-        /**
-         * Subscribes on event type specified function
-         * @param {string} type
-         * @param {function} listener
-         */
-
-    }, {
-        key: 'on',
-        value: function on(type, listener) {
-            this._addListenner(type, listener, false);
-        }
-
-        /**
-         * Subscribes on event type specified function to fire only once
-         * @param {string} type
-         * @param {function} listener
-         */
-
-    }, {
-        key: 'once',
-        value: function once(type, listener) {
-            this._addListenner(type, listener, true);
-        }
-
-        /**
-         * Removes event with specified type. If specified listenerFunc - deletes only one listener of specified type
-         * @param {string} eventType
-         * @param {function} [listenerFunc]
-         */
-
-    }, {
-        key: 'off',
-        value: function off(eventType, listenerFunc) {
-            var _this = this;
-
-            var typeIndex = this.events.indexOf(eventType);
-            var hasType = eventType && typeIndex !== -1;
-
-            if (hasType) {
-                if (!listenerFunc) {
-                    delete this._listeners[eventType];
-                    this.events.splice(typeIndex, 1);
-                } else {
-                    (function () {
-                        var removedEvents = [];
-                        var typeListeners = _this._listeners[eventType];
-
-                        typeListeners.forEach(
-                        /**
-                         * @param {EventEmitterListenerFunc} fn
-                         * @param {number} idx
-                         */
-                        function (fn, idx) {
-                            if (fn.fn === listenerFunc) {
-                                removedEvents.unshift(idx);
-                            }
-                        });
-
-                        removedEvents.forEach(function (idx) {
-                            typeListeners.splice(idx, 1);
-                        });
-
-                        if (!typeListeners.length) {
-                            _this.events.splice(typeIndex, 1);
-                            delete _this._listeners[eventType];
-                        }
-                    })();
-                }
-            }
-        }
-
-        /**
-         * Applies arguments to specified event type
-         * @param {string} eventType
-         * @param {*[]} eventArguments
-         * @protected
-         */
-
-    }, {
-        key: '_applyEvents',
-        value: function _applyEvents(eventType, eventArguments) {
-            var typeListeners = this._listeners[eventType];
-
-            if (!typeListeners || !typeListeners.length) {
-                if (this._strictMode) {
-                    throw 'No listeners specified for event: ' + eventType;
-                } else {
-                    return;
-                }
-            }
-
-            var removableListeners = [];
-            typeListeners.forEach(function (eeListener, idx) {
-                eeListener.fn.apply(null, eventArguments);
-                if (eeListener.once) {
-                    removableListeners.unshift(idx);
-                }
-            });
-
-            removableListeners.forEach(function (idx) {
-                typeListeners.splice(idx, 1);
-            });
-        }
-
-        /**
-         * Emits event with specified type and params.
-         * @param {string} type
-         * @param eventArgs
-         */
-
-    }, {
-        key: 'emit',
-        value: function emit(type) {
-            var _this2 = this;
-
-            for (var _len = arguments.length, eventArgs = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-                eventArgs[_key - 1] = arguments[_key];
-            }
-
-            if (this._emitDelay) {
-                setTimeout(function () {
-                    _this2._applyEvents.call(_this2, type, eventArgs);
-                }, this._emitDelay);
-            } else {
-                this._applyEvents(type, eventArgs);
-            }
-        }
-
-        /**
-         * Emits event with specified type and params synchronously.
-         * @param {string} type
-         * @param eventArgs
-         */
-
-    }, {
-        key: 'emitSync',
-        value: function emitSync(type) {
-            for (var _len2 = arguments.length, eventArgs = Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
-                eventArgs[_key2 - 1] = arguments[_key2];
-            }
-
-            this._applyEvents(type, eventArgs);
-        }
-
-        /**
-         * Destroys EventEmitter
-         */
-
-    }, {
-        key: 'destroy',
-        value: function destroy() {
-            this._listeners = {};
-            this.events = [];
-        }
-    }]);
-
-    return EventEmitter;
-}();
-
-module.exports = EventEmitter;
+    return uri;
+};
 
 }).apply(this, arguments);
 
-},{}],224:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/watchify/node_modules/browserify/node_modules/browser-resolve/empty.js", module);
-(function(){
-
-}).apply(this, arguments);
-
-},{}],225:[function(require,module,exports){
-_hmr["websocket:null"].initModule("node_modules/watchify/node_modules/browserify/node_modules/process/browser.js", module);
+},{}],210:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/process/browser.js", module);
 (function(){
 // shim for using process in browser
 var process = module.exports = {};
@@ -15442,6 +12791,10 @@ process.off = noop;
 process.removeListener = noop;
 process.removeAllListeners = noop;
 process.emit = noop;
+process.prependListener = noop;
+process.prependOnceListener = noop;
+
+process.listeners = function (name) { return [] }
 
 process.binding = function (name) {
     throw new Error('process.binding is not supported');
@@ -15455,7 +12808,3364 @@ process.umask = function() { return 0; };
 
 }).apply(this, arguments);
 
+},{}],211:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/socket.io-client/lib/index.js", module);
+(function(){
+
+/**
+ * Module dependencies.
+ */
+
+var url = require('./url');
+var parser = require('socket.io-parser');
+var Manager = require('./manager');
+var debug = require('debug')('socket.io-client');
+
+/**
+ * Module exports.
+ */
+
+module.exports = exports = lookup;
+
+/**
+ * Managers cache.
+ */
+
+var cache = exports.managers = {};
+
+/**
+ * Looks up an existing `Manager` for multiplexing.
+ * If the user summons:
+ *
+ *   `io('http://localhost/a');`
+ *   `io('http://localhost/b');`
+ *
+ * We reuse the existing instance based on same scheme/port/host,
+ * and we initialize sockets for each namespace.
+ *
+ * @api public
+ */
+
+function lookup (uri, opts) {
+  if (typeof uri === 'object') {
+    opts = uri;
+    uri = undefined;
+  }
+
+  opts = opts || {};
+
+  var parsed = url(uri);
+  var source = parsed.source;
+  var id = parsed.id;
+  var path = parsed.path;
+  var sameNamespace = cache[id] && path in cache[id].nsps;
+  var newConnection = opts.forceNew || opts['force new connection'] ||
+                      false === opts.multiplex || sameNamespace;
+
+  var io;
+
+  if (newConnection) {
+    debug('ignoring socket cache for %s', source);
+    io = Manager(source, opts);
+  } else {
+    if (!cache[id]) {
+      debug('new io instance for %s', source);
+      cache[id] = Manager(source, opts);
+    }
+    io = cache[id];
+  }
+  if (parsed.query && !opts.query) {
+    opts.query = parsed.query;
+  } else if (opts && 'object' === typeof opts.query) {
+    opts.query = encodeQueryString(opts.query);
+  }
+  return io.socket(parsed.path, opts);
+}
+/**
+ *  Helper method to parse query objects to string.
+ * @param {object} query
+ * @returns {string}
+ */
+function encodeQueryString (obj) {
+  var str = [];
+  for (var p in obj) {
+    if (obj.hasOwnProperty(p)) {
+      str.push(encodeURIComponent(p) + '=' + encodeURIComponent(obj[p]));
+    }
+  }
+  return str.join('&');
+}
+/**
+ * Protocol version.
+ *
+ * @api public
+ */
+
+exports.protocol = parser.protocol;
+
+/**
+ * `connect`.
+ *
+ * @param {String} uri
+ * @api public
+ */
+
+exports.connect = lookup;
+
+/**
+ * Expose constructors for standalone build.
+ *
+ * @api public
+ */
+
+exports.Manager = require('./manager');
+exports.Socket = require('./socket');
+
+}).apply(this, arguments);
+
+},{"./manager":212,"./socket":214,"./url":215,"debug":217,"socket.io-parser":221}],212:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/socket.io-client/lib/manager.js", module);
+(function(){
+
+/**
+ * Module dependencies.
+ */
+
+var eio = require('engine.io-client');
+var Socket = require('./socket');
+var Emitter = require('component-emitter');
+var parser = require('socket.io-parser');
+var on = require('./on');
+var bind = require('component-bind');
+var debug = require('debug')('socket.io-client:manager');
+var indexOf = require('indexof');
+var Backoff = require('backo2');
+
+/**
+ * IE6+ hasOwnProperty
+ */
+
+var has = Object.prototype.hasOwnProperty;
+
+/**
+ * Module exports
+ */
+
+module.exports = Manager;
+
+/**
+ * `Manager` constructor.
+ *
+ * @param {String} engine instance or engine uri/opts
+ * @param {Object} options
+ * @api public
+ */
+
+function Manager (uri, opts) {
+  if (!(this instanceof Manager)) return new Manager(uri, opts);
+  if (uri && ('object' === typeof uri)) {
+    opts = uri;
+    uri = undefined;
+  }
+  opts = opts || {};
+
+  opts.path = opts.path || '/socket.io';
+  this.nsps = {};
+  this.subs = [];
+  this.opts = opts;
+  this.reconnection(opts.reconnection !== false);
+  this.reconnectionAttempts(opts.reconnectionAttempts || Infinity);
+  this.reconnectionDelay(opts.reconnectionDelay || 1000);
+  this.reconnectionDelayMax(opts.reconnectionDelayMax || 5000);
+  this.randomizationFactor(opts.randomizationFactor || 0.5);
+  this.backoff = new Backoff({
+    min: this.reconnectionDelay(),
+    max: this.reconnectionDelayMax(),
+    jitter: this.randomizationFactor()
+  });
+  this.timeout(null == opts.timeout ? 20000 : opts.timeout);
+  this.readyState = 'closed';
+  this.uri = uri;
+  this.connecting = [];
+  this.lastPing = null;
+  this.encoding = false;
+  this.packetBuffer = [];
+  this.encoder = new parser.Encoder();
+  this.decoder = new parser.Decoder();
+  this.autoConnect = opts.autoConnect !== false;
+  if (this.autoConnect) this.open();
+}
+
+/**
+ * Propagate given event to sockets and emit on `this`
+ *
+ * @api private
+ */
+
+Manager.prototype.emitAll = function () {
+  this.emit.apply(this, arguments);
+  for (var nsp in this.nsps) {
+    if (has.call(this.nsps, nsp)) {
+      this.nsps[nsp].emit.apply(this.nsps[nsp], arguments);
+    }
+  }
+};
+
+/**
+ * Update `socket.id` of all sockets
+ *
+ * @api private
+ */
+
+Manager.prototype.updateSocketIds = function () {
+  for (var nsp in this.nsps) {
+    if (has.call(this.nsps, nsp)) {
+      this.nsps[nsp].id = this.engine.id;
+    }
+  }
+};
+
+/**
+ * Mix in `Emitter`.
+ */
+
+Emitter(Manager.prototype);
+
+/**
+ * Sets the `reconnection` config.
+ *
+ * @param {Boolean} true/false if it should automatically reconnect
+ * @return {Manager} self or value
+ * @api public
+ */
+
+Manager.prototype.reconnection = function (v) {
+  if (!arguments.length) return this._reconnection;
+  this._reconnection = !!v;
+  return this;
+};
+
+/**
+ * Sets the reconnection attempts config.
+ *
+ * @param {Number} max reconnection attempts before giving up
+ * @return {Manager} self or value
+ * @api public
+ */
+
+Manager.prototype.reconnectionAttempts = function (v) {
+  if (!arguments.length) return this._reconnectionAttempts;
+  this._reconnectionAttempts = v;
+  return this;
+};
+
+/**
+ * Sets the delay between reconnections.
+ *
+ * @param {Number} delay
+ * @return {Manager} self or value
+ * @api public
+ */
+
+Manager.prototype.reconnectionDelay = function (v) {
+  if (!arguments.length) return this._reconnectionDelay;
+  this._reconnectionDelay = v;
+  this.backoff && this.backoff.setMin(v);
+  return this;
+};
+
+Manager.prototype.randomizationFactor = function (v) {
+  if (!arguments.length) return this._randomizationFactor;
+  this._randomizationFactor = v;
+  this.backoff && this.backoff.setJitter(v);
+  return this;
+};
+
+/**
+ * Sets the maximum delay between reconnections.
+ *
+ * @param {Number} delay
+ * @return {Manager} self or value
+ * @api public
+ */
+
+Manager.prototype.reconnectionDelayMax = function (v) {
+  if (!arguments.length) return this._reconnectionDelayMax;
+  this._reconnectionDelayMax = v;
+  this.backoff && this.backoff.setMax(v);
+  return this;
+};
+
+/**
+ * Sets the connection timeout. `false` to disable
+ *
+ * @return {Manager} self or value
+ * @api public
+ */
+
+Manager.prototype.timeout = function (v) {
+  if (!arguments.length) return this._timeout;
+  this._timeout = v;
+  return this;
+};
+
+/**
+ * Starts trying to reconnect if reconnection is enabled and we have not
+ * started reconnecting yet
+ *
+ * @api private
+ */
+
+Manager.prototype.maybeReconnectOnOpen = function () {
+  // Only try to reconnect if it's the first time we're connecting
+  if (!this.reconnecting && this._reconnection && this.backoff.attempts === 0) {
+    // keeps reconnection from firing twice for the same reconnection loop
+    this.reconnect();
+  }
+};
+
+/**
+ * Sets the current transport `socket`.
+ *
+ * @param {Function} optional, callback
+ * @return {Manager} self
+ * @api public
+ */
+
+Manager.prototype.open =
+Manager.prototype.connect = function (fn, opts) {
+  debug('readyState %s', this.readyState);
+  if (~this.readyState.indexOf('open')) return this;
+
+  debug('opening %s', this.uri);
+  this.engine = eio(this.uri, this.opts);
+  var socket = this.engine;
+  var self = this;
+  this.readyState = 'opening';
+  this.skipReconnect = false;
+
+  // emit `open`
+  var openSub = on(socket, 'open', function () {
+    self.onopen();
+    fn && fn();
+  });
+
+  // emit `connect_error`
+  var errorSub = on(socket, 'error', function (data) {
+    debug('connect_error');
+    self.cleanup();
+    self.readyState = 'closed';
+    self.emitAll('connect_error', data);
+    if (fn) {
+      var err = new Error('Connection error');
+      err.data = data;
+      fn(err);
+    } else {
+      // Only do this if there is no fn to handle the error
+      self.maybeReconnectOnOpen();
+    }
+  });
+
+  // emit `connect_timeout`
+  if (false !== this._timeout) {
+    var timeout = this._timeout;
+    debug('connect attempt will timeout after %d', timeout);
+
+    // set timer
+    var timer = setTimeout(function () {
+      debug('connect attempt timed out after %d', timeout);
+      openSub.destroy();
+      socket.close();
+      socket.emit('error', 'timeout');
+      self.emitAll('connect_timeout', timeout);
+    }, timeout);
+
+    this.subs.push({
+      destroy: function () {
+        clearTimeout(timer);
+      }
+    });
+  }
+
+  this.subs.push(openSub);
+  this.subs.push(errorSub);
+
+  return this;
+};
+
+/**
+ * Called upon transport open.
+ *
+ * @api private
+ */
+
+Manager.prototype.onopen = function () {
+  debug('open');
+
+  // clear old subs
+  this.cleanup();
+
+  // mark as open
+  this.readyState = 'open';
+  this.emit('open');
+
+  // add new subs
+  var socket = this.engine;
+  this.subs.push(on(socket, 'data', bind(this, 'ondata')));
+  this.subs.push(on(socket, 'ping', bind(this, 'onping')));
+  this.subs.push(on(socket, 'pong', bind(this, 'onpong')));
+  this.subs.push(on(socket, 'error', bind(this, 'onerror')));
+  this.subs.push(on(socket, 'close', bind(this, 'onclose')));
+  this.subs.push(on(this.decoder, 'decoded', bind(this, 'ondecoded')));
+};
+
+/**
+ * Called upon a ping.
+ *
+ * @api private
+ */
+
+Manager.prototype.onping = function () {
+  this.lastPing = new Date();
+  this.emitAll('ping');
+};
+
+/**
+ * Called upon a packet.
+ *
+ * @api private
+ */
+
+Manager.prototype.onpong = function () {
+  this.emitAll('pong', new Date() - this.lastPing);
+};
+
+/**
+ * Called with data.
+ *
+ * @api private
+ */
+
+Manager.prototype.ondata = function (data) {
+  this.decoder.add(data);
+};
+
+/**
+ * Called when parser fully decodes a packet.
+ *
+ * @api private
+ */
+
+Manager.prototype.ondecoded = function (packet) {
+  this.emit('packet', packet);
+};
+
+/**
+ * Called upon socket error.
+ *
+ * @api private
+ */
+
+Manager.prototype.onerror = function (err) {
+  debug('error', err);
+  this.emitAll('error', err);
+};
+
+/**
+ * Creates a new socket for the given `nsp`.
+ *
+ * @return {Socket}
+ * @api public
+ */
+
+Manager.prototype.socket = function (nsp, opts) {
+  var socket = this.nsps[nsp];
+  if (!socket) {
+    socket = new Socket(this, nsp, opts);
+    this.nsps[nsp] = socket;
+    var self = this;
+    socket.on('connecting', onConnecting);
+    socket.on('connect', function () {
+      socket.id = self.engine.id;
+    });
+
+    if (this.autoConnect) {
+      // manually call here since connecting evnet is fired before listening
+      onConnecting();
+    }
+  }
+
+  function onConnecting () {
+    if (!~indexOf(self.connecting, socket)) {
+      self.connecting.push(socket);
+    }
+  }
+
+  return socket;
+};
+
+/**
+ * Called upon a socket close.
+ *
+ * @param {Socket} socket
+ */
+
+Manager.prototype.destroy = function (socket) {
+  var index = indexOf(this.connecting, socket);
+  if (~index) this.connecting.splice(index, 1);
+  if (this.connecting.length) return;
+
+  this.close();
+};
+
+/**
+ * Writes a packet.
+ *
+ * @param {Object} packet
+ * @api private
+ */
+
+Manager.prototype.packet = function (packet) {
+  debug('writing packet %j', packet);
+  var self = this;
+  if (packet.query && packet.type === 0) packet.nsp += '?' + packet.query;
+
+  if (!self.encoding) {
+    // encode, then write to engine with result
+    self.encoding = true;
+    this.encoder.encode(packet, function (encodedPackets) {
+      for (var i = 0; i < encodedPackets.length; i++) {
+        self.engine.write(encodedPackets[i], packet.options);
+      }
+      self.encoding = false;
+      self.processPacketQueue();
+    });
+  } else { // add packet to the queue
+    self.packetBuffer.push(packet);
+  }
+};
+
+/**
+ * If packet buffer is non-empty, begins encoding the
+ * next packet in line.
+ *
+ * @api private
+ */
+
+Manager.prototype.processPacketQueue = function () {
+  if (this.packetBuffer.length > 0 && !this.encoding) {
+    var pack = this.packetBuffer.shift();
+    this.packet(pack);
+  }
+};
+
+/**
+ * Clean up transport subscriptions and packet buffer.
+ *
+ * @api private
+ */
+
+Manager.prototype.cleanup = function () {
+  debug('cleanup');
+
+  var subsLength = this.subs.length;
+  for (var i = 0; i < subsLength; i++) {
+    var sub = this.subs.shift();
+    sub.destroy();
+  }
+
+  this.packetBuffer = [];
+  this.encoding = false;
+  this.lastPing = null;
+
+  this.decoder.destroy();
+};
+
+/**
+ * Close the current socket.
+ *
+ * @api private
+ */
+
+Manager.prototype.close =
+Manager.prototype.disconnect = function () {
+  debug('disconnect');
+  this.skipReconnect = true;
+  this.reconnecting = false;
+  if ('opening' === this.readyState) {
+    // `onclose` will not fire because
+    // an open event never happened
+    this.cleanup();
+  }
+  this.backoff.reset();
+  this.readyState = 'closed';
+  if (this.engine) this.engine.close();
+};
+
+/**
+ * Called upon engine close.
+ *
+ * @api private
+ */
+
+Manager.prototype.onclose = function (reason) {
+  debug('onclose');
+
+  this.cleanup();
+  this.backoff.reset();
+  this.readyState = 'closed';
+  this.emit('close', reason);
+
+  if (this._reconnection && !this.skipReconnect) {
+    this.reconnect();
+  }
+};
+
+/**
+ * Attempt a reconnection.
+ *
+ * @api private
+ */
+
+Manager.prototype.reconnect = function () {
+  if (this.reconnecting || this.skipReconnect) return this;
+
+  var self = this;
+
+  if (this.backoff.attempts >= this._reconnectionAttempts) {
+    debug('reconnect failed');
+    this.backoff.reset();
+    this.emitAll('reconnect_failed');
+    this.reconnecting = false;
+  } else {
+    var delay = this.backoff.duration();
+    debug('will wait %dms before reconnect attempt', delay);
+
+    this.reconnecting = true;
+    var timer = setTimeout(function () {
+      if (self.skipReconnect) return;
+
+      debug('attempting reconnect');
+      self.emitAll('reconnect_attempt', self.backoff.attempts);
+      self.emitAll('reconnecting', self.backoff.attempts);
+
+      // check again for the case socket closed in above events
+      if (self.skipReconnect) return;
+
+      self.open(function (err) {
+        if (err) {
+          debug('reconnect attempt error');
+          self.reconnecting = false;
+          self.reconnect();
+          self.emitAll('reconnect_error', err.data);
+        } else {
+          debug('reconnect success');
+          self.onreconnect();
+        }
+      });
+    }, delay);
+
+    this.subs.push({
+      destroy: function () {
+        clearTimeout(timer);
+      }
+    });
+  }
+};
+
+/**
+ * Called upon successful reconnect.
+ *
+ * @api private
+ */
+
+Manager.prototype.onreconnect = function () {
+  var attempt = this.backoff.attempts;
+  this.reconnecting = false;
+  this.backoff.reset();
+  this.updateSocketIds();
+  this.emitAll('reconnect', attempt);
+};
+
+}).apply(this, arguments);
+
+},{"./on":213,"./socket":214,"backo2":29,"component-bind":36,"component-emitter":216,"debug":217,"engine.io-client":39,"indexof":58,"socket.io-parser":221}],213:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/socket.io-client/lib/on.js", module);
+(function(){
+
+/**
+ * Module exports.
+ */
+
+module.exports = on;
+
+/**
+ * Helper for subscriptions.
+ *
+ * @param {Object|EventEmitter} obj with `Emitter` mixin or `EventEmitter`
+ * @param {String} event name
+ * @param {Function} callback
+ * @api public
+ */
+
+function on (obj, ev, fn) {
+  obj.on(ev, fn);
+  return {
+    destroy: function () {
+      obj.removeListener(ev, fn);
+    }
+  };
+}
+
+}).apply(this, arguments);
+
+},{}],214:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/socket.io-client/lib/socket.js", module);
+(function(){
+
+/**
+ * Module dependencies.
+ */
+
+var parser = require('socket.io-parser');
+var Emitter = require('component-emitter');
+var toArray = require('to-array');
+var on = require('./on');
+var bind = require('component-bind');
+var debug = require('debug')('socket.io-client:socket');
+var hasBin = require('has-binary');
+
+/**
+ * Module exports.
+ */
+
+module.exports = exports = Socket;
+
+/**
+ * Internal events (blacklisted).
+ * These events can't be emitted by the user.
+ *
+ * @api private
+ */
+
+var events = {
+  connect: 1,
+  connect_error: 1,
+  connect_timeout: 1,
+  connecting: 1,
+  disconnect: 1,
+  error: 1,
+  reconnect: 1,
+  reconnect_attempt: 1,
+  reconnect_failed: 1,
+  reconnect_error: 1,
+  reconnecting: 1,
+  ping: 1,
+  pong: 1
+};
+
+/**
+ * Shortcut to `Emitter#emit`.
+ */
+
+var emit = Emitter.prototype.emit;
+
+/**
+ * `Socket` constructor.
+ *
+ * @api public
+ */
+
+function Socket (io, nsp, opts) {
+  this.io = io;
+  this.nsp = nsp;
+  this.json = this; // compat
+  this.ids = 0;
+  this.acks = {};
+  this.receiveBuffer = [];
+  this.sendBuffer = [];
+  this.connected = false;
+  this.disconnected = true;
+  if (opts && opts.query) {
+    this.query = opts.query;
+  }
+  if (this.io.autoConnect) this.open();
+}
+
+/**
+ * Mix in `Emitter`.
+ */
+
+Emitter(Socket.prototype);
+
+/**
+ * Subscribe to open, close and packet events
+ *
+ * @api private
+ */
+
+Socket.prototype.subEvents = function () {
+  if (this.subs) return;
+
+  var io = this.io;
+  this.subs = [
+    on(io, 'open', bind(this, 'onopen')),
+    on(io, 'packet', bind(this, 'onpacket')),
+    on(io, 'close', bind(this, 'onclose'))
+  ];
+};
+
+/**
+ * "Opens" the socket.
+ *
+ * @api public
+ */
+
+Socket.prototype.open =
+Socket.prototype.connect = function () {
+  if (this.connected) return this;
+
+  this.subEvents();
+  this.io.open(); // ensure open
+  if ('open' === this.io.readyState) this.onopen();
+  this.emit('connecting');
+  return this;
+};
+
+/**
+ * Sends a `message` event.
+ *
+ * @return {Socket} self
+ * @api public
+ */
+
+Socket.prototype.send = function () {
+  var args = toArray(arguments);
+  args.unshift('message');
+  this.emit.apply(this, args);
+  return this;
+};
+
+/**
+ * Override `emit`.
+ * If the event is in `events`, it's emitted normally.
+ *
+ * @param {String} event name
+ * @return {Socket} self
+ * @api public
+ */
+
+Socket.prototype.emit = function (ev) {
+  if (events.hasOwnProperty(ev)) {
+    emit.apply(this, arguments);
+    return this;
+  }
+
+  var args = toArray(arguments);
+  var parserType = parser.EVENT; // default
+  if (hasBin(args)) { parserType = parser.BINARY_EVENT; } // binary
+  var packet = { type: parserType, data: args };
+
+  packet.options = {};
+  packet.options.compress = !this.flags || false !== this.flags.compress;
+
+  // event ack callback
+  if ('function' === typeof args[args.length - 1]) {
+    debug('emitting packet with ack id %d', this.ids);
+    this.acks[this.ids] = args.pop();
+    packet.id = this.ids++;
+  }
+
+  if (this.connected) {
+    this.packet(packet);
+  } else {
+    this.sendBuffer.push(packet);
+  }
+
+  delete this.flags;
+
+  return this;
+};
+
+/**
+ * Sends a packet.
+ *
+ * @param {Object} packet
+ * @api private
+ */
+
+Socket.prototype.packet = function (packet) {
+  packet.nsp = this.nsp;
+  this.io.packet(packet);
+};
+
+/**
+ * Called upon engine `open`.
+ *
+ * @api private
+ */
+
+Socket.prototype.onopen = function () {
+  debug('transport is open - connecting');
+
+  // write connect packet if necessary
+  if ('/' !== this.nsp) {
+    if (this.query) {
+      this.packet({type: parser.CONNECT, query: this.query});
+    } else {
+      this.packet({type: parser.CONNECT});
+    }
+  }
+};
+
+/**
+ * Called upon engine `close`.
+ *
+ * @param {String} reason
+ * @api private
+ */
+
+Socket.prototype.onclose = function (reason) {
+  debug('close (%s)', reason);
+  this.connected = false;
+  this.disconnected = true;
+  delete this.id;
+  this.emit('disconnect', reason);
+};
+
+/**
+ * Called with socket packet.
+ *
+ * @param {Object} packet
+ * @api private
+ */
+
+Socket.prototype.onpacket = function (packet) {
+  if (packet.nsp !== this.nsp) return;
+
+  switch (packet.type) {
+    case parser.CONNECT:
+      this.onconnect();
+      break;
+
+    case parser.EVENT:
+      this.onevent(packet);
+      break;
+
+    case parser.BINARY_EVENT:
+      this.onevent(packet);
+      break;
+
+    case parser.ACK:
+      this.onack(packet);
+      break;
+
+    case parser.BINARY_ACK:
+      this.onack(packet);
+      break;
+
+    case parser.DISCONNECT:
+      this.ondisconnect();
+      break;
+
+    case parser.ERROR:
+      this.emit('error', packet.data);
+      break;
+  }
+};
+
+/**
+ * Called upon a server event.
+ *
+ * @param {Object} packet
+ * @api private
+ */
+
+Socket.prototype.onevent = function (packet) {
+  var args = packet.data || [];
+  debug('emitting event %j', args);
+
+  if (null != packet.id) {
+    debug('attaching ack callback to event');
+    args.push(this.ack(packet.id));
+  }
+
+  if (this.connected) {
+    emit.apply(this, args);
+  } else {
+    this.receiveBuffer.push(args);
+  }
+};
+
+/**
+ * Produces an ack callback to emit with an event.
+ *
+ * @api private
+ */
+
+Socket.prototype.ack = function (id) {
+  var self = this;
+  var sent = false;
+  return function () {
+    // prevent double callbacks
+    if (sent) return;
+    sent = true;
+    var args = toArray(arguments);
+    debug('sending ack %j', args);
+
+    var type = hasBin(args) ? parser.BINARY_ACK : parser.ACK;
+    self.packet({
+      type: type,
+      id: id,
+      data: args
+    });
+  };
+};
+
+/**
+ * Called upon a server acknowlegement.
+ *
+ * @param {Object} packet
+ * @api private
+ */
+
+Socket.prototype.onack = function (packet) {
+  var ack = this.acks[packet.id];
+  if ('function' === typeof ack) {
+    debug('calling ack %s with %j', packet.id, packet.data);
+    ack.apply(this, packet.data);
+    delete this.acks[packet.id];
+  } else {
+    debug('bad ack %s', packet.id);
+  }
+};
+
+/**
+ * Called upon server connect.
+ *
+ * @api private
+ */
+
+Socket.prototype.onconnect = function () {
+  this.connected = true;
+  this.disconnected = false;
+  this.emit('connect');
+  this.emitBuffered();
+};
+
+/**
+ * Emit buffered events (received and emitted).
+ *
+ * @api private
+ */
+
+Socket.prototype.emitBuffered = function () {
+  var i;
+  for (i = 0; i < this.receiveBuffer.length; i++) {
+    emit.apply(this, this.receiveBuffer[i]);
+  }
+  this.receiveBuffer = [];
+
+  for (i = 0; i < this.sendBuffer.length; i++) {
+    this.packet(this.sendBuffer[i]);
+  }
+  this.sendBuffer = [];
+};
+
+/**
+ * Called upon server disconnect.
+ *
+ * @api private
+ */
+
+Socket.prototype.ondisconnect = function () {
+  debug('server disconnect (%s)', this.nsp);
+  this.destroy();
+  this.onclose('io server disconnect');
+};
+
+/**
+ * Called upon forced client/server side disconnections,
+ * this method ensures the manager stops tracking us and
+ * that reconnections don't get triggered for this.
+ *
+ * @api private.
+ */
+
+Socket.prototype.destroy = function () {
+  if (this.subs) {
+    // clean subscriptions to avoid reconnections
+    for (var i = 0; i < this.subs.length; i++) {
+      this.subs[i].destroy();
+    }
+    this.subs = null;
+  }
+
+  this.io.destroy(this);
+};
+
+/**
+ * Disconnects the socket manually.
+ *
+ * @return {Socket} self
+ * @api public
+ */
+
+Socket.prototype.close =
+Socket.prototype.disconnect = function () {
+  if (this.connected) {
+    debug('performing disconnect (%s)', this.nsp);
+    this.packet({ type: parser.DISCONNECT });
+  }
+
+  // remove socket from pool
+  this.destroy();
+
+  if (this.connected) {
+    // fire events
+    this.onclose('io client disconnect');
+  }
+  return this;
+};
+
+/**
+ * Sets the compress flag.
+ *
+ * @param {Boolean} if `true`, compresses the sending data
+ * @return {Socket} self
+ * @api public
+ */
+
+Socket.prototype.compress = function (compress) {
+  this.flags = this.flags || {};
+  this.flags.compress = compress;
+  return this;
+};
+
+}).apply(this, arguments);
+
+},{"./on":213,"component-bind":36,"component-emitter":216,"debug":217,"has-binary":56,"socket.io-parser":221,"to-array":226}],215:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/socket.io-client/lib/url.js", module);
+(function(){
+(function (global){
+
+/**
+ * Module dependencies.
+ */
+
+var parseuri = require('parseuri');
+var debug = require('debug')('socket.io-client:url');
+
+/**
+ * Module exports.
+ */
+
+module.exports = url;
+
+/**
+ * URL parser.
+ *
+ * @param {String} url
+ * @param {Object} An object meant to mimic window.location.
+ *                 Defaults to window.location.
+ * @api public
+ */
+
+function url (uri, loc) {
+  var obj = uri;
+
+  // default to window.location
+  loc = loc || global.location;
+  if (null == uri) uri = loc.protocol + '//' + loc.host;
+
+  // relative path support
+  if ('string' === typeof uri) {
+    if ('/' === uri.charAt(0)) {
+      if ('/' === uri.charAt(1)) {
+        uri = loc.protocol + uri;
+      } else {
+        uri = loc.host + uri;
+      }
+    }
+
+    if (!/^(https?|wss?):\/\//.test(uri)) {
+      debug('protocol-less url %s', uri);
+      if ('undefined' !== typeof loc) {
+        uri = loc.protocol + '//' + uri;
+      } else {
+        uri = 'https://' + uri;
+      }
+    }
+
+    // parse
+    debug('parse %s', uri);
+    obj = parseuri(uri);
+  }
+
+  // make sure we treat `localhost:80` and `localhost` equally
+  if (!obj.port) {
+    if (/^(http|ws)$/.test(obj.protocol)) {
+      obj.port = '80';
+    } else if (/^(http|ws)s$/.test(obj.protocol)) {
+      obj.port = '443';
+    }
+  }
+
+  obj.path = obj.path || '/';
+
+  var ipv6 = obj.host.indexOf(':') !== -1;
+  var host = ipv6 ? '[' + obj.host + ']' : obj.host;
+
+  // define unique id
+  obj.id = obj.protocol + '://' + host + ':' + obj.port;
+  // define href
+  obj.href = obj.protocol + '://' + host + (loc && loc.port === obj.port ? '' : (':' + obj.port));
+
+  return obj;
+}
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+}).apply(this, arguments);
+
+},{"debug":217,"parseuri":209}],216:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/socket.io-client/node_modules/component-emitter/index.js", module);
+(function(){
+
+/**
+ * Expose `Emitter`.
+ */
+
+if (typeof module !== 'undefined') {
+  module.exports = Emitter;
+}
+
+/**
+ * Initialize a new `Emitter`.
+ *
+ * @api public
+ */
+
+function Emitter(obj) {
+  if (obj) return mixin(obj);
+};
+
+/**
+ * Mixin the emitter properties.
+ *
+ * @param {Object} obj
+ * @return {Object}
+ * @api private
+ */
+
+function mixin(obj) {
+  for (var key in Emitter.prototype) {
+    obj[key] = Emitter.prototype[key];
+  }
+  return obj;
+}
+
+/**
+ * Listen on the given `event` with `fn`.
+ *
+ * @param {String} event
+ * @param {Function} fn
+ * @return {Emitter}
+ * @api public
+ */
+
+Emitter.prototype.on =
+Emitter.prototype.addEventListener = function(event, fn){
+  this._callbacks = this._callbacks || {};
+  (this._callbacks['$' + event] = this._callbacks['$' + event] || [])
+    .push(fn);
+  return this;
+};
+
+/**
+ * Adds an `event` listener that will be invoked a single
+ * time then automatically removed.
+ *
+ * @param {String} event
+ * @param {Function} fn
+ * @return {Emitter}
+ * @api public
+ */
+
+Emitter.prototype.once = function(event, fn){
+  function on() {
+    this.off(event, on);
+    fn.apply(this, arguments);
+  }
+
+  on.fn = fn;
+  this.on(event, on);
+  return this;
+};
+
+/**
+ * Remove the given callback for `event` or all
+ * registered callbacks.
+ *
+ * @param {String} event
+ * @param {Function} fn
+ * @return {Emitter}
+ * @api public
+ */
+
+Emitter.prototype.off =
+Emitter.prototype.removeListener =
+Emitter.prototype.removeAllListeners =
+Emitter.prototype.removeEventListener = function(event, fn){
+  this._callbacks = this._callbacks || {};
+
+  // all
+  if (0 == arguments.length) {
+    this._callbacks = {};
+    return this;
+  }
+
+  // specific event
+  var callbacks = this._callbacks['$' + event];
+  if (!callbacks) return this;
+
+  // remove all handlers
+  if (1 == arguments.length) {
+    delete this._callbacks['$' + event];
+    return this;
+  }
+
+  // remove specific handler
+  var cb;
+  for (var i = 0; i < callbacks.length; i++) {
+    cb = callbacks[i];
+    if (cb === fn || cb.fn === fn) {
+      callbacks.splice(i, 1);
+      break;
+    }
+  }
+  return this;
+};
+
+/**
+ * Emit `event` with the given args.
+ *
+ * @param {String} event
+ * @param {Mixed} ...
+ * @return {Emitter}
+ */
+
+Emitter.prototype.emit = function(event){
+  this._callbacks = this._callbacks || {};
+  var args = [].slice.call(arguments, 1)
+    , callbacks = this._callbacks['$' + event];
+
+  if (callbacks) {
+    callbacks = callbacks.slice(0);
+    for (var i = 0, len = callbacks.length; i < len; ++i) {
+      callbacks[i].apply(this, args);
+    }
+  }
+
+  return this;
+};
+
+/**
+ * Return array of callbacks for `event`.
+ *
+ * @param {String} event
+ * @return {Array}
+ * @api public
+ */
+
+Emitter.prototype.listeners = function(event){
+  this._callbacks = this._callbacks || {};
+  return this._callbacks['$' + event] || [];
+};
+
+/**
+ * Check if this emitter has `event` handlers.
+ *
+ * @param {String} event
+ * @return {Boolean}
+ * @api public
+ */
+
+Emitter.prototype.hasListeners = function(event){
+  return !! this.listeners(event).length;
+};
+
+}).apply(this, arguments);
+
+},{}],217:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/socket.io-client/node_modules/debug/browser.js", module);
+(function(){
+(function (process){
+
+/**
+ * This is the web browser implementation of `debug()`.
+ *
+ * Expose `debug()` as the module.
+ */
+
+exports = module.exports = require('./debug');
+exports.log = log;
+exports.formatArgs = formatArgs;
+exports.save = save;
+exports.load = load;
+exports.useColors = useColors;
+exports.storage = 'undefined' != typeof chrome
+               && 'undefined' != typeof chrome.storage
+                  ? chrome.storage.local
+                  : localstorage();
+
+/**
+ * Colors.
+ */
+
+exports.colors = [
+  'lightseagreen',
+  'forestgreen',
+  'goldenrod',
+  'dodgerblue',
+  'darkorchid',
+  'crimson'
+];
+
+/**
+ * Currently only WebKit-based Web Inspectors, Firefox >= v31,
+ * and the Firebug extension (any Firefox version) are known
+ * to support "%c" CSS customizations.
+ *
+ * TODO: add a `localStorage` variable to explicitly enable/disable colors
+ */
+
+function useColors() {
+  // is webkit? http://stackoverflow.com/a/16459606/376773
+  // document is undefined in react-native: https://github.com/facebook/react-native/pull/1632
+  return (typeof document !== 'undefined' && 'WebkitAppearance' in document.documentElement.style) ||
+    // is firebug? http://stackoverflow.com/a/398120/376773
+    (window.console && (console.firebug || (console.exception && console.table))) ||
+    // is firefox >= v31?
+    // https://developer.mozilla.org/en-US/docs/Tools/Web_Console#Styling_messages
+    (navigator.userAgent.toLowerCase().match(/firefox\/(\d+)/) && parseInt(RegExp.$1, 10) >= 31);
+}
+
+/**
+ * Map %j to `JSON.stringify()`, since no Web Inspectors do that by default.
+ */
+
+exports.formatters.j = function(v) {
+  try {
+    return JSON.stringify(v);
+  } catch (err) {
+    return '[UnexpectedJSONParseError]: ' + err.message;
+  }
+};
+
+
+/**
+ * Colorize log arguments if enabled.
+ *
+ * @api public
+ */
+
+function formatArgs() {
+  var args = arguments;
+  var useColors = this.useColors;
+
+  args[0] = (useColors ? '%c' : '')
+    + this.namespace
+    + (useColors ? ' %c' : ' ')
+    + args[0]
+    + (useColors ? '%c ' : ' ')
+    + '+' + exports.humanize(this.diff);
+
+  if (!useColors) return args;
+
+  var c = 'color: ' + this.color;
+  args = [args[0], c, 'color: inherit'].concat(Array.prototype.slice.call(args, 1));
+
+  // the final "%c" is somewhat tricky, because there could be other
+  // arguments passed either before or after the %c, so we need to
+  // figure out the correct index to insert the CSS into
+  var index = 0;
+  var lastC = 0;
+  args[0].replace(/%[a-z%]/g, function(match) {
+    if ('%%' === match) return;
+    index++;
+    if ('%c' === match) {
+      // we only are interested in the *last* %c
+      // (the user may have provided their own)
+      lastC = index;
+    }
+  });
+
+  args.splice(lastC, 0, c);
+  return args;
+}
+
+/**
+ * Invokes `console.log()` when available.
+ * No-op when `console.log` is not a "function".
+ *
+ * @api public
+ */
+
+function log() {
+  // this hackery is required for IE8/9, where
+  // the `console.log` function doesn't have 'apply'
+  return 'object' === typeof console
+    && console.log
+    && Function.prototype.apply.call(console.log, console, arguments);
+}
+
+/**
+ * Save `namespaces`.
+ *
+ * @param {String} namespaces
+ * @api private
+ */
+
+function save(namespaces) {
+  try {
+    if (null == namespaces) {
+      exports.storage.removeItem('debug');
+    } else {
+      exports.storage.debug = namespaces;
+    }
+  } catch(e) {}
+}
+
+/**
+ * Load `namespaces`.
+ *
+ * @return {String} returns the previously persisted debug modes
+ * @api private
+ */
+
+function load() {
+  var r;
+  try {
+    return exports.storage.debug;
+  } catch(e) {}
+
+  // If debug isn't set in LS, and we're in Electron, try to load $DEBUG
+  if (typeof process !== 'undefined' && 'env' in process) {
+    return process.env.DEBUG;
+  }
+}
+
+/**
+ * Enable namespaces listed in `localStorage.debug` initially.
+ */
+
+exports.enable(load());
+
+/**
+ * Localstorage attempts to return the localstorage.
+ *
+ * This is necessary because safari throws
+ * when a user disables cookies/localstorage
+ * and you attempt to access it.
+ *
+ * @return {LocalStorage}
+ * @api private
+ */
+
+function localstorage(){
+  try {
+    return window.localStorage;
+  } catch (e) {}
+}
+
+}).call(this,require('_process'))
+}).apply(this, arguments);
+
+},{"./debug":218,"_process":210}],218:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/socket.io-client/node_modules/debug/debug.js", module);
+(function(){
+
+/**
+ * This is the common logic for both the Node.js and web browser
+ * implementations of `debug()`.
+ *
+ * Expose `debug()` as the module.
+ */
+
+exports = module.exports = debug.debug = debug;
+exports.coerce = coerce;
+exports.disable = disable;
+exports.enable = enable;
+exports.enabled = enabled;
+exports.humanize = require('ms');
+
+/**
+ * The currently active debug mode names, and names to skip.
+ */
+
+exports.names = [];
+exports.skips = [];
+
+/**
+ * Map of special "%n" handling functions, for the debug "format" argument.
+ *
+ * Valid key names are a single, lowercased letter, i.e. "n".
+ */
+
+exports.formatters = {};
+
+/**
+ * Previously assigned color.
+ */
+
+var prevColor = 0;
+
+/**
+ * Previous log timestamp.
+ */
+
+var prevTime;
+
+/**
+ * Select a color.
+ *
+ * @return {Number}
+ * @api private
+ */
+
+function selectColor() {
+  return exports.colors[prevColor++ % exports.colors.length];
+}
+
+/**
+ * Create a debugger with the given `namespace`.
+ *
+ * @param {String} namespace
+ * @return {Function}
+ * @api public
+ */
+
+function debug(namespace) {
+
+  // define the `disabled` version
+  function disabled() {
+  }
+  disabled.enabled = false;
+
+  // define the `enabled` version
+  function enabled() {
+
+    var self = enabled;
+
+    // set `diff` timestamp
+    var curr = +new Date();
+    var ms = curr - (prevTime || curr);
+    self.diff = ms;
+    self.prev = prevTime;
+    self.curr = curr;
+    prevTime = curr;
+
+    // add the `color` if not set
+    if (null == self.useColors) self.useColors = exports.useColors();
+    if (null == self.color && self.useColors) self.color = selectColor();
+
+    var args = new Array(arguments.length);
+    for (var i = 0; i < args.length; i++) {
+      args[i] = arguments[i];
+    }
+
+    args[0] = exports.coerce(args[0]);
+
+    if ('string' !== typeof args[0]) {
+      // anything else let's inspect with %o
+      args = ['%o'].concat(args);
+    }
+
+    // apply any `formatters` transformations
+    var index = 0;
+    args[0] = args[0].replace(/%([a-z%])/g, function(match, format) {
+      // if we encounter an escaped % then don't increase the array index
+      if (match === '%%') return match;
+      index++;
+      var formatter = exports.formatters[format];
+      if ('function' === typeof formatter) {
+        var val = args[index];
+        match = formatter.call(self, val);
+
+        // now we need to remove `args[index]` since it's inlined in the `format`
+        args.splice(index, 1);
+        index--;
+      }
+      return match;
+    });
+
+    // apply env-specific formatting
+    args = exports.formatArgs.apply(self, args);
+
+    var logFn = enabled.log || exports.log || console.log.bind(console);
+    logFn.apply(self, args);
+  }
+  enabled.enabled = true;
+
+  var fn = exports.enabled(namespace) ? enabled : disabled;
+
+  fn.namespace = namespace;
+
+  return fn;
+}
+
+/**
+ * Enables a debug mode by namespaces. This can include modes
+ * separated by a colon and wildcards.
+ *
+ * @param {String} namespaces
+ * @api public
+ */
+
+function enable(namespaces) {
+  exports.save(namespaces);
+
+  var split = (namespaces || '').split(/[\s,]+/);
+  var len = split.length;
+
+  for (var i = 0; i < len; i++) {
+    if (!split[i]) continue; // ignore empty strings
+    namespaces = split[i].replace(/[\\^$+?.()|[\]{}]/g, '\\$&').replace(/\*/g, '.*?');
+    if (namespaces[0] === '-') {
+      exports.skips.push(new RegExp('^' + namespaces.substr(1) + '$'));
+    } else {
+      exports.names.push(new RegExp('^' + namespaces + '$'));
+    }
+  }
+}
+
+/**
+ * Disable debug output.
+ *
+ * @api public
+ */
+
+function disable() {
+  exports.enable('');
+}
+
+/**
+ * Returns true if the given mode name is enabled, false otherwise.
+ *
+ * @param {String} name
+ * @return {Boolean}
+ * @api public
+ */
+
+function enabled(name) {
+  var i, len;
+  for (i = 0, len = exports.skips.length; i < len; i++) {
+    if (exports.skips[i].test(name)) {
+      return false;
+    }
+  }
+  for (i = 0, len = exports.names.length; i < len; i++) {
+    if (exports.names[i].test(name)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+/**
+ * Coerce `val`.
+ *
+ * @param {Mixed} val
+ * @return {Mixed}
+ * @api private
+ */
+
+function coerce(val) {
+  if (val instanceof Error) return val.stack || val.message;
+  return val;
+}
+
+}).apply(this, arguments);
+
+},{"ms":219}],219:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/socket.io-client/node_modules/ms/index.js", module);
+(function(){
+/**
+ * Helpers.
+ */
+
+var s = 1000
+var m = s * 60
+var h = m * 60
+var d = h * 24
+var y = d * 365.25
+
+/**
+ * Parse or format the given `val`.
+ *
+ * Options:
+ *
+ *  - `long` verbose formatting [false]
+ *
+ * @param {String|Number} val
+ * @param {Object} options
+ * @throws {Error} throw an error if val is not a non-empty string or a number
+ * @return {String|Number}
+ * @api public
+ */
+
+module.exports = function (val, options) {
+  options = options || {}
+  var type = typeof val
+  if (type === 'string' && val.length > 0) {
+    return parse(val)
+  } else if (type === 'number' && isNaN(val) === false) {
+    return options.long ?
+			fmtLong(val) :
+			fmtShort(val)
+  }
+  throw new Error('val is not a non-empty string or a valid number. val=' + JSON.stringify(val))
+}
+
+/**
+ * Parse the given `str` and return milliseconds.
+ *
+ * @param {String} str
+ * @return {Number}
+ * @api private
+ */
+
+function parse(str) {
+  str = String(str)
+  if (str.length > 10000) {
+    return
+  }
+  var match = /^((?:\d+)?\.?\d+) *(milliseconds?|msecs?|ms|seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h|days?|d|years?|yrs?|y)?$/i.exec(str)
+  if (!match) {
+    return
+  }
+  var n = parseFloat(match[1])
+  var type = (match[2] || 'ms').toLowerCase()
+  switch (type) {
+    case 'years':
+    case 'year':
+    case 'yrs':
+    case 'yr':
+    case 'y':
+      return n * y
+    case 'days':
+    case 'day':
+    case 'd':
+      return n * d
+    case 'hours':
+    case 'hour':
+    case 'hrs':
+    case 'hr':
+    case 'h':
+      return n * h
+    case 'minutes':
+    case 'minute':
+    case 'mins':
+    case 'min':
+    case 'm':
+      return n * m
+    case 'seconds':
+    case 'second':
+    case 'secs':
+    case 'sec':
+    case 's':
+      return n * s
+    case 'milliseconds':
+    case 'millisecond':
+    case 'msecs':
+    case 'msec':
+    case 'ms':
+      return n
+    default:
+      return undefined
+  }
+}
+
+/**
+ * Short format for `ms`.
+ *
+ * @param {Number} ms
+ * @return {String}
+ * @api private
+ */
+
+function fmtShort(ms) {
+  if (ms >= d) {
+    return Math.round(ms / d) + 'd'
+  }
+  if (ms >= h) {
+    return Math.round(ms / h) + 'h'
+  }
+  if (ms >= m) {
+    return Math.round(ms / m) + 'm'
+  }
+  if (ms >= s) {
+    return Math.round(ms / s) + 's'
+  }
+  return ms + 'ms'
+}
+
+/**
+ * Long format for `ms`.
+ *
+ * @param {Number} ms
+ * @return {String}
+ * @api private
+ */
+
+function fmtLong(ms) {
+  return plural(ms, d, 'day') ||
+    plural(ms, h, 'hour') ||
+    plural(ms, m, 'minute') ||
+    plural(ms, s, 'second') ||
+    ms + ' ms'
+}
+
+/**
+ * Pluralization helper.
+ */
+
+function plural(ms, n, name) {
+  if (ms < n) {
+    return
+  }
+  if (ms < n * 1.5) {
+    return Math.floor(ms / n) + ' ' + name
+  }
+  return Math.ceil(ms / n) + ' ' + name + 's'
+}
+
+}).apply(this, arguments);
+
+},{}],220:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/socket.io-parser/binary.js", module);
+(function(){
+(function (global){
+/*global Blob,File*/
+
+/**
+ * Module requirements
+ */
+
+var isArray = require('isarray');
+var isBuf = require('./is-buffer');
+
+/**
+ * Replaces every Buffer | ArrayBuffer in packet with a numbered placeholder.
+ * Anything with blobs or files should be fed through removeBlobs before coming
+ * here.
+ *
+ * @param {Object} packet - socket.io event packet
+ * @return {Object} with deconstructed packet and list of buffers
+ * @api public
+ */
+
+exports.deconstructPacket = function(packet){
+  var buffers = [];
+  var packetData = packet.data;
+
+  function _deconstructPacket(data) {
+    if (!data) return data;
+
+    if (isBuf(data)) {
+      var placeholder = { _placeholder: true, num: buffers.length };
+      buffers.push(data);
+      return placeholder;
+    } else if (isArray(data)) {
+      var newData = new Array(data.length);
+      for (var i = 0; i < data.length; i++) {
+        newData[i] = _deconstructPacket(data[i]);
+      }
+      return newData;
+    } else if ('object' == typeof data && !(data instanceof Date)) {
+      var newData = {};
+      for (var key in data) {
+        newData[key] = _deconstructPacket(data[key]);
+      }
+      return newData;
+    }
+    return data;
+  }
+
+  var pack = packet;
+  pack.data = _deconstructPacket(packetData);
+  pack.attachments = buffers.length; // number of binary 'attachments'
+  return {packet: pack, buffers: buffers};
+};
+
+/**
+ * Reconstructs a binary packet from its placeholder packet and buffers
+ *
+ * @param {Object} packet - event packet with placeholders
+ * @param {Array} buffers - binary buffers to put in placeholder positions
+ * @return {Object} reconstructed packet
+ * @api public
+ */
+
+exports.reconstructPacket = function(packet, buffers) {
+  var curPlaceHolder = 0;
+
+  function _reconstructPacket(data) {
+    if (data && data._placeholder) {
+      var buf = buffers[data.num]; // appropriate buffer (should be natural order anyway)
+      return buf;
+    } else if (isArray(data)) {
+      for (var i = 0; i < data.length; i++) {
+        data[i] = _reconstructPacket(data[i]);
+      }
+      return data;
+    } else if (data && 'object' == typeof data) {
+      for (var key in data) {
+        data[key] = _reconstructPacket(data[key]);
+      }
+      return data;
+    }
+    return data;
+  }
+
+  packet.data = _reconstructPacket(packet.data);
+  packet.attachments = undefined; // no longer useful
+  return packet;
+};
+
+/**
+ * Asynchronously removes Blobs or Files from data via
+ * FileReader's readAsArrayBuffer method. Used before encoding
+ * data as msgpack. Calls callback with the blobless data.
+ *
+ * @param {Object} data
+ * @param {Function} callback
+ * @api private
+ */
+
+exports.removeBlobs = function(data, callback) {
+  function _removeBlobs(obj, curKey, containingObject) {
+    if (!obj) return obj;
+
+    // convert any blob
+    if ((global.Blob && obj instanceof Blob) ||
+        (global.File && obj instanceof File)) {
+      pendingBlobs++;
+
+      // async filereader
+      var fileReader = new FileReader();
+      fileReader.onload = function() { // this.result == arraybuffer
+        if (containingObject) {
+          containingObject[curKey] = this.result;
+        }
+        else {
+          bloblessData = this.result;
+        }
+
+        // if nothing pending its callback time
+        if(! --pendingBlobs) {
+          callback(bloblessData);
+        }
+      };
+
+      fileReader.readAsArrayBuffer(obj); // blob -> arraybuffer
+    } else if (isArray(obj)) { // handle array
+      for (var i = 0; i < obj.length; i++) {
+        _removeBlobs(obj[i], i, obj);
+      }
+    } else if (obj && 'object' == typeof obj && !isBuf(obj)) { // and object
+      for (var key in obj) {
+        _removeBlobs(obj[key], key, obj);
+      }
+    }
+  }
+
+  var pendingBlobs = 0;
+  var bloblessData = data;
+  _removeBlobs(bloblessData);
+  if (!pendingBlobs) {
+    callback(bloblessData);
+  }
+};
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+}).apply(this, arguments);
+
+},{"./is-buffer":222,"isarray":59}],221:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/socket.io-parser/index.js", module);
+(function(){
+
+/**
+ * Module dependencies.
+ */
+
+var debug = require('debug')('socket.io-parser');
+var json = require('json3');
+var Emitter = require('component-emitter');
+var binary = require('./binary');
+var isBuf = require('./is-buffer');
+
+/**
+ * Protocol version.
+ *
+ * @api public
+ */
+
+exports.protocol = 4;
+
+/**
+ * Packet types.
+ *
+ * @api public
+ */
+
+exports.types = [
+  'CONNECT',
+  'DISCONNECT',
+  'EVENT',
+  'ACK',
+  'ERROR',
+  'BINARY_EVENT',
+  'BINARY_ACK'
+];
+
+/**
+ * Packet type `connect`.
+ *
+ * @api public
+ */
+
+exports.CONNECT = 0;
+
+/**
+ * Packet type `disconnect`.
+ *
+ * @api public
+ */
+
+exports.DISCONNECT = 1;
+
+/**
+ * Packet type `event`.
+ *
+ * @api public
+ */
+
+exports.EVENT = 2;
+
+/**
+ * Packet type `ack`.
+ *
+ * @api public
+ */
+
+exports.ACK = 3;
+
+/**
+ * Packet type `error`.
+ *
+ * @api public
+ */
+
+exports.ERROR = 4;
+
+/**
+ * Packet type 'binary event'
+ *
+ * @api public
+ */
+
+exports.BINARY_EVENT = 5;
+
+/**
+ * Packet type `binary ack`. For acks with binary arguments.
+ *
+ * @api public
+ */
+
+exports.BINARY_ACK = 6;
+
+/**
+ * Encoder constructor.
+ *
+ * @api public
+ */
+
+exports.Encoder = Encoder;
+
+/**
+ * Decoder constructor.
+ *
+ * @api public
+ */
+
+exports.Decoder = Decoder;
+
+/**
+ * A socket.io Encoder instance
+ *
+ * @api public
+ */
+
+function Encoder() {}
+
+/**
+ * Encode a packet as a single string if non-binary, or as a
+ * buffer sequence, depending on packet type.
+ *
+ * @param {Object} obj - packet object
+ * @param {Function} callback - function to handle encodings (likely engine.write)
+ * @return Calls callback with Array of encodings
+ * @api public
+ */
+
+Encoder.prototype.encode = function(obj, callback){
+  debug('encoding packet %j', obj);
+
+  if (exports.BINARY_EVENT == obj.type || exports.BINARY_ACK == obj.type) {
+    encodeAsBinary(obj, callback);
+  }
+  else {
+    var encoding = encodeAsString(obj);
+    callback([encoding]);
+  }
+};
+
+/**
+ * Encode packet as string.
+ *
+ * @param {Object} packet
+ * @return {String} encoded
+ * @api private
+ */
+
+function encodeAsString(obj) {
+  var str = '';
+  var nsp = false;
+
+  // first is type
+  str += obj.type;
+
+  // attachments if we have them
+  if (exports.BINARY_EVENT == obj.type || exports.BINARY_ACK == obj.type) {
+    str += obj.attachments;
+    str += '-';
+  }
+
+  // if we have a namespace other than `/`
+  // we append it followed by a comma `,`
+  if (obj.nsp && '/' != obj.nsp) {
+    nsp = true;
+    str += obj.nsp;
+  }
+
+  // immediately followed by the id
+  if (null != obj.id) {
+    if (nsp) {
+      str += ',';
+      nsp = false;
+    }
+    str += obj.id;
+  }
+
+  // json data
+  if (null != obj.data) {
+    if (nsp) str += ',';
+    str += json.stringify(obj.data);
+  }
+
+  debug('encoded %j as %s', obj, str);
+  return str;
+}
+
+/**
+ * Encode packet as 'buffer sequence' by removing blobs, and
+ * deconstructing packet into object with placeholders and
+ * a list of buffers.
+ *
+ * @param {Object} packet
+ * @return {Buffer} encoded
+ * @api private
+ */
+
+function encodeAsBinary(obj, callback) {
+
+  function writeEncoding(bloblessData) {
+    var deconstruction = binary.deconstructPacket(bloblessData);
+    var pack = encodeAsString(deconstruction.packet);
+    var buffers = deconstruction.buffers;
+
+    buffers.unshift(pack); // add packet info to beginning of data list
+    callback(buffers); // write all the buffers
+  }
+
+  binary.removeBlobs(obj, writeEncoding);
+}
+
+/**
+ * A socket.io Decoder instance
+ *
+ * @return {Object} decoder
+ * @api public
+ */
+
+function Decoder() {
+  this.reconstructor = null;
+}
+
+/**
+ * Mix in `Emitter` with Decoder.
+ */
+
+Emitter(Decoder.prototype);
+
+/**
+ * Decodes an ecoded packet string into packet JSON.
+ *
+ * @param {String} obj - encoded packet
+ * @return {Object} packet
+ * @api public
+ */
+
+Decoder.prototype.add = function(obj) {
+  var packet;
+  if ('string' == typeof obj) {
+    packet = decodeString(obj);
+    if (exports.BINARY_EVENT == packet.type || exports.BINARY_ACK == packet.type) { // binary packet's json
+      this.reconstructor = new BinaryReconstructor(packet);
+
+      // no attachments, labeled binary but no binary data to follow
+      if (this.reconstructor.reconPack.attachments === 0) {
+        this.emit('decoded', packet);
+      }
+    } else { // non-binary full packet
+      this.emit('decoded', packet);
+    }
+  }
+  else if (isBuf(obj) || obj.base64) { // raw binary data
+    if (!this.reconstructor) {
+      throw new Error('got binary data when not reconstructing a packet');
+    } else {
+      packet = this.reconstructor.takeBinaryData(obj);
+      if (packet) { // received final buffer
+        this.reconstructor = null;
+        this.emit('decoded', packet);
+      }
+    }
+  }
+  else {
+    throw new Error('Unknown type: ' + obj);
+  }
+};
+
+/**
+ * Decode a packet String (JSON data)
+ *
+ * @param {String} str
+ * @return {Object} packet
+ * @api private
+ */
+
+function decodeString(str) {
+  var p = {};
+  var i = 0;
+
+  // look up type
+  p.type = Number(str.charAt(0));
+  if (null == exports.types[p.type]) return error();
+
+  // look up attachments if type binary
+  if (exports.BINARY_EVENT == p.type || exports.BINARY_ACK == p.type) {
+    var buf = '';
+    while (str.charAt(++i) != '-') {
+      buf += str.charAt(i);
+      if (i == str.length) break;
+    }
+    if (buf != Number(buf) || str.charAt(i) != '-') {
+      throw new Error('Illegal attachments');
+    }
+    p.attachments = Number(buf);
+  }
+
+  // look up namespace (if any)
+  if ('/' == str.charAt(i + 1)) {
+    p.nsp = '';
+    while (++i) {
+      var c = str.charAt(i);
+      if (',' == c) break;
+      p.nsp += c;
+      if (i == str.length) break;
+    }
+  } else {
+    p.nsp = '/';
+  }
+
+  // look up id
+  var next = str.charAt(i + 1);
+  if ('' !== next && Number(next) == next) {
+    p.id = '';
+    while (++i) {
+      var c = str.charAt(i);
+      if (null == c || Number(c) != c) {
+        --i;
+        break;
+      }
+      p.id += str.charAt(i);
+      if (i == str.length) break;
+    }
+    p.id = Number(p.id);
+  }
+
+  // look up json data
+  if (str.charAt(++i)) {
+    p = tryParse(p, str.substr(i));
+  }
+
+  debug('decoded %s as %j', str, p);
+  return p;
+}
+
+function tryParse(p, str) {
+  try {
+    p.data = json.parse(str);
+  } catch(e){
+    return error();
+  }
+  return p; 
+};
+
+/**
+ * Deallocates a parser's resources
+ *
+ * @api public
+ */
+
+Decoder.prototype.destroy = function() {
+  if (this.reconstructor) {
+    this.reconstructor.finishedReconstruction();
+  }
+};
+
+/**
+ * A manager of a binary event's 'buffer sequence'. Should
+ * be constructed whenever a packet of type BINARY_EVENT is
+ * decoded.
+ *
+ * @param {Object} packet
+ * @return {BinaryReconstructor} initialized reconstructor
+ * @api private
+ */
+
+function BinaryReconstructor(packet) {
+  this.reconPack = packet;
+  this.buffers = [];
+}
+
+/**
+ * Method to be called when binary data received from connection
+ * after a BINARY_EVENT packet.
+ *
+ * @param {Buffer | ArrayBuffer} binData - the raw binary data received
+ * @return {null | Object} returns null if more binary data is expected or
+ *   a reconstructed packet object if all buffers have been received.
+ * @api private
+ */
+
+BinaryReconstructor.prototype.takeBinaryData = function(binData) {
+  this.buffers.push(binData);
+  if (this.buffers.length == this.reconPack.attachments) { // done with buffer list
+    var packet = binary.reconstructPacket(this.reconPack, this.buffers);
+    this.finishedReconstruction();
+    return packet;
+  }
+  return null;
+};
+
+/**
+ * Cleans up binary packet reconstruction variables.
+ *
+ * @api private
+ */
+
+BinaryReconstructor.prototype.finishedReconstruction = function() {
+  this.reconPack = null;
+  this.buffers = [];
+};
+
+function error(data){
+  return {
+    type: exports.ERROR,
+    data: 'parser error'
+  };
+}
+
+}).apply(this, arguments);
+
+},{"./binary":220,"./is-buffer":222,"component-emitter":37,"debug":223,"json3":60}],222:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/socket.io-parser/is-buffer.js", module);
+(function(){
+(function (global){
+
+module.exports = isBuf;
+
+/**
+ * Returns true if obj is a buffer or an arraybuffer.
+ *
+ * @api private
+ */
+
+function isBuf(obj) {
+  return (global.Buffer && global.Buffer.isBuffer(obj)) ||
+         (global.ArrayBuffer && obj instanceof ArrayBuffer);
+}
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+}).apply(this, arguments);
+
+},{}],223:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/socket.io-parser/node_modules/debug/browser.js", module);
+(function(){
+
+/**
+ * This is the web browser implementation of `debug()`.
+ *
+ * Expose `debug()` as the module.
+ */
+
+exports = module.exports = require('./debug');
+exports.log = log;
+exports.formatArgs = formatArgs;
+exports.save = save;
+exports.load = load;
+exports.useColors = useColors;
+exports.storage = 'undefined' != typeof chrome
+               && 'undefined' != typeof chrome.storage
+                  ? chrome.storage.local
+                  : localstorage();
+
+/**
+ * Colors.
+ */
+
+exports.colors = [
+  'lightseagreen',
+  'forestgreen',
+  'goldenrod',
+  'dodgerblue',
+  'darkorchid',
+  'crimson'
+];
+
+/**
+ * Currently only WebKit-based Web Inspectors, Firefox >= v31,
+ * and the Firebug extension (any Firefox version) are known
+ * to support "%c" CSS customizations.
+ *
+ * TODO: add a `localStorage` variable to explicitly enable/disable colors
+ */
+
+function useColors() {
+  // is webkit? http://stackoverflow.com/a/16459606/376773
+  return ('WebkitAppearance' in document.documentElement.style) ||
+    // is firebug? http://stackoverflow.com/a/398120/376773
+    (window.console && (console.firebug || (console.exception && console.table))) ||
+    // is firefox >= v31?
+    // https://developer.mozilla.org/en-US/docs/Tools/Web_Console#Styling_messages
+    (navigator.userAgent.toLowerCase().match(/firefox\/(\d+)/) && parseInt(RegExp.$1, 10) >= 31);
+}
+
+/**
+ * Map %j to `JSON.stringify()`, since no Web Inspectors do that by default.
+ */
+
+exports.formatters.j = function(v) {
+  return JSON.stringify(v);
+};
+
+
+/**
+ * Colorize log arguments if enabled.
+ *
+ * @api public
+ */
+
+function formatArgs() {
+  var args = arguments;
+  var useColors = this.useColors;
+
+  args[0] = (useColors ? '%c' : '')
+    + this.namespace
+    + (useColors ? ' %c' : ' ')
+    + args[0]
+    + (useColors ? '%c ' : ' ')
+    + '+' + exports.humanize(this.diff);
+
+  if (!useColors) return args;
+
+  var c = 'color: ' + this.color;
+  args = [args[0], c, 'color: inherit'].concat(Array.prototype.slice.call(args, 1));
+
+  // the final "%c" is somewhat tricky, because there could be other
+  // arguments passed either before or after the %c, so we need to
+  // figure out the correct index to insert the CSS into
+  var index = 0;
+  var lastC = 0;
+  args[0].replace(/%[a-z%]/g, function(match) {
+    if ('%%' === match) return;
+    index++;
+    if ('%c' === match) {
+      // we only are interested in the *last* %c
+      // (the user may have provided their own)
+      lastC = index;
+    }
+  });
+
+  args.splice(lastC, 0, c);
+  return args;
+}
+
+/**
+ * Invokes `console.log()` when available.
+ * No-op when `console.log` is not a "function".
+ *
+ * @api public
+ */
+
+function log() {
+  // this hackery is required for IE8/9, where
+  // the `console.log` function doesn't have 'apply'
+  return 'object' === typeof console
+    && console.log
+    && Function.prototype.apply.call(console.log, console, arguments);
+}
+
+/**
+ * Save `namespaces`.
+ *
+ * @param {String} namespaces
+ * @api private
+ */
+
+function save(namespaces) {
+  try {
+    if (null == namespaces) {
+      exports.storage.removeItem('debug');
+    } else {
+      exports.storage.debug = namespaces;
+    }
+  } catch(e) {}
+}
+
+/**
+ * Load `namespaces`.
+ *
+ * @return {String} returns the previously persisted debug modes
+ * @api private
+ */
+
+function load() {
+  var r;
+  try {
+    r = exports.storage.debug;
+  } catch(e) {}
+  return r;
+}
+
+/**
+ * Enable namespaces listed in `localStorage.debug` initially.
+ */
+
+exports.enable(load());
+
+/**
+ * Localstorage attempts to return the localstorage.
+ *
+ * This is necessary because safari throws
+ * when a user disables cookies/localstorage
+ * and you attempt to access it.
+ *
+ * @return {LocalStorage}
+ * @api private
+ */
+
+function localstorage(){
+  try {
+    return window.localStorage;
+  } catch (e) {}
+}
+
+}).apply(this, arguments);
+
+},{"./debug":224}],224:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/socket.io-parser/node_modules/debug/debug.js", module);
+(function(){
+
+/**
+ * This is the common logic for both the Node.js and web browser
+ * implementations of `debug()`.
+ *
+ * Expose `debug()` as the module.
+ */
+
+exports = module.exports = debug;
+exports.coerce = coerce;
+exports.disable = disable;
+exports.enable = enable;
+exports.enabled = enabled;
+exports.humanize = require('ms');
+
+/**
+ * The currently active debug mode names, and names to skip.
+ */
+
+exports.names = [];
+exports.skips = [];
+
+/**
+ * Map of special "%n" handling functions, for the debug "format" argument.
+ *
+ * Valid key names are a single, lowercased letter, i.e. "n".
+ */
+
+exports.formatters = {};
+
+/**
+ * Previously assigned color.
+ */
+
+var prevColor = 0;
+
+/**
+ * Previous log timestamp.
+ */
+
+var prevTime;
+
+/**
+ * Select a color.
+ *
+ * @return {Number}
+ * @api private
+ */
+
+function selectColor() {
+  return exports.colors[prevColor++ % exports.colors.length];
+}
+
+/**
+ * Create a debugger with the given `namespace`.
+ *
+ * @param {String} namespace
+ * @return {Function}
+ * @api public
+ */
+
+function debug(namespace) {
+
+  // define the `disabled` version
+  function disabled() {
+  }
+  disabled.enabled = false;
+
+  // define the `enabled` version
+  function enabled() {
+
+    var self = enabled;
+
+    // set `diff` timestamp
+    var curr = +new Date();
+    var ms = curr - (prevTime || curr);
+    self.diff = ms;
+    self.prev = prevTime;
+    self.curr = curr;
+    prevTime = curr;
+
+    // add the `color` if not set
+    if (null == self.useColors) self.useColors = exports.useColors();
+    if (null == self.color && self.useColors) self.color = selectColor();
+
+    var args = Array.prototype.slice.call(arguments);
+
+    args[0] = exports.coerce(args[0]);
+
+    if ('string' !== typeof args[0]) {
+      // anything else let's inspect with %o
+      args = ['%o'].concat(args);
+    }
+
+    // apply any `formatters` transformations
+    var index = 0;
+    args[0] = args[0].replace(/%([a-z%])/g, function(match, format) {
+      // if we encounter an escaped % then don't increase the array index
+      if (match === '%%') return match;
+      index++;
+      var formatter = exports.formatters[format];
+      if ('function' === typeof formatter) {
+        var val = args[index];
+        match = formatter.call(self, val);
+
+        // now we need to remove `args[index]` since it's inlined in the `format`
+        args.splice(index, 1);
+        index--;
+      }
+      return match;
+    });
+
+    if ('function' === typeof exports.formatArgs) {
+      args = exports.formatArgs.apply(self, args);
+    }
+    var logFn = enabled.log || exports.log || console.log.bind(console);
+    logFn.apply(self, args);
+  }
+  enabled.enabled = true;
+
+  var fn = exports.enabled(namespace) ? enabled : disabled;
+
+  fn.namespace = namespace;
+
+  return fn;
+}
+
+/**
+ * Enables a debug mode by namespaces. This can include modes
+ * separated by a colon and wildcards.
+ *
+ * @param {String} namespaces
+ * @api public
+ */
+
+function enable(namespaces) {
+  exports.save(namespaces);
+
+  var split = (namespaces || '').split(/[\s,]+/);
+  var len = split.length;
+
+  for (var i = 0; i < len; i++) {
+    if (!split[i]) continue; // ignore empty strings
+    namespaces = split[i].replace(/\*/g, '.*?');
+    if (namespaces[0] === '-') {
+      exports.skips.push(new RegExp('^' + namespaces.substr(1) + '$'));
+    } else {
+      exports.names.push(new RegExp('^' + namespaces + '$'));
+    }
+  }
+}
+
+/**
+ * Disable debug output.
+ *
+ * @api public
+ */
+
+function disable() {
+  exports.enable('');
+}
+
+/**
+ * Returns true if the given mode name is enabled, false otherwise.
+ *
+ * @param {String} name
+ * @return {Boolean}
+ * @api public
+ */
+
+function enabled(name) {
+  var i, len;
+  for (i = 0, len = exports.skips.length; i < len; i++) {
+    if (exports.skips[i].test(name)) {
+      return false;
+    }
+  }
+  for (i = 0, len = exports.names.length; i < len; i++) {
+    if (exports.names[i].test(name)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+/**
+ * Coerce `val`.
+ *
+ * @param {Mixed} val
+ * @return {Mixed}
+ * @api private
+ */
+
+function coerce(val) {
+  if (val instanceof Error) return val.stack || val.message;
+  return val;
+}
+
+}).apply(this, arguments);
+
+},{"ms":225}],225:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/socket.io-parser/node_modules/ms/index.js", module);
+(function(){
+/**
+ * Helpers.
+ */
+
+var s = 1000;
+var m = s * 60;
+var h = m * 60;
+var d = h * 24;
+var y = d * 365.25;
+
+/**
+ * Parse or format the given `val`.
+ *
+ * Options:
+ *
+ *  - `long` verbose formatting [false]
+ *
+ * @param {String|Number} val
+ * @param {Object} options
+ * @return {String|Number}
+ * @api public
+ */
+
+module.exports = function(val, options){
+  options = options || {};
+  if ('string' == typeof val) return parse(val);
+  return options.long
+    ? long(val)
+    : short(val);
+};
+
+/**
+ * Parse the given `str` and return milliseconds.
+ *
+ * @param {String} str
+ * @return {Number}
+ * @api private
+ */
+
+function parse(str) {
+  str = '' + str;
+  if (str.length > 10000) return;
+  var match = /^((?:\d+)?\.?\d+) *(milliseconds?|msecs?|ms|seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h|days?|d|years?|yrs?|y)?$/i.exec(str);
+  if (!match) return;
+  var n = parseFloat(match[1]);
+  var type = (match[2] || 'ms').toLowerCase();
+  switch (type) {
+    case 'years':
+    case 'year':
+    case 'yrs':
+    case 'yr':
+    case 'y':
+      return n * y;
+    case 'days':
+    case 'day':
+    case 'd':
+      return n * d;
+    case 'hours':
+    case 'hour':
+    case 'hrs':
+    case 'hr':
+    case 'h':
+      return n * h;
+    case 'minutes':
+    case 'minute':
+    case 'mins':
+    case 'min':
+    case 'm':
+      return n * m;
+    case 'seconds':
+    case 'second':
+    case 'secs':
+    case 'sec':
+    case 's':
+      return n * s;
+    case 'milliseconds':
+    case 'millisecond':
+    case 'msecs':
+    case 'msec':
+    case 'ms':
+      return n;
+  }
+}
+
+/**
+ * Short format for `ms`.
+ *
+ * @param {Number} ms
+ * @return {String}
+ * @api private
+ */
+
+function short(ms) {
+  if (ms >= d) return Math.round(ms / d) + 'd';
+  if (ms >= h) return Math.round(ms / h) + 'h';
+  if (ms >= m) return Math.round(ms / m) + 'm';
+  if (ms >= s) return Math.round(ms / s) + 's';
+  return ms + 'ms';
+}
+
+/**
+ * Long format for `ms`.
+ *
+ * @param {Number} ms
+ * @return {String}
+ * @api private
+ */
+
+function long(ms) {
+  return plural(ms, d, 'day')
+    || plural(ms, h, 'hour')
+    || plural(ms, m, 'minute')
+    || plural(ms, s, 'second')
+    || ms + ' ms';
+}
+
+/**
+ * Pluralization helper.
+ */
+
+function plural(ms, n, name) {
+  if (ms < n) return;
+  if (ms < n * 1.5) return Math.floor(ms / n) + ' ' + name;
+  return Math.ceil(ms / n) + ' ' + name + 's';
+}
+
+}).apply(this, arguments);
+
 },{}],226:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/to-array/index.js", module);
+(function(){
+module.exports = toArray
+
+function toArray(list, index) {
+    var array = []
+
+    index = index || 0
+
+    for (var i = index || 0; i < list.length; i++) {
+        array[i - index] = list[i]
+    }
+
+    return array
+}
+
+}).apply(this, arguments);
+
+},{}],227:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/wtf-8/wtf-8.js", module);
+(function(){
+(function (global){
+/*! https://mths.be/wtf8 v1.0.0 by @mathias */
+;(function(root) {
+
+	// Detect free variables `exports`
+	var freeExports = typeof exports == 'object' && exports;
+
+	// Detect free variable `module`
+	var freeModule = typeof module == 'object' && module &&
+		module.exports == freeExports && module;
+
+	// Detect free variable `global`, from Node.js or Browserified code,
+	// and use it as `root`
+	var freeGlobal = typeof global == 'object' && global;
+	if (freeGlobal.global === freeGlobal || freeGlobal.window === freeGlobal) {
+		root = freeGlobal;
+	}
+
+	/*--------------------------------------------------------------------------*/
+
+	var stringFromCharCode = String.fromCharCode;
+
+	// Taken from https://mths.be/punycode
+	function ucs2decode(string) {
+		var output = [];
+		var counter = 0;
+		var length = string.length;
+		var value;
+		var extra;
+		while (counter < length) {
+			value = string.charCodeAt(counter++);
+			if (value >= 0xD800 && value <= 0xDBFF && counter < length) {
+				// high surrogate, and there is a next character
+				extra = string.charCodeAt(counter++);
+				if ((extra & 0xFC00) == 0xDC00) { // low surrogate
+					output.push(((value & 0x3FF) << 10) + (extra & 0x3FF) + 0x10000);
+				} else {
+					// unmatched surrogate; only append this code unit, in case the next
+					// code unit is the high surrogate of a surrogate pair
+					output.push(value);
+					counter--;
+				}
+			} else {
+				output.push(value);
+			}
+		}
+		return output;
+	}
+
+	// Taken from https://mths.be/punycode
+	function ucs2encode(array) {
+		var length = array.length;
+		var index = -1;
+		var value;
+		var output = '';
+		while (++index < length) {
+			value = array[index];
+			if (value > 0xFFFF) {
+				value -= 0x10000;
+				output += stringFromCharCode(value >>> 10 & 0x3FF | 0xD800);
+				value = 0xDC00 | value & 0x3FF;
+			}
+			output += stringFromCharCode(value);
+		}
+		return output;
+	}
+
+	/*--------------------------------------------------------------------------*/
+
+	function createByte(codePoint, shift) {
+		return stringFromCharCode(((codePoint >> shift) & 0x3F) | 0x80);
+	}
+
+	function encodeCodePoint(codePoint) {
+		if ((codePoint & 0xFFFFFF80) == 0) { // 1-byte sequence
+			return stringFromCharCode(codePoint);
+		}
+		var symbol = '';
+		if ((codePoint & 0xFFFFF800) == 0) { // 2-byte sequence
+			symbol = stringFromCharCode(((codePoint >> 6) & 0x1F) | 0xC0);
+		}
+		else if ((codePoint & 0xFFFF0000) == 0) { // 3-byte sequence
+			symbol = stringFromCharCode(((codePoint >> 12) & 0x0F) | 0xE0);
+			symbol += createByte(codePoint, 6);
+		}
+		else if ((codePoint & 0xFFE00000) == 0) { // 4-byte sequence
+			symbol = stringFromCharCode(((codePoint >> 18) & 0x07) | 0xF0);
+			symbol += createByte(codePoint, 12);
+			symbol += createByte(codePoint, 6);
+		}
+		symbol += stringFromCharCode((codePoint & 0x3F) | 0x80);
+		return symbol;
+	}
+
+	function wtf8encode(string) {
+		var codePoints = ucs2decode(string);
+		var length = codePoints.length;
+		var index = -1;
+		var codePoint;
+		var byteString = '';
+		while (++index < length) {
+			codePoint = codePoints[index];
+			byteString += encodeCodePoint(codePoint);
+		}
+		return byteString;
+	}
+
+	/*--------------------------------------------------------------------------*/
+
+	function readContinuationByte() {
+		if (byteIndex >= byteCount) {
+			throw Error('Invalid byte index');
+		}
+
+		var continuationByte = byteArray[byteIndex] & 0xFF;
+		byteIndex++;
+
+		if ((continuationByte & 0xC0) == 0x80) {
+			return continuationByte & 0x3F;
+		}
+
+		// If we end up here, it’s not a continuation byte.
+		throw Error('Invalid continuation byte');
+	}
+
+	function decodeSymbol() {
+		var byte1;
+		var byte2;
+		var byte3;
+		var byte4;
+		var codePoint;
+
+		if (byteIndex > byteCount) {
+			throw Error('Invalid byte index');
+		}
+
+		if (byteIndex == byteCount) {
+			return false;
+		}
+
+		// Read the first byte.
+		byte1 = byteArray[byteIndex] & 0xFF;
+		byteIndex++;
+
+		// 1-byte sequence (no continuation bytes)
+		if ((byte1 & 0x80) == 0) {
+			return byte1;
+		}
+
+		// 2-byte sequence
+		if ((byte1 & 0xE0) == 0xC0) {
+			var byte2 = readContinuationByte();
+			codePoint = ((byte1 & 0x1F) << 6) | byte2;
+			if (codePoint >= 0x80) {
+				return codePoint;
+			} else {
+				throw Error('Invalid continuation byte');
+			}
+		}
+
+		// 3-byte sequence (may include unpaired surrogates)
+		if ((byte1 & 0xF0) == 0xE0) {
+			byte2 = readContinuationByte();
+			byte3 = readContinuationByte();
+			codePoint = ((byte1 & 0x0F) << 12) | (byte2 << 6) | byte3;
+			if (codePoint >= 0x0800) {
+				return codePoint;
+			} else {
+				throw Error('Invalid continuation byte');
+			}
+		}
+
+		// 4-byte sequence
+		if ((byte1 & 0xF8) == 0xF0) {
+			byte2 = readContinuationByte();
+			byte3 = readContinuationByte();
+			byte4 = readContinuationByte();
+			codePoint = ((byte1 & 0x0F) << 0x12) | (byte2 << 0x0C) |
+				(byte3 << 0x06) | byte4;
+			if (codePoint >= 0x010000 && codePoint <= 0x10FFFF) {
+				return codePoint;
+			}
+		}
+
+		throw Error('Invalid WTF-8 detected');
+	}
+
+	var byteArray;
+	var byteCount;
+	var byteIndex;
+	function wtf8decode(byteString) {
+		byteArray = ucs2decode(byteString);
+		byteCount = byteArray.length;
+		byteIndex = 0;
+		var codePoints = [];
+		var tmp;
+		while ((tmp = decodeSymbol()) !== false) {
+			codePoints.push(tmp);
+		}
+		return ucs2encode(codePoints);
+	}
+
+	/*--------------------------------------------------------------------------*/
+
+	var wtf8 = {
+		'version': '1.0.0',
+		'encode': wtf8encode,
+		'decode': wtf8decode
+	};
+
+	// Some AMD build optimizers, like r.js, check for specific condition patterns
+	// like the following:
+	if (
+		typeof define == 'function' &&
+		typeof define.amd == 'object' &&
+		define.amd
+	) {
+		define(function() {
+			return wtf8;
+		});
+	}	else if (freeExports && !freeExports.nodeType) {
+		if (freeModule) { // in Node.js or RingoJS v0.8.0+
+			freeModule.exports = wtf8;
+		} else { // in Narwhal or RingoJS v0.7.0-
+			var object = {};
+			var hasOwnProperty = object.hasOwnProperty;
+			for (var key in wtf8) {
+				hasOwnProperty.call(wtf8, key) && (freeExports[key] = wtf8[key]);
+			}
+		}
+	} else { // in Rhino or a web browser
+		root.wtf8 = wtf8;
+	}
+
+}(this));
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+}).apply(this, arguments);
+
+},{}],228:[function(require,module,exports){
+_hmr["websocket:null"].initModule("node_modules/yeast/index.js", module);
+(function(){
+'use strict';
+
+var alphabet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_'.split('')
+  , length = 64
+  , map = {}
+  , seed = 0
+  , i = 0
+  , prev;
+
+/**
+ * Return a string representing the specified number.
+ *
+ * @param {Number} num The number to convert.
+ * @returns {String} The string representation of the number.
+ * @api public
+ */
+function encode(num) {
+  var encoded = '';
+
+  do {
+    encoded = alphabet[num % length] + encoded;
+    num = Math.floor(num / length);
+  } while (num > 0);
+
+  return encoded;
+}
+
+/**
+ * Return the integer value specified by the given string.
+ *
+ * @param {String} str The string to convert.
+ * @returns {Number} The integer value represented by the string.
+ * @api public
+ */
+function decode(str) {
+  var decoded = 0;
+
+  for (i = 0; i < str.length; i++) {
+    decoded = decoded * length + map[str.charAt(i)];
+  }
+
+  return decoded;
+}
+
+/**
+ * Yeast: A tiny growing id generator.
+ *
+ * @returns {String} A unique id.
+ * @api public
+ */
+function yeast() {
+  var now = encode(+new Date());
+
+  if (now !== prev) return seed = 0, prev = now;
+  return now +'.'+ encode(seed++);
+}
+
+//
+// Map each character to its index.
+//
+for (; i < length; i++) map[alphabet[i]] = i;
+
+//
+// Expose the `yeast`, `encode` and `decode` functions.
+//
+yeast.encode = encode;
+yeast.decode = decode;
+module.exports = yeast;
+
+}).apply(this, arguments);
+
+},{}],229:[function(require,module,exports){
 _hmr["websocket:null"].initModule("src/SpeckleReceiver.js", module);
 (function(){
 'use strict';
@@ -15544,6 +16254,7 @@ var SpeckleReceiver = function (_EventEmitter) {
         if (!_this.wsSessionId) return;
         if (!_this.streamFound) return;
 
+        console.log('SpeckeReceiver: Receiver ready ...');
         _this.emit('ready', _this.name, _this.layers, _this.objects, _this.history);
         clearInterval(_this.isReadyChecker);
       }, 100);
@@ -15646,11 +16357,12 @@ var SpeckleReceiver = function (_EventEmitter) {
   }, {
     key: 'getObject',
     value: function getObject(obj, callback) {
+      console.log(obj);
       if (!obj) {
         throw new Error('no obj provided');
         return;
       }
-      if (obj.hash.indexOf('NoHash') >= 0) return callback(obj);
+      if (!obj.hash) return callback(obj);
 
       _axios2.default.get(this.restEndpoint + '/geometry/' + obj.hash).then(function (response) {
         var myObject = response.data.data;
@@ -15746,7 +16458,7 @@ exports.default = SpeckleReceiver;
 
 }).apply(this, arguments);
 
-},{"axios":2,"event-emitter-es6":223}],227:[function(require,module,exports){
+},{"axios":4,"event-emitter-es6":55}],230:[function(require,module,exports){
 _hmr["websocket:null"].initModule("src/main.js", module);
 (function(){
 'use strict';
@@ -15761,19 +16473,19 @@ window.SpeckleReceiver = _SpeckleReceiver2.default;
 
 }).apply(this, arguments);
 
-},{"./SpeckleReceiver":226}],1:[function(require,module,exports){
+},{"./SpeckleReceiver":229}],1:[function(require,module,exports){
 (function(global, _main, moduleDefs, cachedModules, _entries) {
   'use strict';
 
-  var moduleMeta = {"node_modules/watchify/node_modules/browserify/node_modules/process/browser.js":{"index":225,"hash":"CIpPJUFWW4RUpwRm0KLF","parents":["node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/debug/browser.js","node_modules/axios/lib/adapters/xhr.js","node_modules/axios/lib/defaults.js"]},"node_modules/browserify-hmr/lib/has.js":{"index":28,"hash":"Hky4QYVrU1+kFHIEuxPy","parents":["node_modules/browserify-hmr/lib/str-set.js","node_modules/browserify-hmr/inc/index.js"]},"node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/parseuri/index.js":{"index":212,"hash":"EzACpgP8IC8rgl7aVyRs","parents":["node_modules/browserify-hmr/node_modules/socket.io-client/lib/url.js","node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/lib/socket.js"]},"node_modules/browserify-hmr/node_modules/socket.io-client/lib/url.js":{"index":180,"hash":"2e/RssAdMiqG5G1l8yhX","parents":["node_modules/browserify-hmr/node_modules/socket.io-client/lib/index.js"]},"node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/debug/browser.js":{"index":184,"hash":"Q9ewCSPMnJcAJRPsyk4r","parents":["node_modules/browserify-hmr/node_modules/socket.io-client/lib/url.js","node_modules/browserify-hmr/node_modules/socket.io-client/lib/socket.js","node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/lib/transports/websocket.js","node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/lib/transports/polling.js","node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/lib/transports/polling-xhr.js","node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/lib/socket.js","node_modules/browserify-hmr/node_modules/socket.io-client/lib/manager.js","node_modules/browserify-hmr/node_modules/socket.io-client/lib/index.js"]},"node_modules/browserify-hmr/node_modules/socket.io-client/lib/on.js":{"index":178,"hash":"tjRZyGGz5Q0MA2qS81HN","parents":["node_modules/browserify-hmr/node_modules/socket.io-client/lib/socket.js","node_modules/browserify-hmr/node_modules/socket.io-client/lib/manager.js"]},"node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/component-bind/index.js":{"index":182,"hash":"4yIcVw+afwUsnTQyI0a3","parents":["node_modules/browserify-hmr/node_modules/socket.io-client/lib/socket.js","node_modules/browserify-hmr/node_modules/socket.io-client/lib/manager.js"]},"node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/component-emitter/index.js":{"index":183,"hash":"oN00wp8CctwYNQv6ryzF","parents":["node_modules/browserify-hmr/node_modules/socket.io-client/lib/socket.js","node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/lib/transport.js","node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/lib/transports/polling-xhr.js","node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/lib/socket.js","node_modules/browserify-hmr/node_modules/socket.io-client/lib/manager.js"]},"node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/to-array/index.js":{"index":222,"hash":"2EoggafxX+GLXkXiaGjm","parents":["node_modules/browserify-hmr/node_modules/socket.io-client/lib/socket.js"]},"node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/socket.io-parser/is-buffer.js":{"index":215,"hash":"UJBXKAfBg/BkigSZbc3Z","parents":["node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/socket.io-parser/binary.js","node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/socket.io-parser/index.js"]},"node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/socket.io-parser/node_modules/component-emitter/index.js":{"index":216,"hash":"0uL1LSa/mOj+Llu+HTZ7","parents":["node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/socket.io-parser/index.js"]},"node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/socket.io-parser/node_modules/json3/lib/json3.js":{"index":221,"hash":"LXnegdmM3ELMiM4tQmqu","parents":["node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/socket.io-parser/index.js"]},"node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/indexof/index.js":{"index":211,"hash":"8zMGV0j0ID5bUIeT7r+M","parents":["node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/lib/socket.js","node_modules/browserify-hmr/node_modules/socket.io-client/lib/manager.js"]},"node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/backo2/index.js":{"index":181,"hash":"L5ry3mfVEw1wgmx9Sa+q","parents":["node_modules/browserify-hmr/node_modules/socket.io-client/lib/manager.js"]},"node_modules/browserify-hmr/lib/str-set.js":{"index":29,"hash":"lcrDmQK4uaqOqN+FV4/9","parents":["node_modules/browserify-hmr/inc/index.js"]},"node_modules/browserify-hmr/node_modules/lodash/_baseZipObject.js":{"index":79,"hash":"YXMcZ83l88xZmDNehDaW","parents":["node_modules/browserify-hmr/node_modules/lodash/zipObject.js"]},"node_modules/browserify-hmr/node_modules/lodash/isArray.js":{"index":157,"hash":"aaUaNDXWFSVZ5STriBpj","parents":["node_modules/browserify-hmr/node_modules/lodash/map.js","node_modules/browserify-hmr/node_modules/lodash/some.js","node_modules/browserify-hmr/node_modules/lodash/forEach.js","node_modules/browserify-hmr/node_modules/lodash/_isKey.js","node_modules/browserify-hmr/node_modules/lodash/_hasPath.js","node_modules/browserify-hmr/node_modules/lodash/_arrayLikeKeys.js","node_modules/browserify-hmr/node_modules/lodash/_baseToString.js","node_modules/browserify-hmr/node_modules/lodash/_baseGetAllKeys.js","node_modules/browserify-hmr/node_modules/lodash/_baseIsEqualDeep.js","node_modules/browserify-hmr/node_modules/lodash/_castPath.js","node_modules/browserify-hmr/node_modules/lodash/_baseIteratee.js","node_modules/browserify-hmr/node_modules/lodash/filter.js"]},"node_modules/browserify-hmr/node_modules/lodash/_arrayFilter.js":{"index":44,"hash":"Ev1suXdgsby5ZCXCkRms","parents":["node_modules/browserify-hmr/node_modules/lodash/_getSymbols.js","node_modules/browserify-hmr/node_modules/lodash/filter.js"]},"node_modules/browserify-hmr/node_modules/lodash/_arrayMap.js":{"index":46,"hash":"WRdHK1dyumbtZQGeNdoR","parents":["node_modules/browserify-hmr/node_modules/lodash/map.js","node_modules/browserify-hmr/node_modules/lodash/_baseToString.js"]},"node_modules/browserify-hmr/node_modules/lodash/_arrayEach.js":{"index":43,"hash":"b9UG7X0uCjshbsKWnzke","parents":["node_modules/browserify-hmr/node_modules/lodash/forEach.js"]},"node_modules/browserify-hmr/node_modules/lodash/_isPrototype.js":{"index":112,"hash":"z7lefPE53MX7955LE/f6","parents":["node_modules/browserify-hmr/node_modules/lodash/_baseKeys.js","node_modules/browserify-hmr/node_modules/lodash/assign.js"]},"node_modules/browserify-hmr/node_modules/lodash/_arraySome.js":{"index":48,"hash":"6MxplN9nt/AmANH1hnTa","parents":["node_modules/browserify-hmr/node_modules/lodash/some.js","node_modules/browserify-hmr/node_modules/lodash/_equalArrays.js"]},"node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/has-binary/node_modules/isarray/index.js":{"index":210,"hash":"dKtews1S4sHvaZhZ+ceq","parents":["node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/has-binary/index.js"]},"node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/has-binary/index.js":{"index":209,"hash":"GofcXFXhXC0uVJvLAw+2","parents":["node_modules/browserify-hmr/node_modules/socket.io-client/lib/socket.js","node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/node_modules/engine.io-parser/lib/browser.js"]},"node_modules/browserify-hmr/node_modules/socket.io-client/lib/socket.js":{"index":179,"hash":"wNz1TmcWcSdV/fISvn75","parents":["node_modules/browserify-hmr/node_modules/socket.io-client/lib/manager.js","node_modules/browserify-hmr/node_modules/socket.io-client/lib/index.js"]},"node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/socket.io-parser/index.js":{"index":214,"hash":"zQr8NKW/h7J7hn1sTsRa","parents":["node_modules/browserify-hmr/node_modules/socket.io-client/lib/socket.js","node_modules/browserify-hmr/node_modules/socket.io-client/lib/manager.js","node_modules/browserify-hmr/node_modules/socket.io-client/lib/index.js"]},"node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/debug/node_modules/ms/index.js":{"index":186,"hash":"+i3MPFzut0mh8LK6NCY0","parents":["node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/debug/debug.js"]},"node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/debug/debug.js":{"index":185,"hash":"5FZHGx7z7kdbTIz7MyR0","parents":["node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/debug/browser.js"]},"node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/socket.io-parser/node_modules/isarray/index.js":{"index":220,"hash":"dKtews1S4sHvaZhZ+ceq","parents":["node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/socket.io-parser/binary.js"]},"node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/socket.io-parser/binary.js":{"index":213,"hash":"bAee8RukaXwuD/OeGN6F","parents":["node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/socket.io-parser/index.js"]},"node_modules/browserify-hmr/node_modules/lodash/eq.js":{"index":149,"hash":"Be3fJIGKRC2SLwj96dmp","parents":["node_modules/browserify-hmr/node_modules/lodash/_assignValue.js","node_modules/browserify-hmr/node_modules/lodash/_isIterateeCall.js","node_modules/browserify-hmr/node_modules/lodash/_equalByTag.js","node_modules/browserify-hmr/node_modules/lodash/_assocIndexOf.js"]},"node_modules/browserify-hmr/node_modules/lodash/_assignValue.js":{"index":49,"hash":"hmWN1NJKVbGe2ThBbBed","parents":["node_modules/browserify-hmr/node_modules/lodash/zipObject.js","node_modules/browserify-hmr/node_modules/lodash/_copyObject.js","node_modules/browserify-hmr/node_modules/lodash/assign.js"]},"node_modules/browserify-hmr/node_modules/lodash/_baseAssignValue.js":{"index":51,"hash":"UUmMep65Dt8mJru5Df0R","parents":["node_modules/browserify-hmr/node_modules/lodash/_assignValue.js","node_modules/browserify-hmr/node_modules/lodash/_copyObject.js","node_modules/browserify-hmr/node_modules/lodash/mapValues.js"]},"node_modules/browserify-hmr/node_modules/lodash/zipObject.js":{"index":175,"hash":"iztwVZmqQ7Y1i6QmGzx9","parents":["node_modules/browserify-hmr/inc/index.js"]},"node_modules/browserify-hmr/node_modules/lodash/identity.js":{"index":155,"hash":"s1ZnXuz2CFxX2MXJyb7F","parents":["node_modules/browserify-hmr/node_modules/lodash/_castFunction.js","node_modules/browserify-hmr/node_modules/lodash/_baseSetToString.js","node_modules/browserify-hmr/node_modules/lodash/_baseRest.js","node_modules/browserify-hmr/node_modules/lodash/_baseIteratee.js"]},"node_modules/browserify-hmr/node_modules/lodash/_baseFilter.js":{"index":53,"hash":"zIF8T84UwJp2X27nHnkJ","parents":["node_modules/browserify-hmr/node_modules/lodash/filter.js"]},"node_modules/browserify-hmr/node_modules/lodash/_baseEach.js":{"index":52,"hash":"1eAUgjpN0REUkkfZ9ZIc","parents":["node_modules/browserify-hmr/node_modules/lodash/_baseFilter.js","node_modules/browserify-hmr/node_modules/lodash/_baseMap.js","node_modules/browserify-hmr/node_modules/lodash/_baseSome.js","node_modules/browserify-hmr/node_modules/lodash/forEach.js"]},"node_modules/browserify-hmr/node_modules/lodash/_baseMap.js":{"index":68,"hash":"d4dyLnzZcVXFzz5tCc58","parents":["node_modules/browserify-hmr/node_modules/lodash/map.js"]},"node_modules/browserify-hmr/node_modules/lodash/isArrayLike.js":{"index":158,"hash":"/OCFIiBOK84sMLW6Tiiz","parents":["node_modules/browserify-hmr/node_modules/lodash/_baseMap.js","node_modules/browserify-hmr/node_modules/lodash/_isIterateeCall.js","node_modules/browserify-hmr/node_modules/lodash/_createBaseEach.js","node_modules/browserify-hmr/node_modules/lodash/keys.js","node_modules/browserify-hmr/node_modules/lodash/assign.js"]},"node_modules/browserify-hmr/node_modules/lodash/map.js":{"index":167,"hash":"Gq/1p28f40AzWuWuaNZr","parents":["node_modules/browserify-hmr/inc/index.js"]},"node_modules/browserify-hmr/node_modules/lodash/_baseIteratee.js":{"index":66,"hash":"lFdaZihzm4HNQp2V6Bpv","parents":["node_modules/browserify-hmr/node_modules/lodash/map.js","node_modules/browserify-hmr/node_modules/lodash/some.js","node_modules/browserify-hmr/node_modules/lodash/mapValues.js","node_modules/browserify-hmr/node_modules/lodash/filter.js"]},"node_modules/browserify-hmr/node_modules/lodash/_castFunction.js":{"index":81,"hash":"17Fkqb/JTOTfTCbTGPvs","parents":["node_modules/browserify-hmr/node_modules/lodash/forEach.js","node_modules/browserify-hmr/node_modules/lodash/forOwn.js"]},"node_modules/browserify-hmr/node_modules/lodash/_copyObject.js":{"index":83,"hash":"VAzIjaU/1tssj67rWjf/","parents":["node_modules/browserify-hmr/node_modules/lodash/assign.js"]},"node_modules/browserify-hmr/node_modules/lodash/isLength.js":{"index":161,"hash":"bwSRxcpcTX/CbMowl+qa","parents":["node_modules/browserify-hmr/node_modules/lodash/_hasPath.js","node_modules/browserify-hmr/node_modules/lodash/isArrayLike.js","node_modules/browserify-hmr/node_modules/lodash/_baseIsTypedArray.js"]},"node_modules/browserify-hmr/node_modules/lodash/_baseSome.js":{"index":75,"hash":"/fx+wXc48GKu9ngo/G7R","parents":["node_modules/browserify-hmr/node_modules/lodash/some.js"]},"node_modules/browserify-hmr/node_modules/lodash/_isIndex.js":{"index":107,"hash":"SCdbG9iCDM1nxzb81i7D","parents":["node_modules/browserify-hmr/node_modules/lodash/_isIterateeCall.js","node_modules/browserify-hmr/node_modules/lodash/_hasPath.js","node_modules/browserify-hmr/node_modules/lodash/_arrayLikeKeys.js"]},"node_modules/browserify-hmr/node_modules/lodash/isObject.js":{"index":162,"hash":"H0M3JlacAn8wi5b/SH6J","parents":["node_modules/browserify-hmr/node_modules/lodash/_isIterateeCall.js","node_modules/browserify-hmr/node_modules/lodash/_isStrictComparable.js","node_modules/browserify-hmr/node_modules/lodash/isFunction.js","node_modules/browserify-hmr/node_modules/lodash/_baseIsNative.js"]},"node_modules/browserify-hmr/node_modules/lodash/_isIterateeCall.js":{"index":108,"hash":"Q6Y/4ZLjPN2hD0x360UE","parents":["node_modules/browserify-hmr/node_modules/lodash/some.js","node_modules/browserify-hmr/node_modules/lodash/_createAssigner.js"]},"node_modules/browserify-hmr/node_modules/lodash/some.js":{"index":171,"hash":"o5R2DTe3L0fWtByoF6NK","parents":["node_modules/browserify-hmr/inc/index.js"]},"node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/socket.io-parser/node_modules/debug/node_modules/ms/index.js":{"index":219,"hash":"HanVKm5AkV6MOdHRAMCT","parents":["node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/socket.io-parser/node_modules/debug/debug.js"]},"node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/socket.io-parser/node_modules/debug/debug.js":{"index":218,"hash":"yqdR7nJc7wxIHzFDNzG+","parents":["node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/socket.io-parser/node_modules/debug/browser.js"]},"node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/socket.io-parser/node_modules/debug/browser.js":{"index":217,"hash":"S76q28f1VPJIcCtJn1eq","parents":["node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/socket.io-parser/index.js"]},"node_modules/browserify-hmr/node_modules/lodash/_matchesStrictComparable.js":{"index":125,"hash":"+OqsD2+K9liTMiGDT3Y4","parents":["node_modules/browserify-hmr/node_modules/lodash/_baseMatchesProperty.js","node_modules/browserify-hmr/node_modules/lodash/_baseMatches.js"]},"node_modules/browserify-hmr/node_modules/lodash/_baseProperty.js":{"index":71,"hash":"kWjeI0xVLXmi/QD9uMSa","parents":["node_modules/browserify-hmr/node_modules/lodash/property.js"]},"node_modules/browserify-hmr/node_modules/lodash/_createBaseEach.js":{"index":86,"hash":"j95laCMPOgHsNDIKPdsp","parents":["node_modules/browserify-hmr/node_modules/lodash/_baseEach.js"]},"node_modules/browserify-hmr/node_modules/lodash/_baseForOwn.js":{"index":55,"hash":"wsDmgTH4vz3dPZ0ucogL","parents":["node_modules/browserify-hmr/node_modules/lodash/_baseEach.js","node_modules/browserify-hmr/node_modules/lodash/forOwn.js","node_modules/browserify-hmr/node_modules/lodash/mapValues.js"]},"node_modules/browserify-hmr/node_modules/lodash/forEach.js":{"index":151,"hash":"jIBP8hzrl/TALmTGIzfp","parents":["node_modules/browserify-hmr/inc/index.js"]},"node_modules/browserify-hmr/node_modules/lodash/_createBaseFor.js":{"index":87,"hash":"OeCELp37VytZuCN6Xtr+","parents":["node_modules/browserify-hmr/node_modules/lodash/_baseFor.js"]},"node_modules/browserify-hmr/node_modules/lodash/_baseFor.js":{"index":54,"hash":"aDRpv9Ysd3A0P68kJrwN","parents":["node_modules/browserify-hmr/node_modules/lodash/_baseForOwn.js"]},"node_modules/browserify-hmr/node_modules/lodash/keys.js":{"index":166,"hash":"AzwEiE+T6QrvlRtU3Z5w","parents":["node_modules/browserify-hmr/node_modules/lodash/_baseForOwn.js","node_modules/browserify-hmr/node_modules/lodash/_getMatchData.js","node_modules/browserify-hmr/node_modules/lodash/assign.js","node_modules/browserify-hmr/node_modules/lodash/_getAllKeys.js"]},"node_modules/browserify-hmr/node_modules/lodash/forOwn.js":{"index":152,"hash":"Phxs3xQLZ6eXpzVwNsD+","parents":["node_modules/browserify-hmr/inc/index.js"]},"node_modules/browserify-hmr/node_modules/lodash/_baseTimes.js":{"index":76,"hash":"vQVHAQOeEJCBfl2Pb7SH","parents":["node_modules/browserify-hmr/node_modules/lodash/_arrayLikeKeys.js"]},"node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/node_modules/engine.io-parser/lib/keys.js":{"index":199,"hash":"oFyKNTA0twlyQVhVzp9n","parents":["node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/node_modules/engine.io-parser/lib/browser.js"]},"node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/node_modules/engine.io-parser/node_modules/wtf-8/wtf-8.js":{"index":204,"hash":"5QrkxASQeXziEO0/dt+3","parents":["node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/node_modules/engine.io-parser/lib/browser.js"]},"node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/node_modules/engine.io-parser/node_modules/after/index.js":{"index":200,"hash":"NzPfXWECmM8rW/6fdkcj","parents":["node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/node_modules/engine.io-parser/lib/browser.js"]},"node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/node_modules/engine.io-parser/node_modules/blob/index.js":{"index":203,"hash":"q7L6uHK9eN9yEvDVNxJw","parents":["node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/node_modules/engine.io-parser/lib/browser.js"]},"node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/node_modules/engine.io-parser/node_modules/arraybuffer.slice/index.js":{"index":201,"hash":"RSb5Zx9CgX3adjzbvf/k","parents":["node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/node_modules/engine.io-parser/lib/browser.js"]},"node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/node_modules/engine.io-parser/node_modules/base64-arraybuffer/lib/base64-arraybuffer.js":{"index":202,"hash":"8XSfHUrJJCZLdLVRE4Xb","parents":["node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/node_modules/engine.io-parser/lib/browser.js"]},"node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/node_modules/engine.io-parser/lib/browser.js":{"index":198,"hash":"Oa/D6NTXKCm7QJPlaAXe","parents":["node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/lib/transport.js","node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/lib/transports/websocket.js","node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/lib/transports/polling.js","node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/lib/socket.js","node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/lib/index.js"]},"node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/node_modules/parsejson/index.js":{"index":206,"hash":"wxV8aXhg9hh6MyO+FO0c","parents":["node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/lib/socket.js"]},"node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/node_modules/parseqs/index.js":{"index":207,"hash":"bFhhlHvfi+om+FJQz11d","parents":["node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/lib/transports/websocket.js","node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/lib/transports/polling.js","node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/lib/socket.js"]},"node_modules/browserify-hmr/node_modules/lodash/_isKey.js":{"index":109,"hash":"D13Ok63JqktDADwmaeBu","parents":["node_modules/browserify-hmr/node_modules/lodash/property.js","node_modules/browserify-hmr/node_modules/lodash/_castPath.js","node_modules/browserify-hmr/node_modules/lodash/_baseMatchesProperty.js"]},"node_modules/browserify-hmr/node_modules/lodash/isSymbol.js":{"index":164,"hash":"uIIRbxfQUXadoioCe5+N","parents":["node_modules/browserify-hmr/node_modules/lodash/_isKey.js","node_modules/browserify-hmr/node_modules/lodash/_toKey.js","node_modules/browserify-hmr/node_modules/lodash/_baseToString.js"]},"node_modules/browserify-hmr/node_modules/lodash/_isStrictComparable.js":{"index":113,"hash":"rbCwfHyEpUrj4Z98kqqR","parents":["node_modules/browserify-hmr/node_modules/lodash/_getMatchData.js","node_modules/browserify-hmr/node_modules/lodash/_baseMatchesProperty.js"]},"node_modules/browserify-hmr/node_modules/lodash/_baseHasIn.js":{"index":59,"hash":"+7Ad7hoG+3kwDHiM0tNn","parents":["node_modules/browserify-hmr/node_modules/lodash/hasIn.js"]},"node_modules/browserify-hmr/node_modules/lodash/isObjectLike.js":{"index":163,"hash":"qRO1rf+QsMbu/mjKbljZ","parents":["node_modules/browserify-hmr/node_modules/lodash/isSymbol.js","node_modules/browserify-hmr/node_modules/lodash/_baseIsArguments.js","node_modules/browserify-hmr/node_modules/lodash/isArguments.js","node_modules/browserify-hmr/node_modules/lodash/_baseIsTypedArray.js","node_modules/browserify-hmr/node_modules/lodash/_baseIsEqual.js"]},"node_modules/browserify-hmr/node_modules/lodash/_basePropertyDeep.js":{"index":72,"hash":"Zfrh9AQz1Ry2yPu2pByv","parents":["node_modules/browserify-hmr/node_modules/lodash/property.js"]},"node_modules/browserify-hmr/node_modules/lodash/_baseGet.js":{"index":56,"hash":"EQWKE8NGYTKR53FHpqW6","parents":["node_modules/browserify-hmr/node_modules/lodash/_basePropertyDeep.js","node_modules/browserify-hmr/node_modules/lodash/get.js"]},"node_modules/browserify-hmr/node_modules/lodash/property.js":{"index":170,"hash":"2hJfadtQXM/U3NbWpzGR","parents":["node_modules/browserify-hmr/node_modules/lodash/_baseIteratee.js"]},"node_modules/browserify-hmr/node_modules/lodash/_toKey.js":{"index":145,"hash":"Fva7n1CrZYGNyjdfKbt3","parents":["node_modules/browserify-hmr/node_modules/lodash/property.js","node_modules/browserify-hmr/node_modules/lodash/_hasPath.js","node_modules/browserify-hmr/node_modules/lodash/_baseGet.js","node_modules/browserify-hmr/node_modules/lodash/_baseMatchesProperty.js"]},"node_modules/browserify-hmr/node_modules/lodash/_getMatchData.js":{"index":95,"hash":"QzO7KFepX9S2dqnbKqgt","parents":["node_modules/browserify-hmr/node_modules/lodash/_baseMatches.js"]},"node_modules/browserify-hmr/node_modules/lodash/_objectToString.js":{"index":130,"hash":"gcC0LTB2iC1gNln4H3WI","parents":["node_modules/browserify-hmr/node_modules/lodash/_baseGetTag.js"]},"node_modules/browserify-hmr/node_modules/lodash/_overArg.js":{"index":131,"hash":"DrVoGwBMK8ywtUgJJMWJ","parents":["node_modules/browserify-hmr/node_modules/lodash/_nativeKeys.js"]},"node_modules/browserify-hmr/node_modules/lodash/_nativeKeys.js":{"index":128,"hash":"Ksoa4f854F0/NggsS0Yh","parents":["node_modules/browserify-hmr/node_modules/lodash/_baseKeys.js"]},"node_modules/browserify-hmr/node_modules/lodash/_baseKeys.js":{"index":67,"hash":"kmg69OeKnhCzjV1WMGzu","parents":["node_modules/browserify-hmr/node_modules/lodash/keys.js"]},"node_modules/browserify-hmr/node_modules/lodash/_baseUnary.js":{"index":78,"hash":"cMYMf5ZcCBeLWbK9TQmI","parents":["node_modules/browserify-hmr/node_modules/lodash/isTypedArray.js"]},"node_modules/browserify-hmr/node_modules/lodash/stubFalse.js":{"index":173,"hash":"bsNH9caMXr7Pdt8ruFJt","parents":["node_modules/browserify-hmr/node_modules/lodash/isBuffer.js"]},"node_modules/browserify-hmr/node_modules/lodash/_apply.js":{"index":42,"hash":"XKkzZTghrlK6WTNW2Mdh","parents":["node_modules/browserify-hmr/node_modules/lodash/_overRest.js"]},"node_modules/browserify-hmr/node_modules/lodash/_overRest.js":{"index":132,"hash":"iDNTQ1nLZv3jwCD1fhKA","parents":["node_modules/browserify-hmr/node_modules/lodash/_baseRest.js"]},"node_modules/browserify-hmr/node_modules/lodash/_shortOut.js":{"index":138,"hash":"IoUeHrEOcxqBK99ieVfK","parents":["node_modules/browserify-hmr/node_modules/lodash/_setToString.js"]},"node_modules/browserify-hmr/node_modules/lodash/_getValue.js":{"index":100,"hash":"ECu3UgrdoHGLOVPWr5mD","parents":["node_modules/browserify-hmr/node_modules/lodash/_getNative.js"]},"node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/lib/transport.js":{"index":190,"hash":"mp7fZlClWfLgH++23uT2","parents":["node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/lib/transports/websocket.js","node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/lib/transports/polling.js","node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/lib/socket.js"]},"node_modules/watchify/node_modules/browserify/node_modules/browser-resolve/empty.js":{"index":224,"hash":"47DEQpj8HBSa+/TImW+5","parents":["node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/lib/transports/websocket.js"]},"node_modules/browserify-hmr/node_modules/lodash/_baseGetTag.js":{"index":58,"hash":"ydPbt27q/TAHvOyjdq/H","parents":["node_modules/browserify-hmr/node_modules/lodash/isSymbol.js","node_modules/browserify-hmr/node_modules/lodash/isFunction.js","node_modules/browserify-hmr/node_modules/lodash/_baseIsArguments.js","node_modules/browserify-hmr/node_modules/lodash/_baseIsTypedArray.js","node_modules/browserify-hmr/node_modules/lodash/_getTag.js"]},"node_modules/browserify-hmr/node_modules/lodash/_hasPath.js":{"index":101,"hash":"H9ddOWkLPRuFYq8fwTEv","parents":["node_modules/browserify-hmr/node_modules/lodash/hasIn.js"]},"node_modules/browserify-hmr/node_modules/lodash/isArguments.js":{"index":156,"hash":"iJIbQ7nb4q+C1riPMj/b","parents":["node_modules/browserify-hmr/node_modules/lodash/_hasPath.js","node_modules/browserify-hmr/node_modules/lodash/_arrayLikeKeys.js"]},"node_modules/browserify-hmr/node_modules/lodash/_castPath.js":{"index":82,"hash":"GgKBkmr1sBRSb1yd72qJ","parents":["node_modules/browserify-hmr/node_modules/lodash/_hasPath.js","node_modules/browserify-hmr/node_modules/lodash/_baseGet.js"]},"node_modules/browserify-hmr/node_modules/lodash/hasIn.js":{"index":154,"hash":"o6j7gwruD7qKNbgMUe0j","parents":["node_modules/browserify-hmr/node_modules/lodash/_baseMatchesProperty.js"]},"node_modules/browserify-hmr/node_modules/lodash/_stackDelete.js":{"index":140,"hash":"LXafI5DDGP0wDwfpw8/U","parents":["node_modules/browserify-hmr/node_modules/lodash/_Stack.js"]},"node_modules/browserify-hmr/node_modules/lodash/_stackGet.js":{"index":141,"hash":"BoHW4uFMtND7Gi+JPdJf","parents":["node_modules/browserify-hmr/node_modules/lodash/_Stack.js"]},"node_modules/browserify-hmr/node_modules/lodash/_stackHas.js":{"index":142,"hash":"thY5y8jBCnJMfegnSD/V","parents":["node_modules/browserify-hmr/node_modules/lodash/_Stack.js"]},"node_modules/browserify-hmr/node_modules/lodash/_getRawTag.js":{"index":97,"hash":"MUL9l/iYFvZaG1vReTH3","parents":["node_modules/browserify-hmr/node_modules/lodash/_baseGetTag.js"]},"node_modules/browserify-hmr/node_modules/lodash/_Symbol.js":{"index":39,"hash":"I77NsH5p3PRVWpJOtN3+","parents":["node_modules/browserify-hmr/node_modules/lodash/_getRawTag.js","node_modules/browserify-hmr/node_modules/lodash/_baseGetTag.js","node_modules/browserify-hmr/node_modules/lodash/_equalByTag.js","node_modules/browserify-hmr/node_modules/lodash/_baseToString.js"]},"node_modules/browserify-hmr/node_modules/lodash/_root.js":{"index":133,"hash":"MupxTyUFdnn90wmcJpPL","parents":["node_modules/browserify-hmr/node_modules/lodash/_Symbol.js","node_modules/browserify-hmr/node_modules/lodash/isBuffer.js","node_modules/browserify-hmr/node_modules/lodash/_Uint8Array.js","node_modules/browserify-hmr/node_modules/lodash/_DataView.js","node_modules/browserify-hmr/node_modules/lodash/_Map.js","node_modules/browserify-hmr/node_modules/lodash/_Promise.js","node_modules/browserify-hmr/node_modules/lodash/_WeakMap.js","node_modules/browserify-hmr/node_modules/lodash/_Set.js","node_modules/browserify-hmr/node_modules/lodash/_coreJsData.js"]},"node_modules/browserify-hmr/node_modules/lodash/isFunction.js":{"index":160,"hash":"0gysC+rTcZlhPWD04ANh","parents":["node_modules/browserify-hmr/node_modules/lodash/isArrayLike.js","node_modules/browserify-hmr/node_modules/lodash/_baseIsNative.js"]},"node_modules/browserify-hmr/node_modules/lodash/_baseIsArguments.js":{"index":60,"hash":"caWdwJw13ty+5+1x9erg","parents":["node_modules/browserify-hmr/node_modules/lodash/isArguments.js"]},"node_modules/browserify-hmr/node_modules/lodash/_baseIsTypedArray.js":{"index":65,"hash":"cPl0GH9tkUCpceUV6gAk","parents":["node_modules/browserify-hmr/node_modules/lodash/isTypedArray.js"]},"node_modules/browserify-hmr/node_modules/lodash/_freeGlobal.js":{"index":92,"hash":"JkBVfFsfGmCLIMhuNXD1","parents":["node_modules/browserify-hmr/node_modules/lodash/_nodeUtil.js","node_modules/browserify-hmr/node_modules/lodash/_root.js"]},"node_modules/browserify-hmr/node_modules/lodash/_nodeUtil.js":{"index":129,"hash":"a5iiX2Zkv5BTWgreCV8c","parents":["node_modules/browserify-hmr/node_modules/lodash/isTypedArray.js"]},"node_modules/browserify-hmr/node_modules/lodash/isTypedArray.js":{"index":165,"hash":"pNInOnl/2pKh0f1gDzOT","parents":["node_modules/browserify-hmr/node_modules/lodash/_arrayLikeKeys.js","node_modules/browserify-hmr/node_modules/lodash/_baseIsEqualDeep.js"]},"node_modules/browserify-hmr/node_modules/lodash/isBuffer.js":{"index":159,"hash":"Uzhm1jNtW1f55Gsz24+8","parents":["node_modules/browserify-hmr/node_modules/lodash/_arrayLikeKeys.js","node_modules/browserify-hmr/node_modules/lodash/_baseIsEqualDeep.js"]},"node_modules/browserify-hmr/node_modules/lodash/_arrayLikeKeys.js":{"index":45,"hash":"RWu/FT9WAfaDXPoucuiD","parents":["node_modules/browserify-hmr/node_modules/lodash/keys.js"]},"node_modules/browserify-hmr/node_modules/lodash/constant.js":{"index":148,"hash":"E/D07UC1hh81w2R6/inn","parents":["node_modules/browserify-hmr/node_modules/lodash/_baseSetToString.js"]},"node_modules/browserify-hmr/node_modules/lodash/_baseSetToString.js":{"index":74,"hash":"iLxL219sz9iCOrPJz82a","parents":["node_modules/browserify-hmr/node_modules/lodash/_setToString.js"]},"node_modules/browserify-hmr/node_modules/lodash/_defineProperty.js":{"index":88,"hash":"0CbMU6r+0Uq1gikE9oNA","parents":["node_modules/browserify-hmr/node_modules/lodash/_baseSetToString.js","node_modules/browserify-hmr/node_modules/lodash/_baseAssignValue.js"]},"node_modules/browserify-hmr/node_modules/lodash/_setToString.js":{"index":137,"hash":"hu7pnSotmEJV3Wx9OsJa","parents":["node_modules/browserify-hmr/node_modules/lodash/_baseRest.js"]},"node_modules/browserify-hmr/node_modules/lodash/_baseRest.js":{"index":73,"hash":"SUX2Uj3EprmvmkcHcoY/","parents":["node_modules/browserify-hmr/node_modules/lodash/_createAssigner.js"]},"node_modules/browserify-hmr/node_modules/lodash/_createAssigner.js":{"index":85,"hash":"JEqSu7xxpSyH40Y4GJ+V","parents":["node_modules/browserify-hmr/node_modules/lodash/assign.js"]},"node_modules/browserify-hmr/node_modules/lodash/assign.js":{"index":147,"hash":"6X7UP3eqxcj6o2ias2ID","parents":["node_modules/browserify-hmr/inc/index.js"]},"node_modules/browserify-hmr/node_modules/lodash/_toSource.js":{"index":146,"hash":"qhQsP8sNq2kil796yxWO","parents":["node_modules/browserify-hmr/node_modules/lodash/_getTag.js","node_modules/browserify-hmr/node_modules/lodash/_baseIsNative.js"]},"node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/node_modules/has-cors/index.js":{"index":205,"hash":"HwTb4UF/S089ZYA8hrRl","parents":["node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/lib/xmlhttprequest.js"]},"node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/lib/xmlhttprequest.js":{"index":196,"hash":"bdorKhduNvEqwPS8Ryma","parents":["node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/lib/transports/polling.js","node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/lib/transports/polling-xhr.js","node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/lib/transports/index.js"]},"node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/node_modules/component-inherit/index.js":{"index":197,"hash":"T0Fqch4d4akvlr8bh7lc","parents":["node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/lib/transports/websocket.js","node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/lib/transports/polling-jsonp.js","node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/lib/transports/polling.js","node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/lib/transports/polling-xhr.js"]},"node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/node_modules/yeast/index.js":{"index":208,"hash":"ZM3+5w4l/D2f6x7svySF","parents":["node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/lib/transports/websocket.js","node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/lib/transports/polling.js"]},"node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/lib/transports/websocket.js":{"index":195,"hash":"T9c/ggKNrbmnrHTUqZ8f","parents":["node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/lib/transports/index.js"]},"node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/lib/transports/polling-jsonp.js":{"index":192,"hash":"oEkG83OYr+yF9+O6KIZU","parents":["node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/lib/transports/index.js"]},"node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/lib/transports/polling.js":{"index":194,"hash":"iR9NdLeAEs8vSYk/mMqT","parents":["node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/lib/transports/polling-jsonp.js","node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/lib/transports/polling-xhr.js"]},"node_modules/browserify-hmr/node_modules/lodash/_setToArray.js":{"index":136,"hash":"gUyAUZoZS3v/gnhOBsLW","parents":["node_modules/browserify-hmr/node_modules/lodash/_equalByTag.js"]},"node_modules/browserify-hmr/node_modules/lodash/_mapToArray.js":{"index":124,"hash":"XUQTl0anVZnXaUOrmxD7","parents":["node_modules/browserify-hmr/node_modules/lodash/_equalByTag.js"]},"node_modules/browserify-hmr/node_modules/lodash/_cacheHas.js":{"index":80,"hash":"zwJaX7fkgHAdYeTtYO2G","parents":["node_modules/browserify-hmr/node_modules/lodash/_equalArrays.js"]},"node_modules/browserify-hmr/node_modules/lodash/_stackClear.js":{"index":139,"hash":"ibWAz8K0fFq6Bb0SS4B7","parents":["node_modules/browserify-hmr/node_modules/lodash/_Stack.js"]},"node_modules/browserify-hmr/node_modules/lodash/_ListCache.js":{"index":32,"hash":"KxC/aKLlcuOS+PWx1HyP","parents":["node_modules/browserify-hmr/node_modules/lodash/_stackClear.js","node_modules/browserify-hmr/node_modules/lodash/_mapCacheClear.js","node_modules/browserify-hmr/node_modules/lodash/_stackSet.js","node_modules/browserify-hmr/node_modules/lodash/_Stack.js"]},"node_modules/browserify-hmr/node_modules/lodash/_listCacheClear.js":{"index":114,"hash":"CHLB/DjalyhgxdfpsCnW","parents":["node_modules/browserify-hmr/node_modules/lodash/_ListCache.js"]},"node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/lib/transports/polling-xhr.js":{"index":193,"hash":"4NXW28jfIrijZLTpANlT","parents":["node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/lib/transports/index.js"]},"node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/lib/transports/index.js":{"index":191,"hash":"oFkQ4RgDHQJ8Ae5piZNj","parents":["node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/lib/socket.js"]},"node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/lib/socket.js":{"index":189,"hash":"kT2TeXgVs1CyKphjblzf","parents":["node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/lib/index.js"]},"node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/lib/index.js":{"index":188,"hash":"G6QYuSNu0EcS+G5tR9NE","parents":["node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/index.js"]},"node_modules/browserify-hmr/node_modules/socket.io-client/node_modules/engine.io-client/index.js":{"index":187,"hash":"TaZh2zcEs5+SiarJ3uJN","parents":["node_modules/browserify-hmr/node_modules/socket.io-client/lib/manager.js"]},"node_modules/browserify-hmr/node_modules/socket.io-client/lib/manager.js":{"index":177,"hash":"ea8fbXBXjC66BIPF5Pam","parents":["node_modules/browserify-hmr/node_modules/socket.io-client/lib/index.js"]},"node_modules/browserify-hmr/node_modules/socket.io-client/lib/index.js":{"index":176,"hash":"s/15kyEjN0kWB5dYl/1h","parents":[]},"node_modules/browserify-hmr/node_modules/lodash/_Uint8Array.js":{"index":40,"hash":"Zc6+hCmhnXc0Y6Asmckn","parents":["node_modules/browserify-hmr/node_modules/lodash/_equalByTag.js"]},"node_modules/browserify-hmr/node_modules/lodash/_equalByTag.js":{"index":90,"hash":"5sdsIGyCGshbuSoIxoXa","parents":["node_modules/browserify-hmr/node_modules/lodash/_baseIsEqualDeep.js"]},"node_modules/browserify-hmr/node_modules/lodash/_equalArrays.js":{"index":89,"hash":"FLnT7PvdDDobU/p0ty8u","parents":["node_modules/browserify-hmr/node_modules/lodash/_equalByTag.js","node_modules/browserify-hmr/node_modules/lodash/_baseIsEqualDeep.js"]},"node_modules/browserify-hmr/node_modules/lodash/_DataView.js":{"index":30,"hash":"N7jUbJyl5TusFXojFUuz","parents":["node_modules/browserify-hmr/node_modules/lodash/_getTag.js"]},"node_modules/browserify-hmr/node_modules/lodash/_getNative.js":{"index":96,"hash":"c5Ljj0yzzW4dPj+JomYZ","parents":["node_modules/browserify-hmr/node_modules/lodash/_DataView.js","node_modules/browserify-hmr/node_modules/lodash/_Map.js","node_modules/browserify-hmr/node_modules/lodash/_Promise.js","node_modules/browserify-hmr/node_modules/lodash/_WeakMap.js","node_modules/browserify-hmr/node_modules/lodash/_Set.js","node_modules/browserify-hmr/node_modules/lodash/_defineProperty.js","node_modules/browserify-hmr/node_modules/lodash/_nativeCreate.js"]},"node_modules/browserify-hmr/node_modules/lodash/_Map.js":{"index":33,"hash":"aezyd9/dXR4WmT/cJk4B","parents":["node_modules/browserify-hmr/node_modules/lodash/_getTag.js","node_modules/browserify-hmr/node_modules/lodash/_mapCacheClear.js","node_modules/browserify-hmr/node_modules/lodash/_stackSet.js"]},"node_modules/browserify-hmr/node_modules/lodash/_Promise.js":{"index":35,"hash":"T4OR1RtxAOTYyC9xrI13","parents":["node_modules/browserify-hmr/node_modules/lodash/_getTag.js"]},"node_modules/browserify-hmr/node_modules/lodash/_WeakMap.js":{"index":41,"hash":"iuNSA30LsHH/h10pNsQ6","parents":["node_modules/browserify-hmr/node_modules/lodash/_getTag.js"]},"node_modules/browserify-hmr/node_modules/lodash/_Set.js":{"index":36,"hash":"BRcgMZjGEVgVhv4GaR6q","parents":["node_modules/browserify-hmr/node_modules/lodash/_getTag.js"]},"node_modules/browserify-hmr/node_modules/lodash/_getTag.js":{"index":99,"hash":"rZSqomckxeMx8IEK6dQG","parents":["node_modules/browserify-hmr/node_modules/lodash/_baseIsEqualDeep.js"]},"node_modules/browserify-hmr/node_modules/lodash/_setCacheAdd.js":{"index":134,"hash":"yUbHLrOe8uWgSDa2EOmH","parents":["node_modules/browserify-hmr/node_modules/lodash/_SetCache.js"]},"node_modules/browserify-hmr/node_modules/lodash/_setCacheHas.js":{"index":135,"hash":"aSivpixRq6mV4rYXkVzt","parents":["node_modules/browserify-hmr/node_modules/lodash/_SetCache.js"]},"node_modules/browserify-hmr/node_modules/lodash/_SetCache.js":{"index":37,"hash":"DKcn0VM+nqBtuxUGd3JS","parents":["node_modules/browserify-hmr/node_modules/lodash/_equalArrays.js"]},"node_modules/browserify-hmr/node_modules/lodash/_MapCache.js":{"index":34,"hash":"XbhLy8omrsa87tk7GrBc","parents":["node_modules/browserify-hmr/node_modules/lodash/_SetCache.js","node_modules/browserify-hmr/node_modules/lodash/memoize.js","node_modules/browserify-hmr/node_modules/lodash/_stackSet.js"]},"node_modules/browserify-hmr/node_modules/lodash/_listCacheHas.js":{"index":117,"hash":"2tu2JqPxTVjaJm/WbeGw","parents":["node_modules/browserify-hmr/node_modules/lodash/_ListCache.js"]},"node_modules/browserify-hmr/node_modules/lodash/_assocIndexOf.js":{"index":50,"hash":"+YtyXqBKKXnwrSmv/2eU","parents":["node_modules/browserify-hmr/node_modules/lodash/_listCacheHas.js","node_modules/browserify-hmr/node_modules/lodash/_listCacheGet.js","node_modules/browserify-hmr/node_modules/lodash/_listCacheSet.js","node_modules/browserify-hmr/node_modules/lodash/_listCacheDelete.js"]},"node_modules/browserify-hmr/node_modules/lodash/_listCacheGet.js":{"index":116,"hash":"SZAC3U/+BLssJw9WKbhb","parents":["node_modules/browserify-hmr/node_modules/lodash/_ListCache.js"]},"node_modules/browserify-hmr/node_modules/lodash/_listCacheSet.js":{"index":118,"hash":"dVcwdgHP8vQHHPnX+pql","parents":["node_modules/browserify-hmr/node_modules/lodash/_ListCache.js"]},"node_modules/browserify-hmr/node_modules/lodash/_coreJsData.js":{"index":84,"hash":"mWDHPw3O0bwyURVR4xz+","parents":["node_modules/browserify-hmr/node_modules/lodash/_isMasked.js"]},"node_modules/browserify-hmr/node_modules/lodash/_isMasked.js":{"index":111,"hash":"vCLMgg9t+moWMD2eCyQw","parents":["node_modules/browserify-hmr/node_modules/lodash/_baseIsNative.js"]},"node_modules/browserify-hmr/node_modules/lodash/_baseIsNative.js":{"index":64,"hash":"HplAaZjQs9R/bNG2XV0a","parents":["node_modules/browserify-hmr/node_modules/lodash/_getNative.js"]},"node_modules/browserify-hmr/node_modules/lodash/mapValues.js":{"index":168,"hash":"wGzYh7rOmnr5NbNf31Xh","parents":["node_modules/browserify-hmr/inc/index.js"]},"node_modules/browserify-hmr/node_modules/lodash/_baseToString.js":{"index":77,"hash":"AnA1FrHVlMlph8hPfQFk","parents":["node_modules/browserify-hmr/node_modules/lodash/toString.js"]},"node_modules/browserify-hmr/node_modules/lodash/toString.js":{"index":174,"hash":"u6lNu4mjQVTOavtG4Hpr","parents":["node_modules/browserify-hmr/node_modules/lodash/_castPath.js"]},"node_modules/browserify-hmr/node_modules/lodash/_arrayPush.js":{"index":47,"hash":"/EQp182bKyQYd9DyjHRq","parents":["node_modules/browserify-hmr/node_modules/lodash/_baseGetAllKeys.js"]},"node_modules/browserify-hmr/node_modules/lodash/_baseGetAllKeys.js":{"index":57,"hash":"G/yC9530/ahn/dgrrslT","parents":["node_modules/browserify-hmr/node_modules/lodash/_getAllKeys.js"]},"node_modules/browserify-hmr/node_modules/lodash/stubArray.js":{"index":172,"hash":"hpV3ZtG8dCYBLEBt0XqS","parents":["node_modules/browserify-hmr/node_modules/lodash/_getSymbols.js"]},"node_modules/browserify-hmr/node_modules/lodash/_getSymbols.js":{"index":98,"hash":"PoUL82x850fu8UHfzZjw","parents":["node_modules/browserify-hmr/node_modules/lodash/_getAllKeys.js"]},"node_modules/browserify-hmr/node_modules/lodash/_getAllKeys.js":{"index":93,"hash":"3JYThcdBa6xFuMLEJAcf","parents":["node_modules/browserify-hmr/node_modules/lodash/_equalObjects.js"]},"node_modules/browserify-hmr/node_modules/lodash/_equalObjects.js":{"index":91,"hash":"Rc9NYU8R1s/bWUnUOXOJ","parents":["node_modules/browserify-hmr/node_modules/lodash/_baseIsEqualDeep.js"]},"node_modules/browserify-hmr/node_modules/lodash/_baseIsEqualDeep.js":{"index":62,"hash":"a5Qj+02BWo5995Nobe+v","parents":["node_modules/browserify-hmr/node_modules/lodash/_baseIsEqual.js"]},"node_modules/browserify-hmr/node_modules/lodash/_Stack.js":{"index":38,"hash":"/wytiRFlfgg4krF9Qz6a","parents":["node_modules/browserify-hmr/node_modules/lodash/_baseIsEqualDeep.js","node_modules/browserify-hmr/node_modules/lodash/_baseIsMatch.js"]},"node_modules/browserify-hmr/node_modules/lodash/_baseIsEqual.js":{"index":61,"hash":"IfD9jeZw2S45+s0BZ1L3","parents":["node_modules/browserify-hmr/node_modules/lodash/_baseMatchesProperty.js","node_modules/browserify-hmr/node_modules/lodash/_baseIsMatch.js"]},"node_modules/browserify-hmr/node_modules/lodash/_listCacheDelete.js":{"index":115,"hash":"o3YDg6klGWlCS2PgzZy+","parents":["node_modules/browserify-hmr/node_modules/lodash/_ListCache.js"]},"node_modules/browserify-hmr/node_modules/lodash/_mapCacheHas.js":{"index":122,"hash":"S0HdvBVxOySQIIMRmtf0","parents":["node_modules/browserify-hmr/node_modules/lodash/_MapCache.js"]},"node_modules/browserify-hmr/node_modules/lodash/_getMapData.js":{"index":94,"hash":"ZdeLudBY90L64kFsAIQL","parents":["node_modules/browserify-hmr/node_modules/lodash/_mapCacheHas.js","node_modules/browserify-hmr/node_modules/lodash/_mapCacheDelete.js","node_modules/browserify-hmr/node_modules/lodash/_mapCacheGet.js","node_modules/browserify-hmr/node_modules/lodash/_mapCacheSet.js"]},"node_modules/browserify-hmr/node_modules/lodash/_mapCacheDelete.js":{"index":120,"hash":"Y2RLt8NGt0Im9c9uXXcS","parents":["node_modules/browserify-hmr/node_modules/lodash/_MapCache.js"]},"node_modules/browserify-hmr/node_modules/lodash/_mapCacheGet.js":{"index":121,"hash":"dglUiNgT6mYn3/TLOqMD","parents":["node_modules/browserify-hmr/node_modules/lodash/_MapCache.js"]},"node_modules/browserify-hmr/node_modules/lodash/memoize.js":{"index":169,"hash":"avTk3nhklvyvSxLNiUwd","parents":["node_modules/browserify-hmr/node_modules/lodash/_memoizeCapped.js"]},"node_modules/browserify-hmr/node_modules/lodash/_memoizeCapped.js":{"index":126,"hash":"HacnckK3nw4vtSYbX7i/","parents":["node_modules/browserify-hmr/node_modules/lodash/_stringToPath.js"]},"node_modules/browserify-hmr/node_modules/lodash/_stringToPath.js":{"index":144,"hash":"nTlFZDUaGsY0w/l3Daka","parents":["node_modules/browserify-hmr/node_modules/lodash/_castPath.js"]},"node_modules/browserify-hmr/node_modules/lodash/get.js":{"index":153,"hash":"l8Xm0+dbrUDVfD0OVsKH","parents":["node_modules/browserify-hmr/node_modules/lodash/_baseMatchesProperty.js"]},"node_modules/browserify-hmr/node_modules/lodash/_baseMatchesProperty.js":{"index":70,"hash":"JUSg/+I63FvjCRBMWDG8","parents":["node_modules/browserify-hmr/node_modules/lodash/_baseIteratee.js"]},"node_modules/browserify-hmr/node_modules/lodash/_isKeyable.js":{"index":110,"hash":"NQsK9iVUkTA1EsHPdaK1","parents":["node_modules/browserify-hmr/node_modules/lodash/_getMapData.js"]},"node_modules/browserify-hmr/node_modules/lodash/_mapCacheSet.js":{"index":123,"hash":"Rk8Cf6ZeJaOWzM2bXiED","parents":["node_modules/browserify-hmr/node_modules/lodash/_MapCache.js"]},"node_modules/browserify-hmr/node_modules/lodash/_hashDelete.js":{"index":103,"hash":"CmVwjIdw4ONOgfUyiaMT","parents":["node_modules/browserify-hmr/node_modules/lodash/_Hash.js"]},"node_modules/browserify-hmr/node_modules/lodash/_hashSet.js":{"index":106,"hash":"GANy9myYOl9CQUX6Hi+w","parents":["node_modules/browserify-hmr/node_modules/lodash/_Hash.js"]},"node_modules/browserify-hmr/node_modules/lodash/_nativeCreate.js":{"index":127,"hash":"QnEWfxsVWqcrQRLl5xaD","parents":["node_modules/browserify-hmr/node_modules/lodash/_hashSet.js","node_modules/browserify-hmr/node_modules/lodash/_hashClear.js","node_modules/browserify-hmr/node_modules/lodash/_hashGet.js","node_modules/browserify-hmr/node_modules/lodash/_hashHas.js"]},"node_modules/browserify-hmr/node_modules/lodash/_hashClear.js":{"index":102,"hash":"2feZ9hRgUzW8Djw0JrqE","parents":["node_modules/browserify-hmr/node_modules/lodash/_Hash.js"]},"node_modules/browserify-hmr/node_modules/lodash/_hashGet.js":{"index":104,"hash":"dc0CR5GuEuyIhxwkyCwj","parents":["node_modules/browserify-hmr/node_modules/lodash/_Hash.js"]},"node_modules/browserify-hmr/node_modules/lodash/_hashHas.js":{"index":105,"hash":"fr70n7H4vKHBcQoEXEpO","parents":["node_modules/browserify-hmr/node_modules/lodash/_Hash.js"]},"node_modules/browserify-hmr/node_modules/lodash/_Hash.js":{"index":31,"hash":"hTyKHFwLDhT8hzgE2zlD","parents":["node_modules/browserify-hmr/node_modules/lodash/_mapCacheClear.js"]},"node_modules/browserify-hmr/node_modules/lodash/_mapCacheClear.js":{"index":119,"hash":"6D5+Bp90PNozl9Vr8wu2","parents":["node_modules/browserify-hmr/node_modules/lodash/_MapCache.js"]},"node_modules/browserify-hmr/node_modules/lodash/_stackSet.js":{"index":143,"hash":"rFq/zAhyEaIffTCH45Gf","parents":["node_modules/browserify-hmr/node_modules/lodash/_Stack.js"]},"node_modules/browserify-hmr/node_modules/lodash/_baseIsMatch.js":{"index":63,"hash":"yrF79Y2F5RiVXHPZgzhK","parents":["node_modules/browserify-hmr/node_modules/lodash/_baseMatches.js"]},"node_modules/browserify-hmr/node_modules/lodash/_baseMatches.js":{"index":69,"hash":"eM6GzX+YFfSSvWUut1RW","parents":["node_modules/browserify-hmr/node_modules/lodash/_baseIteratee.js"]},"node_modules/browserify-hmr/node_modules/lodash/filter.js":{"index":150,"hash":"xHkJOO00v5Ew3tJEbs2H","parents":["node_modules/browserify-hmr/inc/index.js"]},"node_modules/browserify-hmr/inc/index.js":{"index":27,"hash":"MGH8WksqsFtrirdPnhgt","parents":[]},"node_modules/event-emitter-es6/index.js":{"index":223,"hash":"/+EiX5jfKF2Iv4MvX8xJ","parents":["src/SpeckleReceiver.js"]},"node_modules/axios/lib/cancel/isCancel.js":{"index":7,"hash":"I1e5Pa4+rYUPP2HOlgqQ","parents":["node_modules/axios/lib/core/dispatchRequest.js","node_modules/axios/lib/axios.js"]},"node_modules/axios/lib/cancel/Cancel.js":{"index":5,"hash":"H5p8YXHwES9hf4g5J2Ix","parents":["node_modules/axios/lib/cancel/CancelToken.js","node_modules/axios/lib/axios.js"]},"node_modules/axios/lib/helpers/bind.js":{"index":16,"hash":"7qz63sWc/avguoKZp/Tj","parents":["node_modules/axios/lib/utils.js","node_modules/axios/lib/axios.js"]},"node_modules/axios/lib/helpers/spread.js":{"index":25,"hash":"tRmNydzwpR2+f97xOT2R","parents":["node_modules/axios/lib/axios.js"]},"node_modules/axios/lib/cancel/CancelToken.js":{"index":6,"hash":"FHNSerik6mTW7UK588b6","parents":["node_modules/axios/lib/axios.js"]},"node_modules/axios/lib/utils.js":{"index":26,"hash":"iAJPkkHOoTQ0lV9mgUDF","parents":["node_modules/axios/lib/core/InterceptorManager.js","node_modules/axios/lib/helpers/normalizeHeaderName.js","node_modules/axios/lib/core/transformData.js","node_modules/axios/lib/core/dispatchRequest.js","node_modules/axios/lib/core/Axios.js","node_modules/axios/lib/helpers/buildURL.js","node_modules/axios/lib/helpers/parseHeaders.js","node_modules/axios/lib/helpers/isURLSameOrigin.js","node_modules/axios/lib/helpers/cookies.js","node_modules/axios/lib/adapters/xhr.js","node_modules/axios/lib/defaults.js","node_modules/axios/lib/axios.js"]},"node_modules/axios/lib/helpers/isAbsoluteURL.js":{"index":21,"hash":"vVWCDPr+MX6lpqXv8pbV","parents":["node_modules/axios/lib/core/Axios.js"]},"node_modules/axios/lib/helpers/combineURLs.js":{"index":19,"hash":"WcVx/KakaTKJx+B4Oqlg","parents":["node_modules/axios/lib/core/Axios.js"]},"node_modules/axios/lib/core/InterceptorManager.js":{"index":9,"hash":"eKcTD61ZQvp+fRuqC8MM","parents":["node_modules/axios/lib/core/Axios.js"]},"node_modules/axios/lib/helpers/btoa.js":{"index":17,"hash":"50rlLXO/5hRkYfgSsE36","parents":["node_modules/axios/lib/adapters/xhr.js"]},"node_modules/axios/lib/helpers/normalizeHeaderName.js":{"index":23,"hash":"ZOnEbUQ4gAqyOWXM/MJz","parents":["node_modules/axios/lib/defaults.js"]},"node_modules/axios/lib/core/transformData.js":{"index":14,"hash":"ogPxBrH/+f25p5LI/dDI","parents":["node_modules/axios/lib/core/dispatchRequest.js"]},"node_modules/axios/lib/core/dispatchRequest.js":{"index":11,"hash":"HtiwIy/HS1A24N/qgh+i","parents":["node_modules/axios/lib/core/Axios.js"]},"node_modules/axios/lib/defaults.js":{"index":15,"hash":"qltyCvzMIprq5m6tzw01","parents":["node_modules/axios/lib/core/dispatchRequest.js","node_modules/axios/lib/core/Axios.js","node_modules/axios/lib/axios.js"]},"node_modules/axios/lib/core/Axios.js":{"index":8,"hash":"Y6SCtUi9Dxs62r8mPrVj","parents":["node_modules/axios/lib/axios.js"]},"node_modules/axios/lib/helpers/buildURL.js":{"index":18,"hash":"/NGEKCSjJtQmLL9YgQ19","parents":["node_modules/axios/lib/adapters/xhr.js"]},"node_modules/axios/lib/helpers/parseHeaders.js":{"index":24,"hash":"RSaxrIhXzzKyKZUYYMuV","parents":["node_modules/axios/lib/adapters/xhr.js"]},"node_modules/axios/lib/helpers/isURLSameOrigin.js":{"index":22,"hash":"Q23gyeHuCUz6urO9LiH6","parents":["node_modules/axios/lib/adapters/xhr.js"]},"node_modules/axios/lib/helpers/cookies.js":{"index":20,"hash":"bosLflNojvUQNanxX8Ou","parents":["node_modules/axios/lib/adapters/xhr.js"]},"node_modules/axios/lib/core/settle.js":{"index":13,"hash":"oBiMdGYIWstYzLllkvdc","parents":["node_modules/axios/lib/adapters/xhr.js"]},"node_modules/axios/lib/core/createError.js":{"index":10,"hash":"gewqDvLDQxuCJgfCZVcg","parents":["node_modules/axios/lib/core/settle.js","node_modules/axios/lib/adapters/xhr.js"]},"node_modules/axios/lib/core/enhanceError.js":{"index":12,"hash":"jQgfNs13AFaI52OMk6Uz","parents":["node_modules/axios/lib/core/createError.js"]},"node_modules/axios/lib/adapters/xhr.js":{"index":3,"hash":"aAqW8YO7v3QEaiiYtYs7","parents":["node_modules/axios/lib/defaults.js","node_modules/axios/lib/defaults.js"]},"node_modules/axios/lib/axios.js":{"index":4,"hash":"HIDoC1nh7uFupiQwyIon","parents":["node_modules/axios/index.js"]},"node_modules/axios/index.js":{"index":2,"hash":"i3hbSNtq55ltbO/Ev0Ye","parents":["src/SpeckleReceiver.js"]},"src/SpeckleReceiver.js":{"index":226,"hash":"G3xypYxpRmeWaiYSu9hv","parents":["src/main.js"]},"src/main.js":{"index":227,"hash":"GfSvSHnsSbAFUogw4Ki+","parents":[]}};
-  var originalEntries = ["/Users/Bender/Documents/dev/SimpleClients/SpeckleReceiverBrowser/src/main.js"];
+  var moduleMeta = {"node_modules/process/browser.js":{"index":210,"hash":"oZn5/djw+Uvkv+VAfElp","parents":["node_modules/socket.io-client/node_modules/debug/browser.js","node_modules/engine.io-client/node_modules/debug/browser.js","node_modules/axios/lib/adapters/xhr.js","node_modules/axios/lib/defaults.js"]},"node_modules/browserify-hmr/lib/has.js":{"index":34,"hash":"Hky4QYVrU1+kFHIEuxPy","parents":["node_modules/browserify-hmr/lib/str-set.js","node_modules/browserify-hmr/inc/index.js"]},"node_modules/parseuri/index.js":{"index":209,"hash":"EzACpgP8IC8rgl7aVyRs","parents":["node_modules/socket.io-client/lib/url.js","node_modules/engine.io-client/lib/socket.js"]},"node_modules/socket.io-client/lib/url.js":{"index":215,"hash":"2e/RssAdMiqG5G1l8yhX","parents":["node_modules/socket.io-client/lib/index.js"]},"node_modules/socket.io-client/node_modules/debug/browser.js":{"index":217,"hash":"Q9ewCSPMnJcAJRPsyk4r","parents":["node_modules/socket.io-client/lib/url.js","node_modules/socket.io-client/lib/socket.js","node_modules/socket.io-client/lib/manager.js","node_modules/socket.io-client/lib/index.js"]},"node_modules/socket.io-client/lib/on.js":{"index":213,"hash":"tjRZyGGz5Q0MA2qS81HN","parents":["node_modules/socket.io-client/lib/socket.js","node_modules/socket.io-client/lib/manager.js"]},"node_modules/socket.io-client/node_modules/component-emitter/index.js":{"index":216,"hash":"oN00wp8CctwYNQv6ryzF","parents":["node_modules/socket.io-client/lib/socket.js","node_modules/socket.io-client/lib/manager.js"]},"node_modules/to-array/index.js":{"index":226,"hash":"2EoggafxX+GLXkXiaGjm","parents":["node_modules/socket.io-client/lib/socket.js"]},"node_modules/component-bind/index.js":{"index":36,"hash":"4yIcVw+afwUsnTQyI0a3","parents":["node_modules/socket.io-client/lib/socket.js","node_modules/socket.io-client/lib/manager.js"]},"node_modules/socket.io-parser/is-buffer.js":{"index":222,"hash":"UJBXKAfBg/BkigSZbc3Z","parents":["node_modules/socket.io-parser/binary.js","node_modules/socket.io-parser/index.js"]},"node_modules/component-emitter/index.js":{"index":37,"hash":"0uL1LSa/mOj+Llu+HTZ7","parents":["node_modules/socket.io-parser/index.js"]},"node_modules/json3/lib/json3.js":{"index":60,"hash":"LXnegdmM3ELMiM4tQmqu","parents":["node_modules/socket.io-parser/index.js"]},"node_modules/indexof/index.js":{"index":58,"hash":"8zMGV0j0ID5bUIeT7r+M","parents":["node_modules/engine.io-client/lib/socket.js","node_modules/socket.io-client/lib/manager.js"]},"node_modules/backo2/index.js":{"index":29,"hash":"L5ry3mfVEw1wgmx9Sa+q","parents":["node_modules/socket.io-client/lib/manager.js"]},"node_modules/browserify-hmr/lib/str-set.js":{"index":35,"hash":"lcrDmQK4uaqOqN+FV4/9","parents":["node_modules/browserify-hmr/inc/index.js"]},"node_modules/lodash/_baseZipObject.js":{"index":110,"hash":"YXMcZ83l88xZmDNehDaW","parents":["node_modules/lodash/zipObject.js"]},"node_modules/lodash/_arrayMap.js":{"index":77,"hash":"WRdHK1dyumbtZQGeNdoR","parents":["node_modules/lodash/_baseToString.js","node_modules/lodash/map.js"]},"node_modules/lodash/isArray.js":{"index":188,"hash":"aaUaNDXWFSVZ5STriBpj","parents":["node_modules/lodash/filter.js","node_modules/lodash/some.js","node_modules/lodash/forEach.js","node_modules/lodash/_isKey.js","node_modules/lodash/_hasPath.js","node_modules/lodash/_arrayLikeKeys.js","node_modules/lodash/_baseToString.js","node_modules/lodash/_baseGetAllKeys.js","node_modules/lodash/_baseIsEqualDeep.js","node_modules/lodash/_castPath.js","node_modules/lodash/_baseIteratee.js","node_modules/lodash/map.js"]},"node_modules/lodash/_arrayFilter.js":{"index":75,"hash":"Ev1suXdgsby5ZCXCkRms","parents":["node_modules/lodash/filter.js","node_modules/lodash/_getSymbols.js"]},"node_modules/lodash/_arrayEach.js":{"index":74,"hash":"b9UG7X0uCjshbsKWnzke","parents":["node_modules/lodash/forEach.js"]},"node_modules/lodash/_isPrototype.js":{"index":143,"hash":"z7lefPE53MX7955LE/f6","parents":["node_modules/lodash/_baseKeys.js","node_modules/lodash/assign.js"]},"node_modules/lodash/_arraySome.js":{"index":79,"hash":"6MxplN9nt/AmANH1hnTa","parents":["node_modules/lodash/some.js","node_modules/lodash/_equalArrays.js"]},"node_modules/socket.io-client/node_modules/ms/index.js":{"index":219,"hash":"+i3MPFzut0mh8LK6NCY0","parents":["node_modules/socket.io-client/node_modules/debug/debug.js"]},"node_modules/socket.io-client/node_modules/debug/debug.js":{"index":218,"hash":"5FZHGx7z7kdbTIz7MyR0","parents":["node_modules/socket.io-client/node_modules/debug/browser.js"]},"node_modules/isarray/index.js":{"index":59,"hash":"dKtews1S4sHvaZhZ+ceq","parents":["node_modules/has-binary/index.js","node_modules/socket.io-parser/binary.js"]},"node_modules/has-binary/index.js":{"index":56,"hash":"GofcXFXhXC0uVJvLAw+2","parents":["node_modules/socket.io-client/lib/socket.js","node_modules/engine.io-parser/lib/browser.js"]},"node_modules/socket.io-client/lib/socket.js":{"index":214,"hash":"wNz1TmcWcSdV/fISvn75","parents":["node_modules/socket.io-client/lib/manager.js","node_modules/socket.io-client/lib/index.js"]},"node_modules/socket.io-parser/index.js":{"index":221,"hash":"zQr8NKW/h7J7hn1sTsRa","parents":["node_modules/socket.io-client/lib/socket.js","node_modules/socket.io-client/lib/manager.js","node_modules/socket.io-client/lib/index.js"]},"node_modules/socket.io-parser/binary.js":{"index":220,"hash":"bAee8RukaXwuD/OeGN6F","parents":["node_modules/socket.io-parser/index.js"]},"node_modules/lodash/eq.js":{"index":180,"hash":"Be3fJIGKRC2SLwj96dmp","parents":["node_modules/lodash/_assignValue.js","node_modules/lodash/_isIterateeCall.js","node_modules/lodash/_equalByTag.js","node_modules/lodash/_assocIndexOf.js"]},"node_modules/lodash/_assignValue.js":{"index":80,"hash":"hmWN1NJKVbGe2ThBbBed","parents":["node_modules/lodash/zipObject.js","node_modules/lodash/_copyObject.js","node_modules/lodash/assign.js"]},"node_modules/lodash/_baseAssignValue.js":{"index":82,"hash":"UUmMep65Dt8mJru5Df0R","parents":["node_modules/lodash/_assignValue.js","node_modules/lodash/_copyObject.js","node_modules/lodash/mapValues.js"]},"node_modules/lodash/zipObject.js":{"index":206,"hash":"iztwVZmqQ7Y1i6QmGzx9","parents":["node_modules/browserify-hmr/inc/index.js"]},"node_modules/lodash/identity.js":{"index":186,"hash":"s1ZnXuz2CFxX2MXJyb7F","parents":["node_modules/lodash/_castFunction.js","node_modules/lodash/_baseSetToString.js","node_modules/lodash/_baseRest.js","node_modules/lodash/_baseIteratee.js"]},"node_modules/lodash/_baseMap.js":{"index":99,"hash":"d4dyLnzZcVXFzz5tCc58","parents":["node_modules/lodash/map.js"]},"node_modules/lodash/_baseEach.js":{"index":83,"hash":"1eAUgjpN0REUkkfZ9ZIc","parents":["node_modules/lodash/_baseMap.js","node_modules/lodash/_baseFilter.js","node_modules/lodash/_baseSome.js","node_modules/lodash/forEach.js"]},"node_modules/lodash/isArrayLike.js":{"index":189,"hash":"/OCFIiBOK84sMLW6Tiiz","parents":["node_modules/lodash/_baseMap.js","node_modules/lodash/_isIterateeCall.js","node_modules/lodash/_createBaseEach.js","node_modules/lodash/keys.js","node_modules/lodash/assign.js"]},"node_modules/lodash/_baseFilter.js":{"index":84,"hash":"zIF8T84UwJp2X27nHnkJ","parents":["node_modules/lodash/filter.js"]},"node_modules/lodash/filter.js":{"index":181,"hash":"xHkJOO00v5Ew3tJEbs2H","parents":["node_modules/browserify-hmr/inc/index.js"]},"node_modules/lodash/_baseIteratee.js":{"index":97,"hash":"lFdaZihzm4HNQp2V6Bpv","parents":["node_modules/lodash/filter.js","node_modules/lodash/some.js","node_modules/lodash/mapValues.js","node_modules/lodash/map.js"]},"node_modules/lodash/_castFunction.js":{"index":112,"hash":"17Fkqb/JTOTfTCbTGPvs","parents":["node_modules/lodash/forOwn.js","node_modules/lodash/forEach.js"]},"node_modules/lodash/_copyObject.js":{"index":114,"hash":"VAzIjaU/1tssj67rWjf/","parents":["node_modules/lodash/assign.js"]},"node_modules/lodash/isLength.js":{"index":192,"hash":"bwSRxcpcTX/CbMowl+qa","parents":["node_modules/lodash/_hasPath.js","node_modules/lodash/isArrayLike.js","node_modules/lodash/_baseIsTypedArray.js"]},"node_modules/lodash/_baseSome.js":{"index":106,"hash":"/fx+wXc48GKu9ngo/G7R","parents":["node_modules/lodash/some.js"]},"node_modules/lodash/_isIndex.js":{"index":138,"hash":"SCdbG9iCDM1nxzb81i7D","parents":["node_modules/lodash/_isIterateeCall.js","node_modules/lodash/_hasPath.js","node_modules/lodash/_arrayLikeKeys.js"]},"node_modules/lodash/isObject.js":{"index":193,"hash":"H0M3JlacAn8wi5b/SH6J","parents":["node_modules/lodash/_isIterateeCall.js","node_modules/lodash/_isStrictComparable.js","node_modules/lodash/isFunction.js","node_modules/lodash/_baseIsNative.js"]},"node_modules/lodash/_isIterateeCall.js":{"index":139,"hash":"Q6Y/4ZLjPN2hD0x360UE","parents":["node_modules/lodash/some.js","node_modules/lodash/_createAssigner.js"]},"node_modules/lodash/some.js":{"index":202,"hash":"o5R2DTe3L0fWtByoF6NK","parents":["node_modules/browserify-hmr/inc/index.js"]},"node_modules/socket.io-parser/node_modules/ms/index.js":{"index":225,"hash":"HanVKm5AkV6MOdHRAMCT","parents":["node_modules/socket.io-parser/node_modules/debug/debug.js"]},"node_modules/socket.io-parser/node_modules/debug/debug.js":{"index":224,"hash":"yqdR7nJc7wxIHzFDNzG+","parents":["node_modules/socket.io-parser/node_modules/debug/browser.js"]},"node_modules/socket.io-parser/node_modules/debug/browser.js":{"index":223,"hash":"S76q28f1VPJIcCtJn1eq","parents":["node_modules/socket.io-parser/index.js"]},"node_modules/lodash/_matchesStrictComparable.js":{"index":156,"hash":"+OqsD2+K9liTMiGDT3Y4","parents":["node_modules/lodash/_baseMatchesProperty.js","node_modules/lodash/_baseMatches.js"]},"node_modules/lodash/_baseProperty.js":{"index":102,"hash":"kWjeI0xVLXmi/QD9uMSa","parents":["node_modules/lodash/property.js"]},"node_modules/lodash/_createBaseFor.js":{"index":118,"hash":"OeCELp37VytZuCN6Xtr+","parents":["node_modules/lodash/_baseFor.js"]},"node_modules/lodash/_baseFor.js":{"index":85,"hash":"aDRpv9Ysd3A0P68kJrwN","parents":["node_modules/lodash/_baseForOwn.js"]},"node_modules/lodash/_baseForOwn.js":{"index":86,"hash":"wsDmgTH4vz3dPZ0ucogL","parents":["node_modules/lodash/forOwn.js","node_modules/lodash/_baseEach.js","node_modules/lodash/mapValues.js"]},"node_modules/lodash/keys.js":{"index":197,"hash":"AzwEiE+T6QrvlRtU3Z5w","parents":["node_modules/lodash/_baseForOwn.js","node_modules/lodash/_getMatchData.js","node_modules/lodash/assign.js","node_modules/lodash/_getAllKeys.js"]},"node_modules/lodash/forOwn.js":{"index":183,"hash":"Phxs3xQLZ6eXpzVwNsD+","parents":["node_modules/browserify-hmr/inc/index.js"]},"node_modules/lodash/_createBaseEach.js":{"index":117,"hash":"j95laCMPOgHsNDIKPdsp","parents":["node_modules/lodash/_baseEach.js"]},"node_modules/lodash/forEach.js":{"index":182,"hash":"jIBP8hzrl/TALmTGIzfp","parents":["node_modules/browserify-hmr/inc/index.js"]},"node_modules/lodash/_baseTimes.js":{"index":107,"hash":"vQVHAQOeEJCBfl2Pb7SH","parents":["node_modules/lodash/_arrayLikeKeys.js"]},"node_modules/engine.io-parser/lib/keys.js":{"index":54,"hash":"oFyKNTA0twlyQVhVzp9n","parents":["node_modules/engine.io-parser/lib/browser.js"]},"node_modules/wtf-8/wtf-8.js":{"index":227,"hash":"k6X632uKvHp6yK4OCn1D","parents":["node_modules/engine.io-parser/lib/browser.js"]},"node_modules/arraybuffer.slice/index.js":{"index":3,"hash":"RSb5Zx9CgX3adjzbvf/k","parents":["node_modules/engine.io-parser/lib/browser.js"]},"node_modules/blob/index.js":{"index":31,"hash":"q7L6uHK9eN9yEvDVNxJw","parents":["node_modules/engine.io-parser/lib/browser.js"]},"node_modules/after/index.js":{"index":2,"hash":"NzPfXWECmM8rW/6fdkcj","parents":["node_modules/engine.io-parser/lib/browser.js"]},"node_modules/base64-arraybuffer/lib/base64-arraybuffer.js":{"index":30,"hash":"8XSfHUrJJCZLdLVRE4Xb","parents":["node_modules/engine.io-parser/lib/browser.js"]},"node_modules/engine.io-parser/lib/browser.js":{"index":53,"hash":"Oa/D6NTXKCm7QJPlaAXe","parents":["node_modules/engine.io-client/lib/transport.js","node_modules/engine.io-client/lib/transports/websocket.js","node_modules/engine.io-client/lib/transports/polling.js","node_modules/engine.io-client/lib/socket.js","node_modules/engine.io-client/lib/index.js"]},"node_modules/engine.io-client/node_modules/component-emitter/index.js":{"index":49,"hash":"oN00wp8CctwYNQv6ryzF","parents":["node_modules/engine.io-client/lib/transport.js","node_modules/engine.io-client/lib/transports/polling-xhr.js","node_modules/engine.io-client/lib/socket.js"]},"node_modules/parseqs/index.js":{"index":208,"hash":"bFhhlHvfi+om+FJQz11d","parents":["node_modules/engine.io-client/lib/transports/websocket.js","node_modules/engine.io-client/lib/transports/polling.js","node_modules/engine.io-client/lib/socket.js"]},"node_modules/parsejson/index.js":{"index":207,"hash":"wxV8aXhg9hh6MyO+FO0c","parents":["node_modules/engine.io-client/lib/socket.js"]},"node_modules/lodash/_isKey.js":{"index":140,"hash":"D13Ok63JqktDADwmaeBu","parents":["node_modules/lodash/property.js","node_modules/lodash/_castPath.js","node_modules/lodash/_baseMatchesProperty.js"]},"node_modules/lodash/isSymbol.js":{"index":195,"hash":"uIIRbxfQUXadoioCe5+N","parents":["node_modules/lodash/_isKey.js","node_modules/lodash/_toKey.js","node_modules/lodash/_baseToString.js"]},"node_modules/lodash/_isStrictComparable.js":{"index":144,"hash":"rbCwfHyEpUrj4Z98kqqR","parents":["node_modules/lodash/_getMatchData.js","node_modules/lodash/_baseMatchesProperty.js"]},"node_modules/lodash/_baseHasIn.js":{"index":90,"hash":"+7Ad7hoG+3kwDHiM0tNn","parents":["node_modules/lodash/hasIn.js"]},"node_modules/lodash/isObjectLike.js":{"index":194,"hash":"qRO1rf+QsMbu/mjKbljZ","parents":["node_modules/lodash/isSymbol.js","node_modules/lodash/_baseIsArguments.js","node_modules/lodash/isArguments.js","node_modules/lodash/_baseIsTypedArray.js","node_modules/lodash/_baseIsEqual.js"]},"node_modules/lodash/_basePropertyDeep.js":{"index":103,"hash":"Zfrh9AQz1Ry2yPu2pByv","parents":["node_modules/lodash/property.js"]},"node_modules/lodash/_baseGet.js":{"index":87,"hash":"EQWKE8NGYTKR53FHpqW6","parents":["node_modules/lodash/_basePropertyDeep.js","node_modules/lodash/get.js"]},"node_modules/lodash/property.js":{"index":201,"hash":"2hJfadtQXM/U3NbWpzGR","parents":["node_modules/lodash/_baseIteratee.js"]},"node_modules/lodash/_toKey.js":{"index":176,"hash":"Fva7n1CrZYGNyjdfKbt3","parents":["node_modules/lodash/property.js","node_modules/lodash/_hasPath.js","node_modules/lodash/_baseGet.js","node_modules/lodash/_baseMatchesProperty.js"]},"node_modules/lodash/_getMatchData.js":{"index":126,"hash":"QzO7KFepX9S2dqnbKqgt","parents":["node_modules/lodash/_baseMatches.js"]},"node_modules/lodash/_objectToString.js":{"index":161,"hash":"gcC0LTB2iC1gNln4H3WI","parents":["node_modules/lodash/_baseGetTag.js"]},"node_modules/lodash/_apply.js":{"index":73,"hash":"XKkzZTghrlK6WTNW2Mdh","parents":["node_modules/lodash/_overRest.js"]},"node_modules/lodash/_overRest.js":{"index":163,"hash":"iDNTQ1nLZv3jwCD1fhKA","parents":["node_modules/lodash/_baseRest.js"]},"node_modules/lodash/_shortOut.js":{"index":169,"hash":"IoUeHrEOcxqBK99ieVfK","parents":["node_modules/lodash/_setToString.js"]},"node_modules/lodash/_overArg.js":{"index":162,"hash":"DrVoGwBMK8ywtUgJJMWJ","parents":["node_modules/lodash/_nativeKeys.js"]},"node_modules/lodash/_nativeKeys.js":{"index":159,"hash":"Ksoa4f854F0/NggsS0Yh","parents":["node_modules/lodash/_baseKeys.js"]},"node_modules/lodash/_baseKeys.js":{"index":98,"hash":"kmg69OeKnhCzjV1WMGzu","parents":["node_modules/lodash/keys.js"]},"node_modules/lodash/_baseUnary.js":{"index":109,"hash":"cMYMf5ZcCBeLWbK9TQmI","parents":["node_modules/lodash/isTypedArray.js"]},"node_modules/lodash/stubFalse.js":{"index":204,"hash":"bsNH9caMXr7Pdt8ruFJt","parents":["node_modules/lodash/isBuffer.js"]},"node_modules/lodash/_getValue.js":{"index":131,"hash":"ECu3UgrdoHGLOVPWr5mD","parents":["node_modules/lodash/_getNative.js"]},"node_modules/engine.io-client/lib/transport.js":{"index":42,"hash":"mp7fZlClWfLgH++23uT2","parents":["node_modules/engine.io-client/lib/transports/websocket.js","node_modules/engine.io-client/lib/transports/polling.js","node_modules/engine.io-client/lib/socket.js"]},"node_modules/browser-resolve/empty.js":{"index":32,"hash":"47DEQpj8HBSa+/TImW+5","parents":["node_modules/engine.io-client/lib/transports/websocket.js"]},"node_modules/lodash/_baseGetTag.js":{"index":89,"hash":"ydPbt27q/TAHvOyjdq/H","parents":["node_modules/lodash/isSymbol.js","node_modules/lodash/isFunction.js","node_modules/lodash/_baseIsArguments.js","node_modules/lodash/_baseIsTypedArray.js","node_modules/lodash/_getTag.js"]},"node_modules/lodash/_hasPath.js":{"index":132,"hash":"H9ddOWkLPRuFYq8fwTEv","parents":["node_modules/lodash/hasIn.js"]},"node_modules/lodash/_castPath.js":{"index":113,"hash":"GgKBkmr1sBRSb1yd72qJ","parents":["node_modules/lodash/_hasPath.js","node_modules/lodash/_baseGet.js"]},"node_modules/lodash/isArguments.js":{"index":187,"hash":"iJIbQ7nb4q+C1riPMj/b","parents":["node_modules/lodash/_hasPath.js","node_modules/lodash/_arrayLikeKeys.js"]},"node_modules/lodash/hasIn.js":{"index":185,"hash":"o6j7gwruD7qKNbgMUe0j","parents":["node_modules/lodash/_baseMatchesProperty.js"]},"node_modules/lodash/_stackDelete.js":{"index":171,"hash":"LXafI5DDGP0wDwfpw8/U","parents":["node_modules/lodash/_Stack.js"]},"node_modules/lodash/_stackHas.js":{"index":173,"hash":"thY5y8jBCnJMfegnSD/V","parents":["node_modules/lodash/_Stack.js"]},"node_modules/lodash/_stackGet.js":{"index":172,"hash":"BoHW4uFMtND7Gi+JPdJf","parents":["node_modules/lodash/_Stack.js"]},"node_modules/lodash/_Symbol.js":{"index":70,"hash":"I77NsH5p3PRVWpJOtN3+","parents":["node_modules/lodash/_getRawTag.js","node_modules/lodash/_baseGetTag.js","node_modules/lodash/_equalByTag.js","node_modules/lodash/_baseToString.js"]},"node_modules/lodash/_root.js":{"index":164,"hash":"MupxTyUFdnn90wmcJpPL","parents":["node_modules/lodash/_Symbol.js","node_modules/lodash/isBuffer.js","node_modules/lodash/_Uint8Array.js","node_modules/lodash/_Map.js","node_modules/lodash/_DataView.js","node_modules/lodash/_Promise.js","node_modules/lodash/_Set.js","node_modules/lodash/_WeakMap.js","node_modules/lodash/_coreJsData.js"]},"node_modules/lodash/_getRawTag.js":{"index":128,"hash":"MUL9l/iYFvZaG1vReTH3","parents":["node_modules/lodash/_baseGetTag.js"]},"node_modules/lodash/isFunction.js":{"index":191,"hash":"0gysC+rTcZlhPWD04ANh","parents":["node_modules/lodash/isArrayLike.js","node_modules/lodash/_baseIsNative.js"]},"node_modules/lodash/constant.js":{"index":179,"hash":"E/D07UC1hh81w2R6/inn","parents":["node_modules/lodash/_baseSetToString.js"]},"node_modules/lodash/_baseSetToString.js":{"index":105,"hash":"iLxL219sz9iCOrPJz82a","parents":["node_modules/lodash/_setToString.js"]},"node_modules/lodash/_defineProperty.js":{"index":119,"hash":"0CbMU6r+0Uq1gikE9oNA","parents":["node_modules/lodash/_baseSetToString.js","node_modules/lodash/_baseAssignValue.js"]},"node_modules/lodash/_setToString.js":{"index":168,"hash":"hu7pnSotmEJV3Wx9OsJa","parents":["node_modules/lodash/_baseRest.js"]},"node_modules/lodash/_baseRest.js":{"index":104,"hash":"SUX2Uj3EprmvmkcHcoY/","parents":["node_modules/lodash/_createAssigner.js"]},"node_modules/lodash/_createAssigner.js":{"index":116,"hash":"JEqSu7xxpSyH40Y4GJ+V","parents":["node_modules/lodash/assign.js"]},"node_modules/lodash/_baseIsArguments.js":{"index":91,"hash":"caWdwJw13ty+5+1x9erg","parents":["node_modules/lodash/isArguments.js"]},"node_modules/lodash/_baseIsTypedArray.js":{"index":96,"hash":"cPl0GH9tkUCpceUV6gAk","parents":["node_modules/lodash/isTypedArray.js"]},"node_modules/lodash/_freeGlobal.js":{"index":123,"hash":"JkBVfFsfGmCLIMhuNXD1","parents":["node_modules/lodash/_nodeUtil.js","node_modules/lodash/_root.js"]},"node_modules/lodash/_nodeUtil.js":{"index":160,"hash":"a5iiX2Zkv5BTWgreCV8c","parents":["node_modules/lodash/isTypedArray.js"]},"node_modules/lodash/isTypedArray.js":{"index":196,"hash":"pNInOnl/2pKh0f1gDzOT","parents":["node_modules/lodash/_arrayLikeKeys.js","node_modules/lodash/_baseIsEqualDeep.js"]},"node_modules/lodash/isBuffer.js":{"index":190,"hash":"Uzhm1jNtW1f55Gsz24+8","parents":["node_modules/lodash/_arrayLikeKeys.js","node_modules/lodash/_baseIsEqualDeep.js"]},"node_modules/lodash/_arrayLikeKeys.js":{"index":76,"hash":"RWu/FT9WAfaDXPoucuiD","parents":["node_modules/lodash/keys.js"]},"node_modules/lodash/assign.js":{"index":178,"hash":"6X7UP3eqxcj6o2ias2ID","parents":["node_modules/browserify-hmr/inc/index.js"]},"node_modules/lodash/_toSource.js":{"index":177,"hash":"qhQsP8sNq2kil796yxWO","parents":["node_modules/lodash/_getTag.js","node_modules/lodash/_baseIsNative.js"]},"node_modules/engine.io-client/node_modules/ms/index.js":{"index":52,"hash":"+i3MPFzut0mh8LK6NCY0","parents":["node_modules/engine.io-client/node_modules/debug/debug.js"]},"node_modules/engine.io-client/node_modules/debug/debug.js":{"index":51,"hash":"5FZHGx7z7kdbTIz7MyR0","parents":["node_modules/engine.io-client/node_modules/debug/browser.js"]},"node_modules/engine.io-client/node_modules/debug/browser.js":{"index":50,"hash":"Q9ewCSPMnJcAJRPsyk4r","parents":["node_modules/engine.io-client/lib/transports/websocket.js","node_modules/engine.io-client/lib/transports/polling.js","node_modules/engine.io-client/lib/transports/polling-xhr.js","node_modules/engine.io-client/lib/socket.js"]},"node_modules/has-cors/index.js":{"index":57,"hash":"HwTb4UF/S089ZYA8hrRl","parents":["node_modules/engine.io-client/lib/xmlhttprequest.js"]},"node_modules/engine.io-client/lib/xmlhttprequest.js":{"index":48,"hash":"bdorKhduNvEqwPS8Ryma","parents":["node_modules/engine.io-client/lib/transports/polling.js","node_modules/engine.io-client/lib/transports/polling-xhr.js","node_modules/engine.io-client/lib/transports/index.js"]},"node_modules/component-inherit/index.js":{"index":38,"hash":"T0Fqch4d4akvlr8bh7lc","parents":["node_modules/engine.io-client/lib/transports/websocket.js","node_modules/engine.io-client/lib/transports/polling-jsonp.js","node_modules/engine.io-client/lib/transports/polling.js","node_modules/engine.io-client/lib/transports/polling-xhr.js"]},"node_modules/yeast/index.js":{"index":228,"hash":"ZM3+5w4l/D2f6x7svySF","parents":["node_modules/engine.io-client/lib/transports/websocket.js","node_modules/engine.io-client/lib/transports/polling.js"]},"node_modules/engine.io-client/lib/transports/websocket.js":{"index":47,"hash":"T9c/ggKNrbmnrHTUqZ8f","parents":["node_modules/engine.io-client/lib/transports/index.js"]},"node_modules/engine.io-client/lib/transports/polling-jsonp.js":{"index":44,"hash":"oEkG83OYr+yF9+O6KIZU","parents":["node_modules/engine.io-client/lib/transports/index.js"]},"node_modules/engine.io-client/lib/transports/polling.js":{"index":46,"hash":"iR9NdLeAEs8vSYk/mMqT","parents":["node_modules/engine.io-client/lib/transports/polling-jsonp.js","node_modules/engine.io-client/lib/transports/polling-xhr.js"]},"node_modules/lodash/_mapToArray.js":{"index":155,"hash":"XUQTl0anVZnXaUOrmxD7","parents":["node_modules/lodash/_equalByTag.js"]},"node_modules/lodash/_setToArray.js":{"index":167,"hash":"gUyAUZoZS3v/gnhOBsLW","parents":["node_modules/lodash/_equalByTag.js"]},"node_modules/lodash/_cacheHas.js":{"index":111,"hash":"zwJaX7fkgHAdYeTtYO2G","parents":["node_modules/lodash/_equalArrays.js"]},"node_modules/lodash/_stackClear.js":{"index":170,"hash":"ibWAz8K0fFq6Bb0SS4B7","parents":["node_modules/lodash/_Stack.js"]},"node_modules/lodash/_ListCache.js":{"index":63,"hash":"KxC/aKLlcuOS+PWx1HyP","parents":["node_modules/lodash/_stackClear.js","node_modules/lodash/_mapCacheClear.js","node_modules/lodash/_stackSet.js","node_modules/lodash/_Stack.js"]},"node_modules/lodash/_listCacheClear.js":{"index":145,"hash":"CHLB/DjalyhgxdfpsCnW","parents":["node_modules/lodash/_ListCache.js"]},"node_modules/engine.io-client/lib/transports/polling-xhr.js":{"index":45,"hash":"4NXW28jfIrijZLTpANlT","parents":["node_modules/engine.io-client/lib/transports/index.js"]},"node_modules/engine.io-client/lib/transports/index.js":{"index":43,"hash":"oFkQ4RgDHQJ8Ae5piZNj","parents":["node_modules/engine.io-client/lib/socket.js"]},"node_modules/engine.io-client/lib/socket.js":{"index":41,"hash":"kT2TeXgVs1CyKphjblzf","parents":["node_modules/engine.io-client/lib/index.js"]},"node_modules/engine.io-client/lib/index.js":{"index":40,"hash":"G6QYuSNu0EcS+G5tR9NE","parents":["node_modules/engine.io-client/index.js"]},"node_modules/engine.io-client/index.js":{"index":39,"hash":"TaZh2zcEs5+SiarJ3uJN","parents":["node_modules/socket.io-client/lib/manager.js"]},"node_modules/socket.io-client/lib/manager.js":{"index":212,"hash":"ea8fbXBXjC66BIPF5Pam","parents":["node_modules/socket.io-client/lib/index.js"]},"node_modules/socket.io-client/lib/index.js":{"index":211,"hash":"s/15kyEjN0kWB5dYl/1h","parents":[]},"node_modules/lodash/_Uint8Array.js":{"index":71,"hash":"Zc6+hCmhnXc0Y6Asmckn","parents":["node_modules/lodash/_equalByTag.js"]},"node_modules/lodash/_equalByTag.js":{"index":121,"hash":"5sdsIGyCGshbuSoIxoXa","parents":["node_modules/lodash/_baseIsEqualDeep.js"]},"node_modules/lodash/_equalArrays.js":{"index":120,"hash":"FLnT7PvdDDobU/p0ty8u","parents":["node_modules/lodash/_equalByTag.js","node_modules/lodash/_baseIsEqualDeep.js"]},"node_modules/lodash/_Map.js":{"index":64,"hash":"aezyd9/dXR4WmT/cJk4B","parents":["node_modules/lodash/_getTag.js","node_modules/lodash/_mapCacheClear.js","node_modules/lodash/_stackSet.js"]},"node_modules/lodash/_getNative.js":{"index":127,"hash":"c5Ljj0yzzW4dPj+JomYZ","parents":["node_modules/lodash/_Map.js","node_modules/lodash/_DataView.js","node_modules/lodash/_Promise.js","node_modules/lodash/_Set.js","node_modules/lodash/_WeakMap.js","node_modules/lodash/_defineProperty.js","node_modules/lodash/_nativeCreate.js"]},"node_modules/lodash/_DataView.js":{"index":61,"hash":"N7jUbJyl5TusFXojFUuz","parents":["node_modules/lodash/_getTag.js"]},"node_modules/lodash/_Promise.js":{"index":66,"hash":"T4OR1RtxAOTYyC9xrI13","parents":["node_modules/lodash/_getTag.js"]},"node_modules/lodash/_Set.js":{"index":67,"hash":"BRcgMZjGEVgVhv4GaR6q","parents":["node_modules/lodash/_getTag.js"]},"node_modules/lodash/_WeakMap.js":{"index":72,"hash":"iuNSA30LsHH/h10pNsQ6","parents":["node_modules/lodash/_getTag.js"]},"node_modules/lodash/_getTag.js":{"index":130,"hash":"rZSqomckxeMx8IEK6dQG","parents":["node_modules/lodash/_baseIsEqualDeep.js"]},"node_modules/lodash/_setCacheAdd.js":{"index":165,"hash":"yUbHLrOe8uWgSDa2EOmH","parents":["node_modules/lodash/_SetCache.js"]},"node_modules/lodash/_setCacheHas.js":{"index":166,"hash":"aSivpixRq6mV4rYXkVzt","parents":["node_modules/lodash/_SetCache.js"]},"node_modules/lodash/_SetCache.js":{"index":68,"hash":"DKcn0VM+nqBtuxUGd3JS","parents":["node_modules/lodash/_equalArrays.js"]},"node_modules/lodash/_MapCache.js":{"index":65,"hash":"XbhLy8omrsa87tk7GrBc","parents":["node_modules/lodash/_SetCache.js","node_modules/lodash/memoize.js","node_modules/lodash/_stackSet.js"]},"node_modules/lodash/_listCacheSet.js":{"index":149,"hash":"dVcwdgHP8vQHHPnX+pql","parents":["node_modules/lodash/_ListCache.js"]},"node_modules/lodash/_assocIndexOf.js":{"index":81,"hash":"+YtyXqBKKXnwrSmv/2eU","parents":["node_modules/lodash/_listCacheSet.js","node_modules/lodash/_listCacheGet.js","node_modules/lodash/_listCacheDelete.js","node_modules/lodash/_listCacheHas.js"]},"node_modules/lodash/_listCacheGet.js":{"index":147,"hash":"SZAC3U/+BLssJw9WKbhb","parents":["node_modules/lodash/_ListCache.js"]},"node_modules/lodash/_listCacheDelete.js":{"index":146,"hash":"o3YDg6klGWlCS2PgzZy+","parents":["node_modules/lodash/_ListCache.js"]},"node_modules/lodash/_coreJsData.js":{"index":115,"hash":"mWDHPw3O0bwyURVR4xz+","parents":["node_modules/lodash/_isMasked.js"]},"node_modules/lodash/_isMasked.js":{"index":142,"hash":"vCLMgg9t+moWMD2eCyQw","parents":["node_modules/lodash/_baseIsNative.js"]},"node_modules/lodash/_baseIsNative.js":{"index":95,"hash":"HplAaZjQs9R/bNG2XV0a","parents":["node_modules/lodash/_getNative.js"]},"node_modules/lodash/mapValues.js":{"index":199,"hash":"wGzYh7rOmnr5NbNf31Xh","parents":["node_modules/browserify-hmr/inc/index.js"]},"node_modules/lodash/_baseToString.js":{"index":108,"hash":"AnA1FrHVlMlph8hPfQFk","parents":["node_modules/lodash/toString.js"]},"node_modules/lodash/toString.js":{"index":205,"hash":"u6lNu4mjQVTOavtG4Hpr","parents":["node_modules/lodash/_castPath.js"]},"node_modules/lodash/_arrayPush.js":{"index":78,"hash":"/EQp182bKyQYd9DyjHRq","parents":["node_modules/lodash/_baseGetAllKeys.js"]},"node_modules/lodash/_baseGetAllKeys.js":{"index":88,"hash":"G/yC9530/ahn/dgrrslT","parents":["node_modules/lodash/_getAllKeys.js"]},"node_modules/lodash/stubArray.js":{"index":203,"hash":"hpV3ZtG8dCYBLEBt0XqS","parents":["node_modules/lodash/_getSymbols.js"]},"node_modules/lodash/_getSymbols.js":{"index":129,"hash":"PoUL82x850fu8UHfzZjw","parents":["node_modules/lodash/_getAllKeys.js"]},"node_modules/lodash/_getAllKeys.js":{"index":124,"hash":"3JYThcdBa6xFuMLEJAcf","parents":["node_modules/lodash/_equalObjects.js"]},"node_modules/lodash/_equalObjects.js":{"index":122,"hash":"Rc9NYU8R1s/bWUnUOXOJ","parents":["node_modules/lodash/_baseIsEqualDeep.js"]},"node_modules/lodash/_baseIsEqualDeep.js":{"index":93,"hash":"a5Qj+02BWo5995Nobe+v","parents":["node_modules/lodash/_baseIsEqual.js"]},"node_modules/lodash/_Stack.js":{"index":69,"hash":"/wytiRFlfgg4krF9Qz6a","parents":["node_modules/lodash/_baseIsEqualDeep.js","node_modules/lodash/_baseIsMatch.js"]},"node_modules/lodash/_baseIsEqual.js":{"index":92,"hash":"IfD9jeZw2S45+s0BZ1L3","parents":["node_modules/lodash/_baseMatchesProperty.js","node_modules/lodash/_baseIsMatch.js"]},"node_modules/lodash/_listCacheHas.js":{"index":148,"hash":"2tu2JqPxTVjaJm/WbeGw","parents":["node_modules/lodash/_ListCache.js"]},"node_modules/lodash/_mapCacheSet.js":{"index":154,"hash":"Rk8Cf6ZeJaOWzM2bXiED","parents":["node_modules/lodash/_MapCache.js"]},"node_modules/lodash/_getMapData.js":{"index":125,"hash":"ZdeLudBY90L64kFsAIQL","parents":["node_modules/lodash/_mapCacheSet.js","node_modules/lodash/_mapCacheDelete.js","node_modules/lodash/_mapCacheGet.js","node_modules/lodash/_mapCacheHas.js"]},"node_modules/lodash/_mapCacheDelete.js":{"index":151,"hash":"Y2RLt8NGt0Im9c9uXXcS","parents":["node_modules/lodash/_MapCache.js"]},"node_modules/lodash/_mapCacheGet.js":{"index":152,"hash":"dglUiNgT6mYn3/TLOqMD","parents":["node_modules/lodash/_MapCache.js"]},"node_modules/lodash/memoize.js":{"index":200,"hash":"avTk3nhklvyvSxLNiUwd","parents":["node_modules/lodash/_memoizeCapped.js"]},"node_modules/lodash/_memoizeCapped.js":{"index":157,"hash":"HacnckK3nw4vtSYbX7i/","parents":["node_modules/lodash/_stringToPath.js"]},"node_modules/lodash/_stringToPath.js":{"index":175,"hash":"nTlFZDUaGsY0w/l3Daka","parents":["node_modules/lodash/_castPath.js"]},"node_modules/lodash/get.js":{"index":184,"hash":"l8Xm0+dbrUDVfD0OVsKH","parents":["node_modules/lodash/_baseMatchesProperty.js"]},"node_modules/lodash/_baseMatchesProperty.js":{"index":101,"hash":"JUSg/+I63FvjCRBMWDG8","parents":["node_modules/lodash/_baseIteratee.js"]},"node_modules/lodash/_isKeyable.js":{"index":141,"hash":"NQsK9iVUkTA1EsHPdaK1","parents":["node_modules/lodash/_getMapData.js"]},"node_modules/lodash/_mapCacheHas.js":{"index":153,"hash":"S0HdvBVxOySQIIMRmtf0","parents":["node_modules/lodash/_MapCache.js"]},"node_modules/lodash/_hashDelete.js":{"index":134,"hash":"CmVwjIdw4ONOgfUyiaMT","parents":["node_modules/lodash/_Hash.js"]},"node_modules/lodash/_hashHas.js":{"index":136,"hash":"fr70n7H4vKHBcQoEXEpO","parents":["node_modules/lodash/_Hash.js"]},"node_modules/lodash/_nativeCreate.js":{"index":158,"hash":"QnEWfxsVWqcrQRLl5xaD","parents":["node_modules/lodash/_hashHas.js","node_modules/lodash/_hashGet.js","node_modules/lodash/_hashSet.js","node_modules/lodash/_hashClear.js"]},"node_modules/lodash/_hashGet.js":{"index":135,"hash":"dc0CR5GuEuyIhxwkyCwj","parents":["node_modules/lodash/_Hash.js"]},"node_modules/lodash/_hashSet.js":{"index":137,"hash":"GANy9myYOl9CQUX6Hi+w","parents":["node_modules/lodash/_Hash.js"]},"node_modules/lodash/_hashClear.js":{"index":133,"hash":"2feZ9hRgUzW8Djw0JrqE","parents":["node_modules/lodash/_Hash.js"]},"node_modules/lodash/_Hash.js":{"index":62,"hash":"hTyKHFwLDhT8hzgE2zlD","parents":["node_modules/lodash/_mapCacheClear.js"]},"node_modules/lodash/_mapCacheClear.js":{"index":150,"hash":"6D5+Bp90PNozl9Vr8wu2","parents":["node_modules/lodash/_MapCache.js"]},"node_modules/lodash/_stackSet.js":{"index":174,"hash":"rFq/zAhyEaIffTCH45Gf","parents":["node_modules/lodash/_Stack.js"]},"node_modules/lodash/_baseIsMatch.js":{"index":94,"hash":"yrF79Y2F5RiVXHPZgzhK","parents":["node_modules/lodash/_baseMatches.js"]},"node_modules/lodash/_baseMatches.js":{"index":100,"hash":"eM6GzX+YFfSSvWUut1RW","parents":["node_modules/lodash/_baseIteratee.js"]},"node_modules/lodash/map.js":{"index":198,"hash":"Gq/1p28f40AzWuWuaNZr","parents":["node_modules/browserify-hmr/inc/index.js"]},"node_modules/browserify-hmr/inc/index.js":{"index":33,"hash":"MGH8WksqsFtrirdPnhgt","parents":[]},"node_modules/event-emitter-es6/index.js":{"index":55,"hash":"/+EiX5jfKF2Iv4MvX8xJ","parents":["src/SpeckleReceiver.js"]},"node_modules/axios/lib/cancel/Cancel.js":{"index":7,"hash":"H5p8YXHwES9hf4g5J2Ix","parents":["node_modules/axios/lib/cancel/CancelToken.js","node_modules/axios/lib/axios.js"]},"node_modules/axios/lib/cancel/isCancel.js":{"index":9,"hash":"I1e5Pa4+rYUPP2HOlgqQ","parents":["node_modules/axios/lib/core/dispatchRequest.js","node_modules/axios/lib/axios.js"]},"node_modules/axios/lib/helpers/spread.js":{"index":27,"hash":"tRmNydzwpR2+f97xOT2R","parents":["node_modules/axios/lib/axios.js"]},"node_modules/axios/lib/helpers/bind.js":{"index":18,"hash":"7qz63sWc/avguoKZp/Tj","parents":["node_modules/axios/lib/utils.js","node_modules/axios/lib/axios.js"]},"node_modules/axios/lib/cancel/CancelToken.js":{"index":8,"hash":"FHNSerik6mTW7UK588b6","parents":["node_modules/axios/lib/axios.js"]},"node_modules/axios/lib/utils.js":{"index":28,"hash":"iAJPkkHOoTQ0lV9mgUDF","parents":["node_modules/axios/lib/core/InterceptorManager.js","node_modules/axios/lib/helpers/normalizeHeaderName.js","node_modules/axios/lib/core/transformData.js","node_modules/axios/lib/core/dispatchRequest.js","node_modules/axios/lib/core/Axios.js","node_modules/axios/lib/helpers/parseHeaders.js","node_modules/axios/lib/helpers/buildURL.js","node_modules/axios/lib/helpers/isURLSameOrigin.js","node_modules/axios/lib/helpers/cookies.js","node_modules/axios/lib/adapters/xhr.js","node_modules/axios/lib/defaults.js","node_modules/axios/lib/axios.js"]},"node_modules/axios/lib/helpers/isAbsoluteURL.js":{"index":23,"hash":"vVWCDPr+MX6lpqXv8pbV","parents":["node_modules/axios/lib/core/Axios.js"]},"node_modules/axios/lib/helpers/combineURLs.js":{"index":21,"hash":"WcVx/KakaTKJx+B4Oqlg","parents":["node_modules/axios/lib/core/Axios.js"]},"node_modules/axios/lib/core/InterceptorManager.js":{"index":11,"hash":"eKcTD61ZQvp+fRuqC8MM","parents":["node_modules/axios/lib/core/Axios.js"]},"node_modules/axios/lib/helpers/btoa.js":{"index":19,"hash":"50rlLXO/5hRkYfgSsE36","parents":["node_modules/axios/lib/adapters/xhr.js"]},"node_modules/axios/lib/helpers/normalizeHeaderName.js":{"index":25,"hash":"ZOnEbUQ4gAqyOWXM/MJz","parents":["node_modules/axios/lib/defaults.js"]},"node_modules/axios/lib/core/transformData.js":{"index":16,"hash":"ogPxBrH/+f25p5LI/dDI","parents":["node_modules/axios/lib/core/dispatchRequest.js"]},"node_modules/axios/lib/core/dispatchRequest.js":{"index":13,"hash":"HtiwIy/HS1A24N/qgh+i","parents":["node_modules/axios/lib/core/Axios.js"]},"node_modules/axios/lib/defaults.js":{"index":17,"hash":"qltyCvzMIprq5m6tzw01","parents":["node_modules/axios/lib/core/dispatchRequest.js","node_modules/axios/lib/core/Axios.js","node_modules/axios/lib/axios.js"]},"node_modules/axios/lib/core/Axios.js":{"index":10,"hash":"Y6SCtUi9Dxs62r8mPrVj","parents":["node_modules/axios/lib/axios.js"]},"node_modules/axios/lib/helpers/parseHeaders.js":{"index":26,"hash":"RSaxrIhXzzKyKZUYYMuV","parents":["node_modules/axios/lib/adapters/xhr.js"]},"node_modules/axios/lib/helpers/buildURL.js":{"index":20,"hash":"/NGEKCSjJtQmLL9YgQ19","parents":["node_modules/axios/lib/adapters/xhr.js"]},"node_modules/axios/lib/helpers/isURLSameOrigin.js":{"index":24,"hash":"Q23gyeHuCUz6urO9LiH6","parents":["node_modules/axios/lib/adapters/xhr.js"]},"node_modules/axios/lib/helpers/cookies.js":{"index":22,"hash":"bosLflNojvUQNanxX8Ou","parents":["node_modules/axios/lib/adapters/xhr.js"]},"node_modules/axios/lib/core/settle.js":{"index":15,"hash":"oBiMdGYIWstYzLllkvdc","parents":["node_modules/axios/lib/adapters/xhr.js"]},"node_modules/axios/lib/core/createError.js":{"index":12,"hash":"gewqDvLDQxuCJgfCZVcg","parents":["node_modules/axios/lib/core/settle.js","node_modules/axios/lib/adapters/xhr.js"]},"node_modules/axios/lib/core/enhanceError.js":{"index":14,"hash":"jQgfNs13AFaI52OMk6Uz","parents":["node_modules/axios/lib/core/createError.js"]},"node_modules/axios/lib/adapters/xhr.js":{"index":5,"hash":"aAqW8YO7v3QEaiiYtYs7","parents":["node_modules/axios/lib/defaults.js","node_modules/axios/lib/defaults.js"]},"node_modules/axios/lib/axios.js":{"index":6,"hash":"HIDoC1nh7uFupiQwyIon","parents":["node_modules/axios/index.js"]},"node_modules/axios/index.js":{"index":4,"hash":"i3hbSNtq55ltbO/Ev0Ye","parents":["src/SpeckleReceiver.js"]},"src/SpeckleReceiver.js":{"index":229,"hash":"/yHbdLTUGpWsP6DxP9Y2","parents":["src/main.js"]},"src/main.js":{"index":230,"hash":"+u7L7Vcckqc+UGVyLFvW","parents":[]}};
+  var originalEntries = ["/Users/Bender/Documents/dev/Speckle.JS/SpeckleReceiverBrowser/src/main.js"];
   var updateUrl = null;
   var updateMode = "websocket";
   var supportModes = ["none","websocket"];
   var ignoreUnaccepted = true;
   var updateCacheBust = false;
   var bundleKey = "websocket:null";
-  var sioPath = "./node_modules/browserify-hmr/node_modules/socket.io-client/lib/index.js";
+  var sioPath = "./node_modules/socket.io-client/lib/index.js";
   var incPath = "./node_modules/browserify-hmr/inc/index.js";
 
   if (!global._hmr) {
@@ -15809,4 +16521,4 @@ window.SpeckleReceiver = _SpeckleReceiver2.default;
   arguments[3], arguments[4], arguments[5], arguments[6]
 );
 
-},{"./node_modules/browserify-hmr/inc/index.js":27,"./node_modules/browserify-hmr/node_modules/socket.io-client/lib/index.js":176,"/Users/Bender/Documents/dev/SimpleClients/SpeckleReceiverBrowser/src/main.js":227}]},{},[1]);
+},{"./node_modules/browserify-hmr/inc/index.js":33,"./node_modules/socket.io-client/lib/index.js":211,"/Users/Bender/Documents/dev/Speckle.JS/SpeckleReceiverBrowser/src/main.js":230}]},{},[1]);
