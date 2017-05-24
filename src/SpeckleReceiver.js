@@ -19,6 +19,7 @@ export default class SpeckleReceiver extends EventEmitter {
     this.objectProperties = []  // placeholders, they're filled in the get stream.
     this.name = null // placeholders, they're filled in the get stream.
     this.history = [] // placeholders, they're filled in the get stream.
+    this.layerMaterials = {} 
 
     this.ws = null
     this.wsReconnectionAttempts = 0
@@ -60,7 +61,7 @@ export default class SpeckleReceiver extends EventEmitter {
         if( !this.streamFound ) return
 
         console.log('SpeckeReceiver: Receiver ready ...')
-        this.emit('ready', this.name, this.layers, this.objects, this.history )
+        this.emit('ready', this.name, this.layers, this.objects, this.history, this.layerMaterials )
         clearInterval( this.isReadyChecker )
       }, 100 )
     })
@@ -110,6 +111,8 @@ export default class SpeckleReceiver extends EventEmitter {
       self.layers = response.data.data.layers
       self.objects = response.data.data.objects
       self.objectProperties = response.data.data.objectProperties
+      self.layerMaterials = response.data.data.layerMaterials
+      
       self.name = response.data.data.name
       self.objectProperties.forEach( prop => {
         self.objects[ prop.objectIndex ].properties = prop.properties
@@ -148,7 +151,7 @@ export default class SpeckleReceiver extends EventEmitter {
     objs.forEach( ( obj, index ) => {
       this.getObject( obj, response => {
         receivedObjects.splice( index, 1, response )
-        this.emit( 'object-load-progress', extHead )
+        this.emit( 'object-load-progress', objs.length, extHead )
         if( ++extHead >= objs.length ) return callback( receivedObjects )
       })
     })
