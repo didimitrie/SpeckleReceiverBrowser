@@ -111,7 +111,6 @@ export default class SpeckleReceiver extends EventEmitter {
       self.layers = response.data.data.layers
       self.objects = response.data.data.objects
       self.objectProperties = response.data.data.objectProperties
-      self.layerMaterials = response.data.data.layerMaterials
       
       self.name = response.data.data.name
       self.objectProperties.forEach( prop => {
@@ -123,6 +122,7 @@ export default class SpeckleReceiver extends EventEmitter {
       if( !response.data.success ) return this.emit( 'error', response.message )
       
       self.history = response.data.data.history
+      self.layerMaterials = response.data.data.layerMaterials
       self.streamFound = true
     })
     .catch( error => {
@@ -205,6 +205,9 @@ export default class SpeckleReceiver extends EventEmitter {
     this.objects = msg.args.objects
     this.objectProperties = msg.args.objectProperties
 
+    this.objectProperties.forEach( prop => {
+        this.objects[ prop.objectIndex ].properties = prop.properties
+    })
     this.emit( 'live-update', msg.args.name, msg.args.layers, msg.args.objects, msg.args.objectProperties )
   }
   
